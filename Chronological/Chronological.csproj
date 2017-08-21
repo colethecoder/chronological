@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard1.3;net45;net451;net452;net47</TargetFrameworks>
+    <Version>0.1.2-alpha</Version>
+    <RepositoryUrl>https://github.com/colethecoder/chronological</RepositoryUrl>
+    <PackageLicenseUrl>https://github.com/colethecoder/chronological/blob/master/LICENSE</PackageLicenseUrl>
+    <Authors>Tom Cole</Authors>
+    <Company />
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Description>A client for Azure Time Series Insights</Description>
+    <NeutralLanguage></NeutralLanguage>
+    <PackageTags>Azure Time Series Insights</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard1.3'">
+    <PackageReference Include="System.Net.WebSockets.Client">
+      <Version>4.3.1</Version>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="3.16.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+    <PackageReference Include="System.Net.Requests" Version="4.3.0" />
+  </ItemGroup>
+
+</Project>
