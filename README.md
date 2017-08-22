@@ -1,9 +1,9 @@
 # chronological
 Chronological is a library to simplify access to the Azure Time Series Insights API.
 
-```
-var conn = new Chronological.Connection(*ApplicationClientID*,
-                *ApplicationClientSecret*, *Tenant*);
+```cs
+var conn = new Chronological.Connection(YourApplicationClientID,
+                YourApplicationClientSecret, YourTenant);
 
 var environments = await conn.GetEnvironmentsAsync();
 
