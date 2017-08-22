@@ -1,7 +1,7 @@
 # chronological
 Chronological is a library to simplify access to the Azure Time Series Insights API.
 
-'''
+```
 var conn = new Chronological.Connection(*ApplicationClientID*,
                 *ApplicationClientSecret*, *Tenant*);
 
@@ -14,4 +14,4 @@ var json = await environment.EventsQuery("Test")
     .WithLimit(Limit.Top(200, Sort.Ascending(Property.TimeSeries)))
     .Where(Filter.Equal(Property.Custom("id", DataType.String), "1234"))
     .ResultsToJObject();
-'''
+```
