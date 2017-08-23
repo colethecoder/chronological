@@ -47,7 +47,7 @@ namespace Chronological
         {
             if (_dataType == null)
             {
-                return new JProperty(outerName, new JObject(new JProperty("property", "data.value")));
+                return new JProperty(outerName, new JObject(new JProperty("property", _propertyName)));
             }
             return new JProperty(outerName, new JObject(
                 new JProperty("property", _propertyName),
