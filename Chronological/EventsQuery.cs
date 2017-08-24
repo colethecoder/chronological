@@ -5,7 +5,7 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Chronological.Events;
+using Chronological.QueryResults.Events;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -155,7 +155,7 @@ namespace Chronological
             return responseContent;
         }
 
-        public async Task<EventQueryResults> ResultsToEventResultsAsync()
+        public async Task<EventQueryResult> ResultsToEventQueryResultAsync()
         {
             var inputPayload = ToJObject(_environment.AccessToken);
             var webSocket = new ClientWebSocket();
@@ -177,7 +177,7 @@ namespace Chronological
                 endOfMessage: true,
                 cancellationToken: CancellationToken.None);
 
-            EventQueryResults responseContent = null;
+            EventQueryResult responseContent = null;
             using (webSocket)
             {
                 while (true)
@@ -209,7 +209,7 @@ namespace Chronological
                         }
                     }
 
-                    responseContent = JsonConvert.DeserializeObject<EventQueryResults>(message);
+                    responseContent = JsonConvert.DeserializeObject<EventQueryResult>(message);
 
                     //Todo error handling
 

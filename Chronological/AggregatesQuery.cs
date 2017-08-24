@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Chronological.QueryResults.Aggregates;
 
 namespace Chronological
 {
@@ -148,6 +149,79 @@ namespace Chronological
 
                     if (messageObj["percentCompleted"] != null &&
                         Math.Abs((double)messageObj["percentCompleted"] - 100d) < 0.01)
+                    {
+                        break;
+                    }
+                }
+
+                if (webSocket.State == WebSocketState.Open)
+                {
+                    await webSocket.CloseAsync(
+                        WebSocketCloseStatus.NormalClosure,
+                        "CompletedByClient",
+                        CancellationToken.None);
+                }
+            }
+
+            return responseContent;
+        }
+
+        public async Task<AggregateQueryResult> ResultsToAggregateQueryResultAsync()
+        {
+            var inputPayload = ToJObject(_environment.AccessToken);
+            var webSocket = new ClientWebSocket();
+
+            var test = inputPayload.ToString();
+
+            Uri uri = new UriBuilder("wss", _environment.EnvironmentFqdn)
+            {
+                Path = "aggregates",
+                Query = "api-version=2016-12-12"
+            }.Uri;
+
+            await webSocket.ConnectAsync(uri, CancellationToken.None);
+
+            byte[] inputPayloadBytes = Encoding.UTF8.GetBytes(inputPayload.ToString());
+            await webSocket.SendAsync(
+                new ArraySegment<byte>(inputPayloadBytes),
+                WebSocketMessageType.Text,
+                endOfMessage: true,
+                cancellationToken: CancellationToken.None);
+
+            AggregateQueryResult responseContent = null;
+            using (webSocket)
+            {
+                while (true)
+                {
+                    string message;
+                    using (var ms = new MemoryStream())
+                    {
+                        const int bufferSize = 16 * 1024;
+                        var temporaryBuffer = new byte[bufferSize];
+                        while (true)
+                        {
+                            WebSocketReceiveResult response = await webSocket.ReceiveAsync(
+                                new ArraySegment<byte>(temporaryBuffer),
+                                CancellationToken.None);
+
+                            ms.Write(temporaryBuffer, 0, response.Count);
+                            if (response.EndOfMessage)
+                            {
+                                break;
+                            }
+                        }
+
+                        ms.Position = 0;
+
+                        using (var sr = new StreamReader(ms))
+                        {
+                            message = sr.ReadToEnd();
+                        }
+                    }
+
+                    responseContent = JsonConvert.DeserializeObject<AggregateQueryResult>(message);
+
+                    if (Math.Abs(responseContent.PercentCompleted - 100d) < 0.01)
                     {
                         break;
                     }
