@@ -17,6 +17,7 @@ namespace Chronological
 
         public static Property TimeStamp => new Property(true, @"$ts");
 
+        public static Property EventSourceName => new Property(true, @"$esn");
         public static Property Custom(string name, DataType type = null)
         {
             return new Property(false, name, type);
