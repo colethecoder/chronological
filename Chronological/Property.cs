@@ -15,7 +15,7 @@ namespace Chronological
             _dataType = dataType;
         }
 
-        public static Property TimeSeries => new Property(true, @"$ts");
+        public static Property TimeStamp => new Property(true, @"$ts");
 
         public static Property Custom(string name, DataType type = null)
         {
