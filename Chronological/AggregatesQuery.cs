@@ -219,7 +219,7 @@ namespace Chronological
                         }
                     }
 
-                    responseContent = JsonConvert.DeserializeObject<AggregateQueryResult>(message);
+                    responseContent = JsonConvert.DeserializeObject<AggregateQueryResult>(message);//, new JsonSerializerSettings(){Converters = new List<JsonConverter>{new AggregateQueryMeasureJsonConverter()}});
 
                     if (Math.Abs(responseContent.PercentCompleted - 100d) < 0.01)
                     {

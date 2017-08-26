@@ -10,7 +10,8 @@ namespace Chronological.QueryResults.Aggregates
     {
         public Headers Headers { get; set; }
         [JsonProperty("content")]
-        public List<AggregateResult> Content { get; set; }
+        [JsonConverter(typeof(AggregateQueryResultAggregateJsonConverter))]
+        public List<AggregateQueryResultAggregate> Content { get; set; }
         public List<object> Warnings { get; set; }
         
     }
