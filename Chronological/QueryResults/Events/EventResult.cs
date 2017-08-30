@@ -5,7 +5,7 @@ namespace Chronological.QueryResults.Events
 {
     public class EventResult
     {
-        public Schema schema { get; set; }
+        public Schema Schema { get; set; }
         [JsonProperty("$ts")]
         public string Timestamp { get; set; }
         public List<string> Values { get; set; }

@@ -103,5 +103,18 @@ namespace Chronological
             return null;
         }
 
+        public async Task<IEnumerable<T>> ResultsToTypeAsync<T>()
+        {
+            var results = await _webSocketRepository.QueryWebSocket(ToString(), "events");
+
+            if (results != null && results.Any())
+            {
+                var eventQueryResult = JsonConvert.DeserializeObject<EventQueryResult>(results.First());
+                return new EventQueryResultToTypeMapper().Map<T>(eventQueryResult);
+            }
+
+            return null;
+        }
+
     }
 }
