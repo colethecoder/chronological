@@ -5,6 +5,7 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Chronological.Exceptions;
 using Chronological.QueryResults;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -76,7 +77,20 @@ namespace Chronological
 
                     if (messageObj.Error != null)
                     {
-                        break;
+                        if (messageObj.Error.Code == "AuthenticationFailed")
+                        {
+                            if (messageObj.Error.InnerError?.Code == "TokenExpired")
+                            {
+                                throw new ChronologicalExpiredAccessTokenException(messageObj.Error.InnerError.Message);
+                            }
+                        }
+                        var errorMessage = $"Error Code: {messageObj.Error.Code}, Error Message: {messageObj.Error.Message}";
+                        if (messageObj.Error.InnerError != null)
+                        {
+                            errorMessage +=
+                                $", Inner Error Code: {messageObj.Error.InnerError.Code}, Inner Error Message: {messageObj.Error.InnerError.Message}";
+                        }
+                        throw new ChronologicalUnexpectedException(errorMessage);
                     }
 
                     results.Add(message);
