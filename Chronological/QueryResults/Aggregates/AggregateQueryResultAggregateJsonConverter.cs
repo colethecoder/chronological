@@ -51,7 +51,25 @@ namespace Chronological.QueryResults.Aggregates
         private AggregateQueryResultAggregate GetAggregate(JObject aggregateJObject)
         {
             var aggregateResult = new AggregateQueryResultAggregate();
-            aggregateResult.Dimension = aggregateJObject["dimension"].ToObject<List<string>>();
+            //aggregateResult.Dimension = aggregateJObject["dimension"].ToObject<List<string>>();
+            var dimensionJArray = (JArray) aggregateJObject["dimension"];
+            aggregateResult.Dimension = new List<string>();
+            foreach (var dimension in dimensionJArray)
+            {
+                string dimensionString;
+                var dimensionValue = (JValue) dimension;
+                //Temporary conversion back to string to avoid having multiple types for dimension, needs a rethink
+                if (dimensionValue.Type == JTokenType.Date)
+                {
+                    dimensionString = ((DateTime) dimensionValue.Value).ToUniversalTime().ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'");
+                }
+                else
+                {
+                    dimensionString = dimensionValue.ToString();
+                }
+                
+                aggregateResult.Dimension.Add(dimensionString);
+            }
             if (aggregateJObject["measures"] != null)
             {
                 var measuresJArray = (JArray)aggregateJObject["measures"];
