@@ -35,6 +35,10 @@ namespace Chronological
                         var attributes = (ChronologicalEventFieldAttribute[])typeProperty.GetCustomAttributes(typeof(ChronologicalEventFieldAttribute), false);
                         if (typeProperty.CanWrite && (typeProperty.Name == name || attributes.Any(x => x.EventFieldName == name)))
                         {
+                            if (propertyType.ToLower() == "datetime" && typeProperty.PropertyType == typeof(DateTime))
+                            {
+                                typeProperty.SetValue(instance, DateTime.Parse(value));
+                            }
                             if (propertyType.ToLower() == "string" && typeProperty.PropertyType == typeof(string))
                             {
                                 typeProperty.SetValue(instance, value);
