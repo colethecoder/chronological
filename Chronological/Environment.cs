@@ -73,5 +73,10 @@ namespace Chronological
             return new EventsQuery(queryName, this);
         }
 
+        public EventsQuery EventsQuery(string queryName, string query)
+        {
+            return new EventsQuery(queryName, query, this);
+        }
+
     }
 }

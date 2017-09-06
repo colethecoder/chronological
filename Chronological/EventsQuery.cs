@@ -23,9 +23,19 @@ namespace Chronological
         private readonly Environment _environment;
         private readonly WebSocketRepository _webSocketRepository;
 
+        private readonly string _query;
+
         internal EventsQuery(string queryName, Environment environment)
         {
             _queryName = queryName;
+            _environment = environment;
+            _webSocketRepository = new WebSocketRepository(environment);
+        }
+
+        internal EventsQuery(string queryName, string query, Environment environment)
+        {
+            _queryName = queryName;
+            _query = query;
             _environment = environment;
             _webSocketRepository = new WebSocketRepository(environment);
         }
@@ -67,11 +77,19 @@ namespace Chronological
 
         private JProperty GetContent()
         {
-            return new JProperty("content", new JObject(
-                _search.ToJProperty(),
-                _filter.ToPredicateJProperty(),
-                _limit.ToJProperty()
-            ));
+
+            if (string.IsNullOrWhiteSpace(_query))
+            {
+                return new JProperty("content", new JObject(
+                    _search.ToJProperty(),
+                    _filter.ToPredicateJProperty(),
+                    _limit.ToJProperty()
+                ));
+            }
+            else
+            {
+                return new JProperty("content", JObject.Parse(_query));
+            }
         }
 
         public new string ToString()
