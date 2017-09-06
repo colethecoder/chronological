@@ -44,11 +44,6 @@ namespace Chronological
             _operator = filterOperator;
         }
 
-        //public static Filter Equal(Property left, Property right)
-        //{
-        //    return new Filter(true, null, left, right, "eq");
-        //}
-
         public static Filter Equal(Property left, string right)
         {
             return new Filter(true, null, left, right, "eq");
@@ -64,11 +59,58 @@ namespace Chronological
             return new Filter(true, null, left, right, "eq");
         }
 
+        public static Filter LessThan(Property left, double right)
+        {
+            return new Filter(true, null, left, right, "lt");
+        }
+
+        public static Filter LessThan(Property left, DateTime right)
+        {
+            return new Filter(true, null, left, right, "lt");
+        }
+
+        public static Filter LessThanOrEqual(Property left, double right)
+        {
+            return new Filter(true, null, left, right, "lte");
+        }
+
+        public static Filter LessThanOrEqual(Property left, DateTime right)
+        {
+            return new Filter(true, null, left, right, "lte");
+        }
+
+        public static Filter GreaterThan(Property left, double right)
+        {
+            return new Filter(true, null, left, right, "gt");
+        }
+
+        public static Filter GreaterThan(Property left, DateTime right)
+        {
+            return new Filter(true, null, left, right, "gt");
+        }
+
+        public static Filter GreaterThanOrEqual(Property left, double right)
+        {
+            return new Filter(true, null, left, right, "gte");
+        }
+
+        public static Filter GreaterThanOrEqual(Property left, DateTime right)
+        {
+            return new Filter(true, null, left, right, "gte");
+        }
+
         public static Filter And(Filter filter1, Filter filter2, params Filter[] additionalFilters)
         {
             var filters = new List<Filter>() {filter1, filter2};
             filters.AddRange(additionalFilters);
             return new Filter(false, filters, null, null, "and");
+        }
+
+        public static Filter Or(Filter filter1, Filter filter2, params Filter[] additionalFilters)
+        {
+            var filters = new List<Filter>() { filter1, filter2 };
+            filters.AddRange(additionalFilters);
+            return new Filter(false, filters, null, null, "or");
         }
 
         internal JProperty ToPredicateJProperty()
