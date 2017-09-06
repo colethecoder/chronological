@@ -60,6 +60,12 @@ namespace Chronological
             return this;
         }
 
+        public EventsQuery Where(string predicateString)
+        {
+            _filter = Filter.FromString(predicateString);
+            return this;
+        }
+
         public JObject ToJObject(string accessToken)
         {
             return new JObject(

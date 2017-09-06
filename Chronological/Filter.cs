@@ -8,6 +8,10 @@ namespace Chronological
     public class Filter
     {
         private readonly bool _singlular;
+        private readonly bool _isPredicateString;
+
+        private readonly string _predicateString;
+
         private readonly List<Filter> _filters;
 
         private readonly Property _left;
@@ -19,6 +23,7 @@ namespace Chronological
 
         private Filter(bool singular, List<Filter> filters, Property left, string right, string filterOperator)
         {
+            _isPredicateString = false;
             _singlular = singular;
             _filters = filters;
             _left = left;
@@ -28,6 +33,7 @@ namespace Chronological
 
         private Filter(bool singular, List<Filter> filters, Property left, double right, string filterOperator)
         {
+            _isPredicateString = false;
             _singlular = singular;
             _filters = filters;
             _left = left;
@@ -37,11 +43,18 @@ namespace Chronological
 
         private Filter(bool singular, List<Filter> filters, Property left, DateTime right, string filterOperator)
         {
+            _isPredicateString = false;
             _singlular = singular;
             _filters = filters;
             _left = left;
             _rightAsDateTime = right;
             _operator = filterOperator;
+        }
+
+        private Filter(string predicateString)
+        {
+            _isPredicateString = true;
+            _predicateString = predicateString;
         }
 
         public static Filter Equal(Property left, string right)
@@ -113,8 +126,17 @@ namespace Chronological
             return new Filter(false, filters, null, null, "or");
         }
 
+        public static Filter FromString(string predicateString)
+        {
+            return new Filter(predicateString);
+        }
+
         internal JProperty ToPredicateJProperty()
         {
+            if (_isPredicateString)
+            {
+                return new JProperty("predicate", new JObject(new JProperty("predicateString", _predicateString)));
+            }
             return new JProperty("predicate", new JObject(ToOperationJProperty()));
         }
 
