@@ -63,9 +63,14 @@ namespace Chronological
             return new Availability(fromAvailabilityTimestamp, toAvailabilityTimestamp);
         }
 
-        public AggregatesQuery AggregatesQuery(string queryName)
+        public StringAggregateQuery AggregateQuery(string queryName, string query)
         {
-            return new AggregatesQuery(queryName, this);
+            return new StringAggregateQuery(queryName, query, this);
+        }
+
+        public FluentAggregateQuery AggregateQuery(string queryName)
+        {
+            return new FluentAggregateQuery(queryName, this);
         }
 
         public FluentEventQuery EventQuery(string queryName)

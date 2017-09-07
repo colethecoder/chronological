@@ -18,14 +18,12 @@ namespace Chronological
         public FluentEventQuery WithSearch(Search search)
         {
             _search = search;
-
             return this;
         }
 
         public FluentEventQuery WithLimit(Limit limit)
         {
             _limit = limit;
-
             return this;
         }
 
