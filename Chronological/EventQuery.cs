@@ -13,60 +13,23 @@ using Newtonsoft.Json.Linq;
 
 namespace Chronological
 {
-    public class EventsQuery
+    public abstract class EventQuery
     {
         private readonly string _queryName;
-
-        private Search _search;
-        private Filter _filter;
-        private Limit _limit;
         private readonly Environment _environment;
         private readonly WebSocketRepository _webSocketRepository;
 
-        private readonly string _query;
 
-        internal EventsQuery(string queryName, Environment environment)
+        internal EventQuery(string queryName, Environment environment)
         {
             _queryName = queryName;
             _environment = environment;
             _webSocketRepository = new WebSocketRepository(environment);
         }
 
-        internal EventsQuery(string queryName, string query, Environment environment)
-        {
-            _queryName = queryName;
-            _query = query;
-            _environment = environment;
-            _webSocketRepository = new WebSocketRepository(environment);
-        }
+        protected abstract JProperty GetContent();
 
-        public EventsQuery WithSearch(Search search)
-        {
-            _search = search;
-
-            return this;
-        }
-
-        public EventsQuery WithLimit(Limit limit)
-        {
-            _limit = limit;
-
-            return this;
-        }
-
-        public EventsQuery Where(Filter filter)
-        {
-            _filter = filter;
-            return this;
-        }
-
-        public EventsQuery Where(string predicateString)
-        {
-            _filter = Filter.FromString(predicateString);
-            return this;
-        }
-
-        public JObject ToJObject(string accessToken)
+        private JObject ToJObject(string accessToken)
         {
             return new JObject(
                 GetHeaders(accessToken),
@@ -79,23 +42,6 @@ namespace Chronological
             return new JProperty("headers", new JObject(
                 new JProperty("x-ms-client-application-name", _queryName),
                 new JProperty("Authorization", "Bearer " + accessToken)));
-        }
-
-        private JProperty GetContent()
-        {
-
-            if (string.IsNullOrWhiteSpace(_query))
-            {
-                return new JProperty("content", new JObject(
-                    _search.ToJProperty(),
-                    _filter.ToPredicateJProperty(),
-                    _limit.ToJProperty()
-                ));
-            }
-            else
-            {
-                return new JProperty("content", JObject.Parse(_query));
-            }
         }
 
         public new string ToString()

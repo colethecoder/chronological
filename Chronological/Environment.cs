@@ -68,14 +68,20 @@ namespace Chronological
             return new AggregatesQuery(queryName, this);
         }
 
-        public EventsQuery EventsQuery(string queryName)
+        public FluentEventQuery EventQuery(string queryName)
         {
-            return new EventsQuery(queryName, this);
+            return new FluentEventQuery(queryName, this);
         }
 
-        public EventsQuery EventsQuery(string queryName, string query)
+        /// <summary>
+        /// Create a new EventQuery from a string of json
+        /// </summary>
+        /// <param name="queryName">Name of the query</param>
+        /// <param name="query">Json query string</param>
+        /// <returns></returns>
+        public StringEventQuery EventQuery(string queryName, string query)
         {
-            return new EventsQuery(queryName, query, this);
+            return new StringEventQuery(queryName, query, this);
         }
 
     }

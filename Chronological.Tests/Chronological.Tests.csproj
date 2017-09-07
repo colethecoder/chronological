@@ -12,4 +12,8 @@
     <ProjectReference Include="..\Chronological\Chronological.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Filter\" />
+  </ItemGroup>
+
 </Project>
