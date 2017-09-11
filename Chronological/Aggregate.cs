@@ -24,6 +24,11 @@ namespace Chronological
             return new Aggregate().WithDimension(Dimension.DateHistogram(property, breaks));
         }
 
+        public static Aggregate NumericHistogram(Property property, Breaks breaks)
+        {
+            return new Aggregate().WithDimension(Dimension.NumericHistogram(property, breaks));
+        }
+
         public static Aggregate UniqueValues(Property property, Limit limit)
         {
             return new Aggregate().WithDimension(Dimension.UniqueValues(property, limit));

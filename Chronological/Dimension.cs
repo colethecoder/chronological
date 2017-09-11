@@ -2,7 +2,13 @@
 
 namespace Chronological
 {
-    public class Dimension
+    public interface IDimension
+    {
+        JProperty ToJProperty();
+
+    }
+
+    public class Dimension : IDimension
     {
         private readonly string _dimensionType;
         private readonly Property _property;
@@ -28,12 +34,17 @@ namespace Chronological
             return new Dimension("dateHistogram", property, breaks);
         }
 
+        public static Dimension NumericHistogram(Property property, Breaks breaks)
+        {
+            return new Dimension("dateHistogram", property, breaks);
+        }
+
         public static Dimension UniqueValues(Property property, Limit limit)
         {
             return new Dimension("uniqueValues", property, limit);
         }
 
-        internal JProperty ToJProperty()
+        public JProperty ToJProperty()
         {
             if (_dimensionType == "uniqueValues")
             {
