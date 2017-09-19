@@ -12,11 +12,11 @@ namespace Chronological
 {
     public class Environment
     {
-        internal string DisplayName { get; }
-        internal string EnvironmentFqdn { get; }
-        internal string EnvironmentId { get; }
-        internal string ResourceId { get; }
-        internal string AccessToken { get; }
+        public string DisplayName { get; }
+        public string EnvironmentFqdn { get; }
+        public string EnvironmentId { get; }
+        public string ResourceId { get; }
+        public string AccessToken { get; }
 
         public Environment(string fqdn, string accessToken)
         {
