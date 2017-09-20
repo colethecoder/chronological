@@ -11,6 +11,18 @@ namespace Chronological
             _size = size;
         }
 
+        public static Breaks InDays(int days)
+        {
+            var size = $"{days}d";
+            return new Breaks(size);
+        }
+
+        public static Breaks InHours(int hours)
+        {
+            var size = $"{hours}h";
+            return new Breaks(size);
+        }
+
         public static Breaks InMinutes(int minutes)
         {
             var size = $"{minutes}m";

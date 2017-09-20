@@ -13,6 +13,11 @@ namespace Chronological
             _property = property;
         }
 
+        public static Measure Sum(Property property)
+        {
+            return new Measure("sum", property);
+        }
+
         public static Measure Average(Property property)
         {
             return new Measure("avg", property);
