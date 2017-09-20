@@ -162,7 +162,7 @@ namespace Chronological
 
             return new JProperty(_operator, new JObject(
                     _left.ToLeftJProperty(),
-                    new JProperty("right", new JObject(_rightAsDateTime.Value))));
+                    new JProperty("right", _rightAsDateTime.Value)));
         }
 
         private JProperty ToNestedJProperty()
