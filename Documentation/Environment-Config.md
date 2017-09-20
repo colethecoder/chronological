@@ -1,3 +1,5 @@
+[Home](./README.md)
+
 ## Environment Config
 
 To access the Time Series Insights API you first have to setup an environment in Azure, details here:
