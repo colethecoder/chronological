@@ -15,16 +15,28 @@ var environments = await connection.GetEnvironmentsAsync();
 
 var environment = environments.First();
 
-var json = await environment.EventsQuery("Test")
+var json = await environment.EventQuery("Test")
     .WithSearch(Search.Span(DateTime.UtcNow.AddDays(-2), DateTime.UtcNow)
-    .WithLimit(Limit.Top(200, Sort.Ascending(Property.TimeSeries)))
+    .WithLimit(Limit.Top(200, Sort.Ascending(Property.TimeStamp)))
     .Where(Filter.Equal(Property.Custom("id", DataType.String), "1234"))
     .ResultsToJObjectAsync();
 ```
 
+## Documentation ##
+
+[Environment Configuration](Documentation/Environment-Config.md)
+
 ## Getting Started ##
 
-[Set up your Azure Time Series Insights Environment](Documentation/Environment-Config.md)
+To access the Time Series Insights API you first have to setup an environment in Azure, details here:
+
+https://docs.microsoft.com/en-us/azure/time-series-insights/time-series-insights-get-started
+
+You then need to configure authentication, instructions here:
+
+https://docs.microsoft.com/en-us/azure/time-series-insights/time-series-insights-authentication-and-authorization
+
+Once you have completed these steps and have your authentication details you can begin to use Chronological to access data.
 
 ### Creating a connection ###
 
@@ -49,7 +61,8 @@ You can also create an Environment object directly if you have the FQDN for the 
 var environment = new Environment(YourEnvironmentFqdn, YourAccessToken);
 ```
 
-### Querying an Environment ###
+### Event Queries ###
 
+An event query retrieves individual Json events from Time Series Insights.
 
 
