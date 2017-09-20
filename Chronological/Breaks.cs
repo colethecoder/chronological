@@ -23,6 +23,12 @@ namespace Chronological
             return new Breaks(size);
         }
 
+        public static Breaks InMilliseconds(int milliseconds)
+        {
+            var size = $"{milliseconds}ms";
+            return new Breaks(size);
+        }
+
         internal JProperty ToJProperty()
         {
             return new JProperty("breaks", new JObject(

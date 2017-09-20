@@ -11,6 +11,6 @@ namespace Chronological.QueryResults.Aggregates
         
         public List<AggregateQueryMeasure> Measures { get; set; }
 
-        public double Measure { get; set; }
+        public double? Measure { get; set; }
     }
 }

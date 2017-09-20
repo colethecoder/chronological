@@ -53,9 +53,16 @@ namespace Chronological
 
         protected override JProperty GetContent()
         {
+            if (_filter != null)
+            {
+                return new JProperty("content", new JObject(
+                    _search.ToJProperty(),
+                    _filter.ToPredicateJProperty(),
+                    new JProperty("aggregates", GetAggregatesJArray())
+                ));
+            }
             return new JProperty("content", new JObject(
                 _search.ToJProperty(),
-                _filter.ToPredicateJProperty(),
                 new JProperty("aggregates", GetAggregatesJArray())
             ));
         }

@@ -27,7 +27,7 @@ namespace Chronological.QueryResults.Aggregates
                 }
                 else
                 {
-                    measure.Measure = ((JValue)item).ToObject<double>();
+                    measure.Measure = ((JValue)item).ToObject<double?>();
                 }
                 measures.Add(measure);
             }
@@ -91,18 +91,10 @@ namespace Chronological.QueryResults.Aggregates
             return GetAggregates(jArray);
         }
 
-        public override bool CanRead {
-            get { return true; }
-        }
+        public override bool CanRead => true;
 
-        public override bool CanWrite {
-            get { return false; }
-        }
+        public override bool CanWrite => false;
 
-        public override bool CanConvert(Type objectType)
-        {
-            //Shouldn't be called if used as a property decorator
-            return false;
-        }
+        public override bool CanConvert(Type objectType) => false;
     }
 }

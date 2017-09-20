@@ -24,7 +24,7 @@ namespace Chronological
         public async Task<List<string>> QueryWebSocket(string query, string resourcePath)
         {        
             var webSocket = new ClientWebSocket();
-
+            
             Uri uri = new UriBuilder("wss", _environment.EnvironmentFqdn)
             {
                 Path = resourcePath,
