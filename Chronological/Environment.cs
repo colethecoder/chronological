@@ -53,6 +53,19 @@ namespace Chronological
                 {
                     string responseJson = await sr.ReadToEndAsync();
 
+                    //TODO - response looks like below, should add other values in 
+                    //{
+                    //    "range": {
+                    //        "from": "2016-08-01T01:02:03Z",
+                    //        "to": "2016-08-31T03:04:05Z"
+                    //    },
+                    //    "intervalSize": "1h",
+                    //    "distribution": {
+                    //        "2016-08-01T00:00:00Z": 123,
+                    //        "2016-08-31T03:00:00Z": 345
+                    //    }
+                    //}
+
                     JObject result = JsonConvert.DeserializeObject<JObject>(responseJson);
                     JObject range = (JObject)result["range"];
                     fromAvailabilityTimestamp = range["from"].Value<DateTime>();
