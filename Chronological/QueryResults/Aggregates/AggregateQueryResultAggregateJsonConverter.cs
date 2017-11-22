@@ -57,17 +57,27 @@ namespace Chronological.QueryResults.Aggregates
             foreach (var dimension in dimensionJArray)
             {
                 string dimensionString;
-                var dimensionValue = (JValue) dimension;
-                //Temporary conversion back to string to avoid having multiple types for dimension, needs a rethink
-                if (dimensionValue.Type == JTokenType.Date)
+                
+                if (dimension.Type == JTokenType.Object)
                 {
-                    dimensionString = ((DateTime) dimensionValue.Value).ToUniversalTime().ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'");
+                    // This assumes it is a NumericHistogram
+                    dimensionString = $"from: {dimension["from"].Value<string>()}, to: {dimension["to"].Value<string>()}";
                 }
                 else
                 {
-                    dimensionString = dimensionValue.ToString();
+                    var dimensionValue = (JValue)dimension;
+                    //Temporary conversion back to string to avoid having multiple types for dimension, needs a rethink
+                    if (dimensionValue.Type == JTokenType.Date)
+                    {
+                        dimensionString = ((DateTime) dimensionValue.Value).ToUniversalTime()
+                            .ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'");
+                    }
+                    else
+                    {
+                        dimensionString = dimensionValue.ToString();
+                    }
                 }
-                
+
                 aggregateResult.Dimension.Add(dimensionString);
             }
             if (aggregateJObject["measures"] != null)

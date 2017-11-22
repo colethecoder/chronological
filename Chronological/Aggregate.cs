@@ -19,12 +19,12 @@ namespace Chronological
             return this;
         }
 
-        public static Aggregate DateHistogram(Property property, Breaks breaks)
+        public static Aggregate DateHistogram(Property property, DateBreaks breaks)
         {
             return new Aggregate().WithDimension(Dimension.DateHistogram(property, breaks));
         }
 
-        public static Aggregate NumericHistogram(Property property, Breaks breaks)
+        public static Aggregate NumericHistogram(Property property, NumericBreaks breaks)
         {
             return new Aggregate().WithDimension(Dimension.NumericHistogram(property, breaks));
         }

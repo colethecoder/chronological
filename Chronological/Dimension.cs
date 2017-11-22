@@ -12,10 +12,10 @@ namespace Chronological
     {
         private readonly string _dimensionType;
         private readonly Property _property;
-        private readonly Breaks _breaks;
+        private readonly IBreaks _breaks;
         private readonly Limit _limit;
 
-        private Dimension(string dimensionType, Property property, Breaks breaks)
+        private Dimension(string dimensionType, Property property, IBreaks breaks)
         {
             _dimensionType = dimensionType;
             _property = property;
@@ -29,14 +29,14 @@ namespace Chronological
             _limit = limit;
         }
 
-        public static Dimension DateHistogram(Property property, Breaks breaks)
+        public static Dimension DateHistogram(Property property, DateBreaks breaks)
         {
             return new Dimension("dateHistogram", property, breaks);
         }
 
-        public static Dimension NumericHistogram(Property property, Breaks breaks)
+        public static Dimension NumericHistogram(Property property, NumericBreaks breaks)
         {
-            return new Dimension("dateHistogram", property, breaks);
+            return new Dimension("numericHistogram", property, breaks);
         }
 
         public static Dimension UniqueValues(Property property, Limit limit)
