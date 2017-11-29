@@ -1,8 +1,53 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Security.Cryptography;
 using Newtonsoft.Json.Linq;
 
 namespace Chronological
 {
+
+    public class NumericRange
+    {
+        public double From { get; set; }
+        public double To { get; set; }
+    }
+
+    public class Aggregate<TX, TY>
+    {
+        public Aggregate<TX,TZ> WithAggregate<TZ>(TZ aggregate)
+        {
+            throw new NotImplementedException();
+        }        
+    }
+
+    public class Aggregate<TX>
+    {
+        public Aggregate<TX, TY> WithAggregate<TY>(TY aggregate)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Aggregate<TX, TY> WithMeasure<TY>(TY measure)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Aggregate<TX, Tuple<TA,TB>> WithMeasures<TA,TB>(TA measureA, TB measureB)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Aggregate<TX, Tuple<TA, TB, TC>> WithMeasures<TA, TB, TC>(TA measureA, TB measureB, TC measureC)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Aggregate<TX, Tuple<TA, TB, TC, TD>> WithMeasures<TA, TB, TC, TD>(TA measureA, TB measureB, TC measureC, TD measureD)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     public class Aggregate
     {
         private Dimension _dimension;
@@ -19,19 +64,19 @@ namespace Chronological
             return this;
         }
 
-        public static Aggregate DateHistogram(Property property, DateBreaks breaks)
+        public static Aggregate<DateTime> DateHistogram(object property, DateBreaks breaks)
         {
-            return new Aggregate().WithDimension(Dimension.DateHistogram(property, breaks));
+            return new Aggregate<DateTime>();
         }
 
-        public static Aggregate NumericHistogram(Property property, NumericBreaks breaks)
+        public static Aggregate<NumericRange> NumericHistogram(object property, NumericBreaks limit)
         {
-            return new Aggregate().WithDimension(Dimension.NumericHistogram(property, breaks));
+            return new Aggregate<NumericRange>();
         }
 
-        public static Aggregate UniqueValues(Property property, Limit limit)
+        public static Aggregate<string> UniqueValues(object property, Limit limit)
         {
-            return new Aggregate().WithDimension(Dimension.UniqueValues(property, limit));
+            return new Aggregate<string>();
         }
 
         public Aggregate WithMeasure(Measure measure)

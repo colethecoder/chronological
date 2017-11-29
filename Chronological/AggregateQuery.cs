@@ -7,6 +7,7 @@ using Chronological.QueryResults.Aggregates;
 
 namespace Chronological
 {
+
     public abstract class AggregateQuery
     {
         private readonly string _queryName;

@@ -1,7 +1,12 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System;
+using Newtonsoft.Json.Linq;
 
 namespace Chronological
 {
+    public class Measure<T>
+    {
+    }
+
     public class Measure
     {
         private readonly string _measureType;
@@ -31,6 +36,26 @@ namespace Chronological
         public static Measure Maximum(Property property)
         {
             return new Measure("max", property);
+        }
+
+        public static Measure<double> Maximum(double property)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static Measure<DateTime> Maximum(DateTime property)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static Measure<double> Minimum(double property)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static Measure<DateTime> Minimum(DateTime property)
+        {
+            throw new NotImplementedException();
         }
 
         internal JProperty ToJProperty()
