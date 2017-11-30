@@ -1,10 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Security.Cryptography;
 using Newtonsoft.Json.Linq;
 
 namespace Chronological
 {
+    public class Aggregate<T>
+    {
+        public Aggregate<T, TY, TZ> UniqueValues<TY, TZ>(Expression<Func<T, TY>> property, Limit limit, TZ aggregate)
+        {
+            return new Aggregate<T, TY, TZ>();
+        }
+
+        public Aggregate<T, DateTime, TZ> DateHistogram<TY, TZ>(Expression<Func<T, TY>> property, DateBreaks breaks, TZ aggregate)
+        {
+            return new Aggregate<T, DateTime, TZ>();
+        }
+
+        public Aggregate<T, NumericRange, TZ> NumericHistogram<TY, TZ>(Expression<Func<T, TY>> property, NumericBreaks limit, TZ aggregate)
+        {
+            return new Aggregate<T, NumericRange, TZ>();
+        }
+    }
+
 
     public class NumericRange
     {
@@ -12,32 +31,32 @@ namespace Chronological
         public double To { get; set; }
     }
 
-    public class Aggregate<TX, TY>
+    public class Aggregate<T, TX, TY>
     {
-        public Aggregate<TX,TZ> WithAggregate<TZ>(TZ aggregate)
+        public Aggregate<T, TX,TZ> WithAggregate<TZ>(TZ aggregate)
         {
             throw new NotImplementedException();
         }        
     }
 
-    public class Aggregate<TX>
+    public class Aggregate<T, TX>
     {
-        public Aggregate<TX, TY> WithAggregate<TY>(TY aggregate)
+        public Aggregate<T, TX, TY> WithAggregate<TY>(TY aggregate)
         {
             throw new NotImplementedException();
         }
 
-        public Aggregate<TX, TY> WithMeasure<TY>(TY measure)
+        public Aggregate<T, TX, TY> WithMeasure<TY>(TY measure)
         {
             throw new NotImplementedException();
         }
 
-        public Aggregate<TX, Tuple<TA,TB>> WithMeasures<TA,TB>(TA measureA, TB measureB)
+        public Aggregate<T, TX, Tuple<TA,TB>> WithMeasures<TA,TB>(TA measureA, TB measureB)
         {
             throw new NotImplementedException();
         }
 
-        public Aggregate<TX, Tuple<TA, TB, TC>> WithMeasures<TA, TB, TC>(TA measureA, TB measureB, TC measureC)
+        public Aggregate<T, TX, Tuple<TA, TB, TC>> WithMeasures<TA, TB, TC>(TA measureA, TB measureB, TC measureC)
         {
             throw new NotImplementedException();
         }
@@ -73,10 +92,10 @@ namespace Chronological
         {
             return new Aggregate<NumericRange>();
         }
-
-        public static Aggregate<string> UniqueValues(object property, Limit limit)
+        
+        public static Aggregate<TY> UniqueValues<TX, TY>(Expression<Func<TX,TY>> property, Limit limit)
         {
-            return new Aggregate<string>();
+            return new Aggregate<TY>();
         }
 
         public Aggregate WithMeasure(Measure measure)

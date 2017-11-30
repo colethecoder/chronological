@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 using Newtonsoft.Json.Linq;
 
 namespace Chronological
@@ -38,8 +41,11 @@ namespace Chronological
             return new Measure("max", property);
         }
 
-        public static Measure<double> Maximum(double property)
+        public static Measure<TY> Maximum<TX, TY>(Expression<Func<TX, TY>> property)
         {
+            var memberExpression = property.Body as MemberExpression;
+            var attr = memberExpression.Member.GetCustomAttributes(typeof(ChronologicalEventFieldAttribute), true);
+            var test =  ((ChronologicalEventFieldAttribute)attr.First()).EventFieldName;
             throw new NotImplementedException();
         }
 
