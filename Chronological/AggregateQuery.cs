@@ -20,9 +20,7 @@ namespace Chronological
             _queryName = queryName;
             _environment = environment;
             _webSocketRepository = new WebSocketRepository(environment);
-        }
-
-        
+        }        
 
         public JObject ToJObject(string accessToken)
         {

@@ -76,9 +76,9 @@ namespace Chronological
             return new Availability(fromAvailabilityTimestamp, toAvailabilityTimestamp);
         }
 
-        public GenericFluentAggregateQuery<T> AggregateQuery<T>(string queryName) where T: new()
+        public GenericFluentAggregateQuery<T> AggregateQuery<T>(string queryName, Search search) where T: new()
         {
-            throw new NotImplementedException();
+            return new GenericFluentAggregateQuery<T>();
         }
 
         

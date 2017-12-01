@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Security.Cryptography;
 using Newtonsoft.Json.Linq;
+using System.Linq;
+using System.Reflection;
 
 namespace Chronological
 {
@@ -21,6 +23,14 @@ namespace Chronological
         public Aggregate<T, NumericRange, TZ> NumericHistogram<TY, TZ>(Expression<Func<T, TY>> property, NumericBreaks limit, TZ aggregate)
         {
             return new Aggregate<T, NumericRange, TZ>();
+        }
+
+        public Measure<TY> Maximum<TY>(Expression<Func<T, TY>> property)
+        {
+            var memberExpression = property.Body as MemberExpression;
+            var attr = memberExpression.Member.GetCustomAttributes(typeof(ChronologicalEventFieldAttribute), true);
+            var test = ((ChronologicalEventFieldAttribute)attr.First()).EventFieldName;
+            return new Measure<TY>();
         }
     }
 

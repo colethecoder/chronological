@@ -1,27 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
 namespace Chronological
 {
     public class GenericFluentAggregateQuery<T> where T : new()
-    {
-        public GenericFluentAggregateQuery<T> WithSearch(Search search)
-        {
-            throw new NotImplementedException();
-        }        
+    {        
 
-        public GenericFluentAggregateQuery<T, Aggregate<TX,TY>> WithAggregate<TX,TY>(Func<T,Aggregate<TX,TY>> predicate)
+        public GenericFluentAggregateQuery<T, Aggregate<T,TX,TY>> Select<TX,TY>(Func<Aggregate<T>,Aggregate<T,TX,TY>> predicate)
         {
-            var aggregate = predicate(new T());
-            return new GenericFluentAggregateQuery<T, Aggregate<TX,TY>>();
+            var aggregate = predicate(new Aggregate<T>());
+
+            return new GenericFluentAggregateQuery<T, Aggregate<T,TX,TY>>();
         }
         
     }
 
     public class GenericFluentAggregateQuery<TX, TY> where TX : new()
     {
+        public GenericFluentAggregateQuery<TX, TY> Where(Expression<Func<TX,bool>> predicate)
+        {
+            var binaryExpression = (BinaryExpression)predicate.Body;
+            var leftSide = binaryExpression.Left;
+            var rightSide = binaryExpression.Right;
+            var comparison = binaryExpression.NodeType;
+
+
+            throw new NotImplementedException();
+        }
+
         public async Task<TY> Execute()
         {
             throw new NotImplementedException();
