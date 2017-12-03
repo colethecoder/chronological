@@ -25,12 +25,17 @@ namespace Chronological
             return new Aggregate<T, NumericRange, TZ>();
         }
 
-        public Measure<TY> Maximum<TY>(Expression<Func<T, TY>> property)
+        public Measure<TY> Maximum<TY>(Expression<Func<T, TY>> property) where TY : new()
         {
             var memberExpression = property.Body as MemberExpression;
-            var attr = memberExpression.Member.GetCustomAttributes(typeof(ChronologicalEventFieldAttribute), true);
-            var test = ((ChronologicalEventFieldAttribute)attr.First()).EventFieldName;
-            return new Measure<TY>();
+            var attributes = memberExpression?.Member.GetCustomAttributes(typeof(ChronologicalEventFieldAttribute), true);
+            var attribute = (ChronologicalEventFieldAttribute) attributes?.FirstOrDefault();
+            if (attribute != null)
+            {
+                return new Measure<TY>(attribute.EventFieldName);
+            }
+            //Todo: attempt to get field name
+            throw new NotImplementedException();
         }
     }
 

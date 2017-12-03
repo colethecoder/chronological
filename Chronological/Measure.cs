@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -6,8 +7,20 @@ using Newtonsoft.Json.Linq;
 
 namespace Chronological
 {
-    public class Measure<T>
+    public class Measure<T> where T : new()
     {
+        private readonly string _measureType;
+        private readonly Property _property;
+
+        public Measure (string propertyName)
+        {
+            _property = Property.Custom(propertyName, DataType.FromType(new T()));
+        }
+
+        internal JProperty ToJProperty()
+        {
+            return new JProperty(_measureType, new JObject(_property.ToInputJProperty()));
+        }
     }
 
     public class Measure
@@ -39,14 +52,6 @@ namespace Chronological
         public static Measure Maximum(Property property)
         {
             return new Measure("max", property);
-        }
-
-        public static Measure<TY> Maximum<TX, TY>(Expression<Func<TX, TY>> property)
-        {
-            var memberExpression = property.Body as MemberExpression;
-            var attr = memberExpression.Member.GetCustomAttributes(typeof(ChronologicalEventFieldAttribute), true);
-            var test =  ((ChronologicalEventFieldAttribute)attr.First()).EventFieldName;
-            throw new NotImplementedException();
         }
 
         public static Measure<DateTime> Maximum(DateTime property)

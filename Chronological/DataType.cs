@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System;
+using Newtonsoft.Json.Linq;
 
 namespace Chronological
 {
@@ -13,6 +14,20 @@ namespace Chronological
         internal JProperty ToJProperty()
         {
             return new JProperty("type", _dataType);
+        }
+
+        internal static DataType FromType<T>(T type)
+        {
+            switch (type)
+            {
+                case double d:
+                    return Double;
+                case string s:
+                    return String;                
+                default:
+                    //Todo: Better exceptions
+                    throw new Exception("Unexpected Type");
+            }
         }
 
         public static DataType Double => new DataType("Double");

@@ -18,6 +18,10 @@
 Breaks in days and hours available</PackageReleaseNotes>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <LangVersion>7.1</LangVersion>
+  </PropertyGroup>
+
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard1.3'">
     <PackageReference Include="System.Net.WebSockets.Client">
       <Version>4.3.1</Version>

@@ -1,4 +1,5 @@
 using System;
+using Newtonsoft.Json.Linq;
 using Xunit;
 
 namespace Chronological.Tests
@@ -24,7 +25,8 @@ namespace Chronological.Tests
         {
             var aggregate = new Aggregate<TestType>();
             var measure = aggregate.Maximum(x => x.Value);
-
+            var measureProperty = measure.ToJProperty();
+            Assert.Equal(measureProperty, new JProperty("Test"));
         }
     }
 }
