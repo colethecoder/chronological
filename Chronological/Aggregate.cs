@@ -8,7 +8,7 @@ using System.Reflection;
 
 namespace Chronological
 {
-    public class Aggregate<T>
+    public class Aggregate<T> where T : new()
     {
         public Aggregate<T, TY, TZ> UniqueValues<TY, TZ>(Expression<Func<T, TY>> property, Limit limit, TZ aggregate)
         {
@@ -27,15 +27,7 @@ namespace Chronological
 
         public Measure<TY> Maximum<TY>(Expression<Func<T, TY>> property) where TY : new()
         {
-            var memberExpression = property.Body as MemberExpression;
-            var attributes = memberExpression?.Member.GetCustomAttributes(typeof(ChronologicalEventFieldAttribute), true);
-            var attribute = (ChronologicalEventFieldAttribute) attributes?.FirstOrDefault();
-            if (attribute != null)
-            {
-                return new Measure<TY>(attribute.EventFieldName);
-            }
-            //Todo: attempt to get field name
-            throw new NotImplementedException();
+            return Measure<TY>.Create(property, Measure.MaximumMeasureExpression);
         }
     }
 
@@ -108,7 +100,7 @@ namespace Chronological
             return new Aggregate<NumericRange>();
         }
         
-        public static Aggregate<TY> UniqueValues<TX, TY>(Expression<Func<TX,TY>> property, Limit limit)
+        public static Aggregate<TY> UniqueValues<TX, TY>(Expression<Func<TX,TY>> property, Limit limit) where TY : new()
         {
             return new Aggregate<TY>();
         }

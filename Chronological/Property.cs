@@ -1,7 +1,29 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
+using Newtonsoft.Json.Linq;
 
 namespace Chronological
 {
+    public class Property<T> where T : new()
+    {
+        internal static Property Create<TY>(Expression<Func<TY, T>> property) where TY : new()
+        {
+            var memberExpression = property.Body as MemberExpression;
+            var attributes = memberExpression?.Member.GetCustomAttributes(typeof(ChronologicalEventFieldAttribute), true);
+            var attribute = (ChronologicalEventFieldAttribute)attributes?.FirstOrDefault();
+            if (attribute != null)
+            {
+                return Property.Custom(attribute.EventFieldName, DataType.FromType(new T()));
+            }
+            //TODO deal with problems
+            throw new NotImplementedException();
+        }
+
+
+    }
+
     public class Property
     {
         private readonly bool _isBuiltIn;

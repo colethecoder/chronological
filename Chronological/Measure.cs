@@ -12,9 +12,16 @@ namespace Chronological
         private readonly string _measureType;
         private readonly Property _property;
 
-        public Measure (string propertyName)
+        internal Measure (Property property, string measureType)
         {
-            _property = Property.Custom(propertyName, DataType.FromType(new T()));
+            _measureType = measureType;
+            _property = property;
+        }
+
+        internal static Measure<T> Create<TY>(Expression<Func<TY, T>> propertyExpression, string measureType) where TY : new()
+        {
+            var property = Property<T>.Create(propertyExpression);
+            return new Measure<T>(property, measureType);            
         }
 
         internal JProperty ToJProperty()
@@ -25,6 +32,8 @@ namespace Chronological
 
     public class Measure
     {
+        internal const string MaximumMeasureExpression = "max";
+
         private readonly string _measureType;
         private readonly Property _property;
 

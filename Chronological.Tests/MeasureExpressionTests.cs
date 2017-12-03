@@ -23,7 +23,7 @@ namespace Chronological.Tests
         // Broken test to fiddle with build
         [Fact]
         public void Test1()
-        {
+        {            
             var aggregate = new Aggregate<TestType>();
             var measure = aggregate.Maximum(x => x.Value);
             var measureProperty = measure.ToJProperty();
