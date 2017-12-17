@@ -1,7 +1,5 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/3x04uwu4bu4fy28s/branch/master?svg=true)](https://ci.appveyor.com/project/colethecoder/chronological/branch/master)
 
-[![Build status](https://ci.appveyor.com/api/projects/status/3x04uwu4bu4fy28s/branch/experimental-aggregatequeryresultgenerics?svg=true)](https://ci.appveyor.com/project/colethecoder/chronological/branch/experimental-aggregatequeryresultgenerics)
-
 # chronological
 Chronological is a library to simplify access to the Azure Time Series Insights API.This project is a work in progress, feedback and pull requests are welcomed.
 
