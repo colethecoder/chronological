@@ -9,14 +9,11 @@ namespace Chronological.Tests
         // Broken test to fiddle with build
         [Fact]
         public void Test1()
-        {            
-            var aggregateBuilder = new AggregateBuilder<TestType1>();
-            var measure = aggregateBuilder.Maximum(x => x.Value);
-            var measureProperty = measure.ToJProperty();
-            Assert.Equal(measureProperty.Name, "max");
-            Assert.Equal(measureProperty.Children().Count(), 1);
+        {                        
+            var measure = new Measure<TestType1>(Property<double>.Create<TestType1>(x => x.Value), Measure.MaximumMeasureExpression);
             
-            Assert.Equal(measureProperty, new JProperty("Test"));
+            Assert.Equal(measure._measureType, Measure.MaximumMeasureExpression);
+            Assert.True(JToken.DeepEquals(measure._property.ToInputJProperty(), TestType1JProperties.Value));                       
         }
     }
 }

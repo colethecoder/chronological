@@ -1,4 +1,5 @@
 using System;
+using Newtonsoft.Json.Linq;
 
 namespace Chronological.Tests
 {
@@ -14,5 +15,11 @@ namespace Chronological.Tests
         public string DataType { get; set; }
         [ChronologicalEventField("data.value")]
         public double Value { get; set; }
+    }
+
+    public class TestType1JProperties
+    {
+        public static JProperty Value => new JProperty("input",
+            new JObject(new JProperty("property", "data.value"), new JProperty("type", "Double")));
     }
 }

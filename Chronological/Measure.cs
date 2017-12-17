@@ -9,8 +9,8 @@ namespace Chronological
 {
     public class Measure<T> where T : new()
     {
-        private readonly string _measureType;
-        private readonly Property _property;
+        internal readonly string _measureType;
+        internal readonly Property _property;
 
         internal Measure (Property property, string measureType)
         {
@@ -34,10 +34,10 @@ namespace Chronological
     {
         internal const string MaximumMeasureExpression = "max";
 
-        private readonly string _measureType;
-        private readonly Property _property;
+        internal readonly string _measureType;
+        internal readonly Property _property;
 
-        public Measure(string measureType, Property property)
+        internal Measure(string measureType, Property property)
         {
             _measureType = measureType;
             _property = property;

@@ -11,8 +11,7 @@ namespace Chronological.Tests
             var testProperty = new Property(false, "data.value", DataType.Double);
             var result = testProperty.ToInputJProperty();
 
-            var expected = new JProperty("input",
-                new JObject(new JProperty("property", "data.value"), new JProperty("type", "Double")));
+            var expected = TestType1JProperties.Value;
 
             Assert.True(JToken.DeepEquals(result, expected));
             
