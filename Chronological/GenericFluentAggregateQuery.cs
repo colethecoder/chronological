@@ -33,6 +33,7 @@ namespace Chronological
 
         public async Task<TY> Execute()
         {
+            await Task.FromResult(0); //Just to stop warnings for now
             throw new NotImplementedException();
         }
     }
