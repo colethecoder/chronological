@@ -8,7 +8,7 @@ namespace Chronological
 {
     public class Property<T> where T : new()
     {
-        internal static Property Create<TY>(Expression<Func<TY, T>> property) where TY : new()
+        internal static Property Create<TY>(Expression<Func<TY, T>> property)
         {
             var memberExpression = property.Body as MemberExpression;
             var attributes = memberExpression?.Member.GetCustomAttributes(typeof(ChronologicalEventFieldAttribute), true);
@@ -26,11 +26,11 @@ namespace Chronological
 
     public class Property
     {
-        private readonly bool _isBuiltIn;
-        private readonly string _propertyName;
-        private readonly DataType _dataType;
+        internal readonly bool _isBuiltIn;
+        internal readonly string _propertyName;
+        internal readonly DataType _dataType;
 
-        private Property(bool isBuiltIn, string propertyName, DataType dataType = null)
+        internal Property(bool isBuiltIn, string propertyName, DataType dataType = null)
         {
             _isBuiltIn = isBuiltIn;
             _propertyName = propertyName;

@@ -5,8 +5,8 @@ namespace Chronological
 {
     public class DataType
     {
-        private readonly string _dataType;
-        public DataType(string dataType)
+        internal readonly string _dataType;
+        internal DataType(string dataType)
         {
             _dataType = dataType;
         }

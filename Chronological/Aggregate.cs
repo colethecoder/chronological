@@ -5,11 +5,16 @@ using System.Security.Cryptography;
 using Newtonsoft.Json.Linq;
 using System.Linq;
 using System.Reflection;
+using System.Collections;
 
 namespace Chronological
 {
-    public class Aggregate<T> where T : new()
+    public class AggregateBuilder<T> where T : new()
     {
+        internal AggregateBuilder()
+        {
+        }
+
         public Aggregate<T, TY, TZ> UniqueValues<TY, TZ>(Expression<Func<T, TY>> property, Limit limit, TZ aggregate)
         {
             return new Aggregate<T, TY, TZ>();
@@ -38,12 +43,13 @@ namespace Chronological
         public double To { get; set; }
     }
 
-    public class Aggregate<T, TX, TY>
+    public class Aggregate<T, TX, TY> : Dictionary<TX,TY>
     {
-        public Aggregate<T, TX,TZ> WithAggregate<TZ>(TZ aggregate)
+        internal Aggregate() : base()
         {
-            throw new NotImplementedException();
-        }        
+        }
+
+        
     }
 
     public class Aggregate<T, TX>
@@ -90,21 +96,7 @@ namespace Chronological
             return this;
         }
 
-        public static Aggregate<DateTime> DateHistogram(object property, DateBreaks breaks)
-        {
-            return new Aggregate<DateTime>();
-        }
-
-        public static Aggregate<NumericRange> NumericHistogram(object property, NumericBreaks limit)
-        {
-            return new Aggregate<NumericRange>();
-        }
         
-        public static Aggregate<TY> UniqueValues<TX, TY>(Expression<Func<TX,TY>> property, Limit limit) where TY : new()
-        {
-            return new Aggregate<TY>();
-        }
-
         public Aggregate WithMeasure(Measure measure)
         {
             if (_measures == null)

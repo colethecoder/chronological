@@ -9,9 +9,9 @@ namespace Chronological
     public class GenericFluentAggregateQuery<T> where T : new()
     {        
 
-        public GenericFluentAggregateQuery<T, Aggregate<T,TX,TY>> Select<TX,TY>(Func<Aggregate<T>,Aggregate<T,TX,TY>> predicate)
+        public GenericFluentAggregateQuery<T, Aggregate<T,TX,TY>> Select<TX,TY>(Func<AggregateBuilder<T>,Aggregate<T,TX,TY>> predicate)
         {
-            var aggregate = predicate(new Aggregate<T>());
+            var aggregate = predicate(new AggregateBuilder<T>());
 
             return new GenericFluentAggregateQuery<T, Aggregate<T,TX,TY>>();
         }
