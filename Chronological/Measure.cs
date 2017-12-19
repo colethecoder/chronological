@@ -9,13 +9,13 @@ namespace Chronological
 {
     public class Measure<T> where T : new()
     {
-        internal readonly string _measureType;
-        internal readonly Property _property;
+        internal readonly string MeasureType;
+        internal readonly Property Property;
 
         internal Measure (Property property, string measureType)
         {
-            _measureType = measureType;
-            _property = property;
+            MeasureType = measureType;
+            Property = property;
         }
 
         internal static Measure<T> Create<TY>(Expression<Func<TY, T>> propertyExpression, string measureType) where TY : new()
@@ -26,7 +26,7 @@ namespace Chronological
 
         internal JProperty ToJProperty()
         {
-            return new JProperty(_measureType, new JObject(_property.ToInputJProperty()));
+            return new JProperty(MeasureType, new JObject(Property.ToInputJProperty()));
         }
     }
 

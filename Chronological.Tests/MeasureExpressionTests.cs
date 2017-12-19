@@ -12,8 +12,8 @@ namespace Chronological.Tests
         {                        
             var measure = new Measure<TestType1>(Property<double>.Create<TestType1>(x => x.Value), Measure.MaximumMeasureExpression);
             
-            Assert.Equal(measure._measureType, Measure.MaximumMeasureExpression);
-            Assert.True(JToken.DeepEquals(measure._property.ToInputJProperty(), TestType1JProperties.Value));                       
+            Assert.Equal(measure.MeasureType, Measure.MaximumMeasureExpression);
+            Assert.True(JToken.DeepEquals(measure.Property.ToInputJProperty(), TestType1JProperties.Value));                       
         }
     }
 }
