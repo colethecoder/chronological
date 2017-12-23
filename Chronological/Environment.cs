@@ -88,11 +88,6 @@ namespace Chronological
             return new StringAggregateQuery(queryName, query, this);
         }
 
-        public FluentAggregateQuery AggregateQuery(string queryName)
-        {
-            return new FluentAggregateQuery(queryName, this);
-        }
-
         public FluentEventQuery EventQuery(string queryName)
         {
             return new FluentEventQuery(queryName, this);

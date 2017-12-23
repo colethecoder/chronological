@@ -8,7 +8,7 @@ namespace Chronological
 
         public readonly Property Property;
         public readonly Limit Limit;
-        public readonly TZ Child;
+        public override TZ Child { get; }
 
         internal UniqueValuesAggregate(Property property, Limit limit, TZ child)
         {
