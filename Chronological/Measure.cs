@@ -1,13 +1,15 @@
 ﻿using System;
-using System.ComponentModel;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
 using Newtonsoft.Json.Linq;
 
 namespace Chronological
 {
-    public class Measure<T> where T : new()
+    public interface IMeasure
+    {
+        JProperty ToJProperty();
+    }
+
+    public class Measure<T> : IMeasure where T : new()
     {
         internal readonly string MeasureType;
         internal readonly Property Property;
@@ -18,13 +20,13 @@ namespace Chronological
             Property = property;
         }
 
-        internal static Measure<T> Create<TY>(Expression<Func<TY, T>> propertyExpression, string measureType) where TY : new()
+        internal static Measure<T>Create<TY>(Expression<Func<TY, T>> propertyExpression, string measureType) where TY : new()
         {
             var property = Property<T>.Create(propertyExpression);
             return new Measure<T>(property, measureType);            
         }
 
-        internal JProperty ToJProperty()
+        public JProperty ToJProperty()
         {
             return new JProperty(MeasureType, new JObject(Property.ToInputJProperty()));
         }

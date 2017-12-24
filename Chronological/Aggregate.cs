@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 namespace Chronological
@@ -33,6 +34,18 @@ namespace Chronological
             if (ChildIsAggregate())
             {
                 return new JProperty("aggregate", ((IAggregate)Child).ToJObject());
+            }
+            else
+            {
+                var measures = new List<IMeasure>();
+                foreach (var property in typeof(TZ).GetTypeInfo().DeclaredProperties)
+                {
+                    if (typeof(IMeasure).GetTypeInfo().IsAssignableFrom(property.PropertyType.GetTypeInfo()))
+                    {
+                        measures.Add((IMeasure)property.GetValue(Child));
+                    }
+                }
+                return new JProperty("measures", new JArray(from measure in measures select new JObject(measure.ToJProperty())));
             }
             throw new NotImplementedException();
         }
