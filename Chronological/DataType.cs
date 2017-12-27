@@ -23,7 +23,9 @@ namespace Chronological
                 case double d:
                     return Double;
                 case string s:
-                    return String;                
+                    return String;
+                case DateTime dt:
+                    return DateTime;
                 default:
                     //Todo: Better exceptions
                     throw new Exception("Unexpected Type");
@@ -32,5 +34,6 @@ namespace Chronological
 
         public static DataType Double => new DataType("Double");
         public static DataType String => new DataType("String");
+        public static DataType DateTime => new DataType("DateTime");
     }
 }

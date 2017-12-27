@@ -19,8 +19,9 @@ namespace Chronological
 
         internal override JProperty ToAggregateJProperty()
         {
-            return new JProperty(AggregateType, Property.ToInputJProperty(), Limit.ToJProperty());
+            return new JProperty(AggregateType, new JObject(Property.ToInputJProperty(), Limit.ToJProperty()));
         }
  
     }
+
 }

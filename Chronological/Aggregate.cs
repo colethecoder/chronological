@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace Chronological
 {
-    internal interface IAggregate
+    public interface IAggregate
     {
         JObject ToJObject();
     }
@@ -14,11 +14,7 @@ namespace Chronological
     public abstract class Aggregate<TX, TY, TZ> : Dictionary<TY,TZ>, IAggregate
     {
         internal abstract string AggregateType { get; }
-        public abstract TZ Child { get; }
-
-        internal Aggregate() : base()
-        {
-        }
+        public abstract TZ Child { get; }         
 
         internal abstract JProperty ToAggregateJProperty();
 
@@ -35,25 +31,24 @@ namespace Chronological
             {
                 return new JProperty("aggregate", ((IAggregate)Child).ToJObject());
             }
-            else
+
+            var measures = new List<IMeasure>();
+            foreach (var property in typeof(TZ).GetTypeInfo().DeclaredProperties)
             {
-                var measures = new List<IMeasure>();
-                foreach (var property in typeof(TZ).GetTypeInfo().DeclaredProperties)
+                if (typeof(IMeasure).GetTypeInfo().IsAssignableFrom(property.PropertyType.GetTypeInfo()))
                 {
-                    if (typeof(IMeasure).GetTypeInfo().IsAssignableFrom(property.PropertyType.GetTypeInfo()))
-                    {
-                        measures.Add((IMeasure)property.GetValue(Child));
-                    }
+                    measures.Add((IMeasure)property.GetValue(Child));
                 }
-                return new JProperty("measures", new JArray(from measure in measures select new JObject(measure.ToJProperty())));
             }
-            throw new NotImplementedException();
+            return new JProperty("measures", new JArray(from measure in measures select new JObject(measure.ToJProperty())));
         }
 
         public JObject ToJObject()
         {
-            var result = new JObject(new JProperty("dimension", ToAggregateJProperty()), ToChildJProperty());
-            return null;
+            var childProperty = ToChildJProperty();
+            var dimensionProperty = new JProperty("dimension", new JObject(ToAggregateJProperty()));
+            var result = new JObject(dimensionProperty, childProperty);
+            return result;
         }
     }    
 
