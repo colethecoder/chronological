@@ -20,9 +20,7 @@ namespace Chronological
 
         internal bool ChildIsAggregate()
         {
-            return typeof(IAggregate).GetTypeInfo().IsAssignableFrom(typeof(TZ).GetTypeInfo());
-            //Below doesn't work in Standard 1.3
-            //return typeof(IAggregate).IsAssignableFrom(typeof(TZ));
+            return typeof(IAggregate).GetTypeInfo().IsAssignableFrom(typeof(TZ).GetTypeInfo());            
         }
 
         internal JProperty ToChildJProperty()

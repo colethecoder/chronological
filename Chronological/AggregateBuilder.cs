@@ -9,19 +9,19 @@ namespace Chronological
         {
         }        
 
-        public Aggregate<T, TY, TZ> UniqueValues<TY, TZ>(Expression<Func<T, TY>> property, Limit limit, TZ aggregate) where TY : new()
+        public Aggregate<T, TY, TZ> UniqueValues<TY, TZ>(Expression<Func<T, TY>> property, Limit limit, TZ child) where TY : new()
         {
-            return new UniqueValuesAggregate<T, TY, TZ>(Property<TY>.Create<T>(property), limit, aggregate);
+            return new UniqueValuesAggregate<T, TY, TZ>(Property<TY>.Create<T>(property), limit, child);
         }
 
-        public Aggregate<T, DateTime, TZ> DateHistogram<TY, TZ>(Expression<Func<T, TY>> property, DateBreaks breaks, TZ aggregate)
+        public Aggregate<T, DateTime, TZ> DateHistogram<TZ>(Expression<Func<T, DateTime>> property, DateBreaks breaks, TZ child)
         {
-            return new UniqueValuesAggregate<T, DateTime, TZ>(null, null, aggregate);
+            return new DateHistogramAggregate<T, TZ>(Property<DateTime>.Create<T>(property), breaks, child);
         }
 
-        public Aggregate<T, NumericRange, TZ> NumericHistogram<TY, TZ>(Expression<Func<T, TY>> property, NumericBreaks limit, TZ aggregate)
+        public Aggregate<T, NumericRange, TZ> NumericHistogram<TZ>(Expression<Func<T, double>> property, NumericBreaks breaks, TZ child)
         {
-            return new UniqueValuesAggregate<T, NumericRange, TZ>(null, null, aggregate);
+            return new NumericHistogramAggregate<T, TZ>(Property<double>.Create<T>(property), breaks, child);
         }
 
         public Measure<TY> Maximum<TY>(Expression<Func<T, TY>> property) where TY : new()
