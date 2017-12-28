@@ -2,6 +2,7 @@
 using System.Linq;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Linq.Expressions;
 
 namespace Chronological
 {
@@ -49,6 +50,16 @@ namespace Chronological
             _left = left;
             _rightAsDateTime = right;
             _operator = filterOperator;
+        }
+
+        internal static Filter Create<T>(Expression<Func<T, bool>> predicate)
+        {
+            var binaryExpression = (BinaryExpression)predicate.Body;
+            var leftSide = binaryExpression.Left;
+            var rightSide = binaryExpression.Right;
+            var comparison = binaryExpression.NodeType;
+
+            return new Filter("1=1");
         }
 
         private Filter(string predicateString)
