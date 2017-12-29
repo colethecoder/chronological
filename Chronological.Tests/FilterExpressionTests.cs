@@ -44,6 +44,7 @@ namespace Chronological.Tests
                 yield return new object[] { (Expression<Func<TestType1, bool>>)(x => 4 != x.Value), "4 != [data.value]" };
                 yield return new object[] { (Expression<Func<TestType1, bool>>)(x => 4 >= x.Value), "4 >= [data.value]" };
                 yield return new object[] { (Expression<Func<TestType1, bool>>)(x => 4 <= x.Value), "4 <= [data.value]" };
+                yield return new object[] { (Expression<Func<TestType1, bool>>)(x => 4 > x.Value && x.DataType == "AString"), "4 > [data.value] and [data.type] = 'AString'" };
             }
         }
     }
