@@ -59,8 +59,8 @@ namespace Chronological.Tests
         public void Test1()
         {
             var environment = new Environment("TestFqdn", "TestAccessToken");
-            var from = new DateTime(2017, 12, 27);
-            var to = new DateTime(2017, 12, 28);
+            var from = new DateTime(2017, 12, 27,0,0,0,DateTimeKind.Utc);
+            var to = new DateTime(2017, 12, 28,0,0,0, DateTimeKind.Utc);
 
             var queryString = environment.AggregateQuery<TestType1>("Test", Search.Span(from, to))
                 .Select(builder => builder.UniqueValues(x => x.Value, Limit.Take(10),
