@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
+using System.Linq;
 using System.Linq.Expressions;
 using Newtonsoft.Json.Linq;
 
@@ -54,11 +56,51 @@ namespace Chronological
         internal static Filter Create<T>(Expression<Func<T, bool>> predicate)
         {
             var binaryExpression = (BinaryExpression)predicate.Body;
+
+            var leftString = string.Empty;
+
             var leftSide = binaryExpression.Left;
+
+            if (leftSide.NodeType == ExpressionType.MemberAccess)
+            {
+                var memberExpression = leftSide as MemberExpression;
+                var attributes = memberExpression?.Member.GetCustomAttributes(typeof(ChronologicalEventFieldAttribute), true);
+                var attribute = (ChronologicalEventFieldAttribute)attributes?.FirstOrDefault();
+                if (attribute != null)
+                {
+                    leftString = "[" + attribute.EventFieldName + "]";
+                }
+            }
+
             var rightSide = binaryExpression.Right;
+
+            var rightString = string.Empty;
+
+            if (rightSide.NodeType == ExpressionType.Constant)
+            {
+                var constantExpression = ((ConstantExpression)rightSide);
+
+                switch (constantExpression.Value)
+                {
+                    case double d:
+                        rightString = d.ToString();
+                        break;
+                }
+                
+            }
+
             var comparison = binaryExpression.NodeType;
 
-            return new Filter("1=1");
+            var comparisonString = string.Empty;
+
+            switch (comparison)
+            {
+                case (ExpressionType.GreaterThan):
+                    comparisonString = ">";
+                    break;                
+            }
+
+            return new Filter($"{leftString} {comparisonString} {rightString}");
         }
 
         private Filter(string predicateString)

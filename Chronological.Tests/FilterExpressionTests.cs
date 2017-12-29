@@ -32,12 +32,18 @@ namespace Chronological.Tests
         {
             get
             {
-                yield return new object[] { (Expression<Func<TestType1, bool>>) (x => x.Value > 5), "[data.value] > 5" };
+                yield return new object[] { (Expression<Func<TestType1, bool>>)(x => x.Value > 5), "[data.value] > 5" };
                 yield return new object[] { (Expression<Func<TestType1, bool>>)(x => x.Value < 5), "[data.value] < 5" };
                 yield return new object[] { (Expression<Func<TestType1, bool>>)(x => x.Value == 5), "[data.value] = 5" };
                 yield return new object[] { (Expression<Func<TestType1, bool>>)(x => x.Value != 5), "[data.value] != 5" };
                 yield return new object[] { (Expression<Func<TestType1, bool>>)(x => x.Value >= 5), "[data.value] >= 5" };
                 yield return new object[] { (Expression<Func<TestType1, bool>>)(x => x.Value <= 5), "[data.value] <= 5" };
+                yield return new object[] { (Expression<Func<TestType1, bool>>)(x => 4 > x.Value), "4 > [data.value]" };
+                yield return new object[] { (Expression<Func<TestType1, bool>>)(x => 4 < x.Value), "4 < [data.value]" };
+                yield return new object[] { (Expression<Func<TestType1, bool>>)(x => 4 == x.Value), "4 = [data.value]" };
+                yield return new object[] { (Expression<Func<TestType1, bool>>)(x => 4 != x.Value), "4 != [data.value]" };
+                yield return new object[] { (Expression<Func<TestType1, bool>>)(x => 4 >= x.Value), "4 >= [data.value]" };
+                yield return new object[] { (Expression<Func<TestType1, bool>>)(x => 4 <= x.Value), "4 <= [data.value]" };
             }
         }
     }
