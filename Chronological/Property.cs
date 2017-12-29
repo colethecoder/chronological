@@ -11,7 +11,7 @@ namespace Chronological
         internal static Property Create<TY>(Expression<Func<TY, T>> property)
         {
             var eventFieldMemberExpression = new EventFieldMemberExpression(property.Body as MemberExpression);
-            return Property.Custom(eventFieldMemberExpression.EventFieldName, eventFieldMemberExpression.EventFieldDataType);
+            return Property.Custom(eventFieldMemberExpression.UnescapedEventFieldName, eventFieldMemberExpression.EventFieldDataType);
         }
 
 

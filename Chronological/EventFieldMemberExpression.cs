@@ -9,7 +9,8 @@ namespace Chronological
 {
     public class EventFieldMemberExpression
     {
-        public readonly string EventFieldName;
+        public readonly string UnescapedEventFieldName;
+        public readonly string EscapedEventFieldName;
         public readonly DataType EventFieldDataType;
 
         public EventFieldMemberExpression(MemberExpression memberExpression)
@@ -18,7 +19,8 @@ namespace Chronological
             var attribute = (ChronologicalEventFieldAttribute)attributes?.FirstOrDefault();
             if (attribute != null)
             {
-                EventFieldName = EscapeEventFieldName(attribute.EventFieldName);
+                EscapedEventFieldName = EscapeEventFieldName(attribute.EventFieldName);
+                UnescapedEventFieldName = EscapedEventFieldName.Substring(1, EscapedEventFieldName.Length - 2);
                 EventFieldDataType = DataType.FromType(memberExpression.Type);
             }
             else

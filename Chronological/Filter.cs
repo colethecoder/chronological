@@ -86,7 +86,7 @@ namespace Chronological
         {
             var eventFieldMemberExpression = new EventFieldMemberExpression(memberExpression);
 
-            return eventFieldMemberExpression.EventFieldName;
+            return eventFieldMemberExpression.EscapedEventFieldName;
         }
 
         private static string ConstantExpressionToString(ConstantExpression constantExpression)
@@ -95,6 +95,8 @@ namespace Chronological
             {
                 case double d:
                     return d.ToString();
+                case string s:
+                    return $"'{s}'";
                 default:
                     throw new NotImplementedException();
             }
@@ -104,8 +106,20 @@ namespace Chronological
         {
             switch (comparison)
             {
+                case (ExpressionType.LessThan):
+                    return "<";
+                case (ExpressionType.LessThanOrEqual):
+                    return "<=";
                 case (ExpressionType.GreaterThan):
                     return ">";
+                case (ExpressionType.GreaterThanOrEqual):
+                    return ">=";
+                case (ExpressionType.Equal):
+                    return "=";
+                case (ExpressionType.NotEqual):
+                    return "!=";
+                case (ExpressionType.AndAlso):
+                    return "and";
                 default:
                     throw new NotImplementedException();
             }
