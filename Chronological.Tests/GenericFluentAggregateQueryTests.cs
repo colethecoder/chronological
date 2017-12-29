@@ -12,8 +12,8 @@ namespace Chronological.Tests
         {
             return @"'content': {
   'searchSpan': {
-    'from': '2017-12-27T18:32:17.6395695Z',
-    'to': '2017-12-28T18:32:17.6395695Z'
+    'from': '2017-12-27T00:00:00.0000000Z',
+    'to': '2017-12-28T00:00:00.0000000Z'
   },
   'predicate': {
     'predicateString': '[data.value] > 5'
@@ -58,9 +58,9 @@ namespace Chronological.Tests
         [Fact]
         public void Test1()
         {
-            var environment = new Chronological.Environment("TestFqdn", "TestAccessToken");
-            var from = DateTime.Now.AddDays(-1);
-            var to = DateTime.Now;
+            var environment = new Environment("TestFqdn", "TestAccessToken");
+            var from = new DateTime(2017, 12, 27);
+            var to = new DateTime(2017, 12, 28);
 
             var queryString = environment.AggregateQuery<TestType1>("Test", Search.Span(from, to))
                 .Select(builder => builder.UniqueValues(x => x.Value, Limit.Take(10),

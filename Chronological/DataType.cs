@@ -16,15 +16,15 @@ namespace Chronological
             return new JProperty("type", _dataType);
         }
 
-        internal static DataType FromType<T>(T type)
+        internal static DataType FromType(Type type)
         {
             switch (type)
             {
-                case double d:
+                case Type doubleType when doubleType == typeof(double):
                     return Double;
-                case string s:
+                case Type stringType when stringType == typeof(string):
                     return String;
-                case DateTime dt:
+                case Type dateTimeType when dateTimeType == typeof(DateTime):
                     return DateTime;
                 default:
                     //Todo: Better exceptions

@@ -53,54 +53,62 @@ namespace Chronological
             _operator = filterOperator;
         }
 
-        internal static Filter Create<T>(Expression<Func<T, bool>> predicate)
+        internal static Filter Create<T>(Expression<Func<T, bool>> predicate) where T : new()
+        {            
+            return new Filter(ExpressionToString(predicate.Body));            
+        }
+
+        private static string ExpressionToString(Expression expression)
         {
-            var binaryExpression = (BinaryExpression)predicate.Body;
+            switch (expression)
+            {
+                case MemberExpression memberExpression:
+                    return MemberExpressionToString(memberExpression);
+                case BinaryExpression binaryExpression:
+                    return BinaryExpressionToString(binaryExpression);
+                case ConstantExpression constantExpression:
+                    return ConstantExpressionToString(constantExpression);
+                default:
+                    throw new NotImplementedException();
+            }
+        }
 
-            var leftString = string.Empty;
-
+        private static string BinaryExpressionToString(BinaryExpression binaryExpression)
+        {
             var leftSide = binaryExpression.Left;
-
-            if (leftSide.NodeType == ExpressionType.MemberAccess)
-            {
-                var memberExpression = leftSide as MemberExpression;
-                var attributes = memberExpression?.Member.GetCustomAttributes(typeof(ChronologicalEventFieldAttribute), true);
-                var attribute = (ChronologicalEventFieldAttribute)attributes?.FirstOrDefault();
-                if (attribute != null)
-                {
-                    leftString = "[" + attribute.EventFieldName + "]";
-                }
-            }
-
             var rightSide = binaryExpression.Right;
-
-            var rightString = string.Empty;
-
-            if (rightSide.NodeType == ExpressionType.Constant)
-            {
-                var constantExpression = ((ConstantExpression)rightSide);
-
-                switch (constantExpression.Value)
-                {
-                    case double d:
-                        rightString = d.ToString();
-                        break;
-                }
-                
-            }
-
             var comparison = binaryExpression.NodeType;
 
-            var comparisonString = string.Empty;
+            return $"{ExpressionToString(leftSide)} {ComparisonToString(comparison)} {ExpressionToString(rightSide)}";
+        }
 
+        private static string MemberExpressionToString(MemberExpression memberExpression)
+        {
+            var eventFieldMemberExpression = new EventFieldMemberExpression(memberExpression);
+
+            return eventFieldMemberExpression.EventFieldName;
+        }
+
+        private static string ConstantExpressionToString(ConstantExpression constantExpression)
+        {
+            switch (constantExpression.Value)
+            {
+                case double d:
+                    return d.ToString();
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+
+        private static string ComparisonToString(ExpressionType comparison)
+        {
             switch (comparison)
             {
                 case (ExpressionType.GreaterThan):
-                    comparisonString = ">";
-                    break;                
+                    return ">";
+                default:
+                    throw new NotImplementedException();
             }
-
-            return new Filter($"{leftString} {comparisonString} {rightString}");
         }
 
         private Filter(string predicateString)

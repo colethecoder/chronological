@@ -10,15 +10,8 @@ namespace Chronological
     {
         internal static Property Create<TY>(Expression<Func<TY, T>> property)
         {
-            var memberExpression = property.Body as MemberExpression;
-            var attributes = memberExpression?.Member.GetCustomAttributes(typeof(ChronologicalEventFieldAttribute), true);
-            var attribute = (ChronologicalEventFieldAttribute)attributes?.FirstOrDefault();
-            if (attribute != null)
-            {
-                return Property.Custom(attribute.EventFieldName, DataType.FromType(new T()));
-            }
-            //TODO deal with problems
-            throw new NotImplementedException();
+            var eventFieldMemberExpression = new EventFieldMemberExpression(property.Body as MemberExpression);
+            return Property.Custom(eventFieldMemberExpression.EventFieldName, eventFieldMemberExpression.EventFieldDataType);
         }
 
 
