@@ -77,6 +77,26 @@ namespace Chronological
             return array;
         }
 
+        public JObject ToJObject(string accessToken)
+        {
+            return new JObject(
+                GetHeaders(accessToken),
+                GetContent()
+            );
+        }
+
+        private JProperty GetHeaders(string accessToken)
+        {
+            return new JProperty("headers", new JObject(
+                new JProperty("x-ms-client-application-name", _queryName),
+                new JProperty("Authorization", "Bearer " + accessToken)));
+        }
+
+        public new string ToString()
+        {
+            return ToJObject(_environment.AccessToken).ToString();
+        }
+
         private JProperty GetContent()
         {
             if (_filter != null)
@@ -95,7 +115,7 @@ namespace Chronological
 
         public async Task<TY> Execute()
         {
-            var query = GetContent();
+            var query = ToJObject(_environment.AccessToken);
 
             var results = await _webSocketRepository.QueryWebSocket(query.ToString(), "aggregates");
 
@@ -103,10 +123,6 @@ namespace Chronological
             throw new NotImplementedException();
         }
 
-        public new string ToString()
-        {
-            return GetContent().ToString();
-        }
     }
 
     

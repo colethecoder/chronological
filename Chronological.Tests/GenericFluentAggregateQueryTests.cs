@@ -72,8 +72,8 @@ namespace Chronological.Tests
                 .Where(x => x.Value > 5)
                 .ToString();
 
-            var expected = JToken.Parse("{" + ExpectedQuery() + "}");
-            var actual = JToken.Parse("{" + queryString + "}");
+            var expected = JToken.Parse("{" + ExpectedQuery() + "}")["content"];
+            var actual = JToken.Parse(queryString)["content"];
 
             Assert.True(JToken.DeepEquals(expected, actual));
         }
