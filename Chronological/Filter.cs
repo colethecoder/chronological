@@ -77,6 +77,7 @@ namespace Chronological
 
         private static string MethodCallExpressionToString(MethodCallExpression methodCallExpression)
         {
+            //TODO: more tests around inline methods
             object result = Expression.Lambda(methodCallExpression).Compile().DynamicInvoke();
             return ExpressionToString(Expression.Constant(result));
         }
@@ -99,12 +100,7 @@ namespace Chronological
                     return BuiltIn.Function.UtcNow;
                 }
                 // TODO: throw exception for any other DateTime type as not supported
-            }
-
-            if (memberExpression.Type == typeof(TimeSpan))
-            {
-                return "";
-            }
+            }            
 
             var eventFieldMemberExpression = new EventFieldMemberExpression(memberExpression);
 
@@ -119,8 +115,14 @@ namespace Chronological
                     return d.ToString();
                 case string s:
                     return $"'{s}'";
+                case bool b:
+                    //TODO to TRUE / FALSE style string
+                    throw new NotImplementedException();
                 case TimeSpan ts:
                     return $"ts'P0Y0M{ts.Days}DT{ts.Hours}H{ts.Minutes}M{ts.Seconds}.{ts.Milliseconds}S'";
+                case DateTime dt:
+                    //TODO to dt'xxxx' style string
+                    throw new NotImplementedException();
                 default:
                     throw new NotImplementedException();
             }
@@ -148,6 +150,7 @@ namespace Chronological
                     return "-";
                 case (ExpressionType.Add):
                     return "+";
+                //TODO: multiplication / division / or figure out IN / HAS
                 default:
                     throw new NotImplementedException();
             }
