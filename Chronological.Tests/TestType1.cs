@@ -8,8 +8,11 @@ namespace Chronological.Tests
         [ChronologicalEventField("id")]
         public string Id { get; set; }
 
-        [ChronologicalEventField("timestamp")]
+        [ChronologicalEventField(BuiltIn.EventTimeStamp)]
         public DateTime Date { get; set; }
+
+        [ChronologicalEventField("data.devicedate")]
+        public DateTime DeviceDate { get; set; }
 
         [ChronologicalEventField("data.type")]
         public string DataType { get; set; }

@@ -14,8 +14,8 @@ namespace Chronological.Tests
         }
 
         [Theory]
-        [MemberData(nameof(ConfigTestDataProvider.TestCases), MemberType = typeof(ConfigTestDataProvider))]
-        public void Test1(Expression<Func<TestType1, bool>> predicate, string expected)
+        [MemberData(nameof(FilterPredicateTestDataProvider.TestCases), MemberType = typeof(FilterPredicateTestDataProvider))]
+        public void FilterPredicateTests(Expression<Func<TestType1, bool>> predicate, string expected)
         {
             var filter = Filter.Create(predicate);
             var result = filter.ToPredicateJProperty();
@@ -26,7 +26,7 @@ namespace Chronological.Tests
         }
     }
 
-    public class ConfigTestDataProvider
+    public class FilterPredicateTestDataProvider
     {
         public static IEnumerable<object[]> TestCases
         {
@@ -45,6 +45,9 @@ namespace Chronological.Tests
                 yield return new object[] { (Expression<Func<TestType1, bool>>)(x => 4 >= x.Value), "4 >= [data.value]" };
                 yield return new object[] { (Expression<Func<TestType1, bool>>)(x => 4 <= x.Value), "4 <= [data.value]" };
                 yield return new object[] { (Expression<Func<TestType1, bool>>)(x => 4 > x.Value && x.DataType == "AString"), "4 > [data.value] and [data.type] = 'AString'" };
+                yield return new object[] { (Expression<Func<TestType1, bool>>)(x => x.DeviceDate > DateTime.UtcNow), "[data.devicedate] > utcNow()" };
+                yield return new object[] { (Expression<Func<TestType1, bool>>)(x => x.Date > DateTime.UtcNow), "$ts > utcNow()" };
+
             }
         }
     }

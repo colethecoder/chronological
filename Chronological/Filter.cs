@@ -84,6 +84,15 @@ namespace Chronological
 
         private static string MemberExpressionToString(MemberExpression memberExpression)
         {
+            if (memberExpression.Type == typeof(DateTime))
+            {
+                if (memberExpression.Member.Name == "UtcNow")
+                {
+                    return BuiltIn.Function.UtcNow;
+                }
+                // TODO: throw exception for any other DateTime type as not supported
+            }
+
             var eventFieldMemberExpression = new EventFieldMemberExpression(memberExpression);
 
             return eventFieldMemberExpression.EscapedEventFieldName;
