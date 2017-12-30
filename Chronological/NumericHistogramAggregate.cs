@@ -16,7 +16,24 @@ namespace Chronological
             Property = property;
             NumericBreaks = numericBreaks;
             Child = child;
-        }        
+        }
+
+        public override void Populate(JObject jObject)
+        {            
+            foreach (var dimension in jObject["dimension"])
+            {
+                var child = Child;
+                if (ChildIsAggregate())
+                {
+                    ((IAggregate)child).Populate((JObject)jObject["aggregate"]);
+                    this.Add(dimension.ToObject<NumericRange>(), child);
+                }
+                else
+                {
+                    this.Add(dimension.ToObject<NumericRange>(), default(TZ));
+                }
+            }
+        }
 
         internal override JProperty ToAggregateJProperty()
         {

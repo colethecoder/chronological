@@ -115,20 +115,26 @@ namespace Chronological
 
         public async Task<IEnumerable<TY>> Execute()
         {
+            var executionResults = new List<TY>();
             var query = ToJObject(_environment.AccessToken);
 
             var results = await _webSocketRepository.QueryWebSocket(query.ToString(), "aggregates");
 
             var aggregates = _aggregates;
 
-            foreach (var aggregate in aggregates)
+            //TODO: figure out what to do in situations were there is more than one result
+            var jObject = JObject.Parse(results.First());
+
+            foreach (var aggregate in aggregates.Select((x,y) => new {x,y}))
             {
-                var test = "";
+                var typedAggregate = (IAggregate)aggregate.x;
+                var aggregateJObject = (JObject)jObject["content"][aggregate.y];
+
+                typedAggregate.Populate(aggregateJObject);
+                executionResults.Add((TY)typedAggregate);
             }
 
-            await Task.FromResult(0); //Just to stop warnings for now
-
-            return aggregates;
+            return executionResults;
         }
 
     }

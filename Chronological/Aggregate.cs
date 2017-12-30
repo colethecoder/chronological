@@ -9,12 +9,15 @@ namespace Chronological
     public interface IAggregate
     {
         JObject ToJObject();
+        void Populate(JObject jObject);
     }
 
     public abstract class Aggregate<TX, TY, TZ> : Dictionary<TY,TZ>, IAggregate
     {
         internal abstract string AggregateType { get; }
-        public abstract TZ Child { get; }         
+        public abstract TZ Child { get; }
+
+        public abstract void Populate(JObject jObject);
 
         internal abstract JProperty ToAggregateJProperty();
 
