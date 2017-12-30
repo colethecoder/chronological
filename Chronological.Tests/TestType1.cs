@@ -24,5 +24,9 @@ namespace Chronological.Tests
     {
         public static JProperty Value => new JProperty("input",
             new JObject(new JProperty("property", "data.value"), new JProperty("type", "Double")));
+
+        public static JProperty Date => new JProperty("input",
+            new JObject(new JProperty("builtInProperty", "$ts")));
     }
+    
 }

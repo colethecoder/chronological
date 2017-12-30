@@ -11,6 +11,10 @@ namespace Chronological
         internal static Property Create<TY>(Expression<Func<TY, T>> property)
         {
             var eventFieldMemberExpression = new EventFieldMemberExpression(property.Body as MemberExpression);
+            if (BuiltIn.All().Contains(eventFieldMemberExpression.UnescapedEventFieldName))
+            {
+                return Property.BuiltIn(eventFieldMemberExpression.UnescapedEventFieldName);
+            }
             return Property.Custom(eventFieldMemberExpression.UnescapedEventFieldName, eventFieldMemberExpression.EventFieldDataType);
         }
 
@@ -30,9 +34,12 @@ namespace Chronological
             _dataType = dataType;
         }
 
-        public static Property TimeStamp => new Property(true, @"$ts");
+        public static Property EventTimeStamp => BuiltIn(Chronological.BuiltIn.EventTimeStamp);
 
-        public static Property EventSourceName => new Property(true, @"$esn");
+        public static Property EventSourceName => BuiltIn(Chronological.BuiltIn.EventSourceName);
+
+        internal static Property BuiltIn(string name) => new Property(true, name);
+
         public static Property Custom(string name, DataType type = null)
         {
             return new Property(false, name, type);
