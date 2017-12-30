@@ -68,9 +68,17 @@ namespace Chronological
                     return BinaryExpressionToString(binaryExpression);
                 case ConstantExpression constantExpression:
                     return ConstantExpressionToString(constantExpression);
+                case MethodCallExpression methodCallExpression:
+                    return MethodCallExpressionToString(methodCallExpression);
                 default:
                     throw new NotImplementedException();
             }
+        }
+
+        private static string MethodCallExpressionToString(MethodCallExpression methodCallExpression)
+        {
+            object result = Expression.Lambda(methodCallExpression).Compile().DynamicInvoke();
+            return ExpressionToString(Expression.Constant(result));
         }
 
         private static string BinaryExpressionToString(BinaryExpression binaryExpression)
@@ -79,7 +87,7 @@ namespace Chronological
             var rightSide = binaryExpression.Right;
             var comparison = binaryExpression.NodeType;
 
-            return $"{ExpressionToString(leftSide)} {ComparisonToString(comparison)} {ExpressionToString(rightSide)}";
+            return $"({ExpressionToString(leftSide)} {ComparisonToString(comparison)} {ExpressionToString(rightSide)})";
         }
 
         private static string MemberExpressionToString(MemberExpression memberExpression)
@@ -91,6 +99,11 @@ namespace Chronological
                     return BuiltIn.Function.UtcNow;
                 }
                 // TODO: throw exception for any other DateTime type as not supported
+            }
+
+            if (memberExpression.Type == typeof(TimeSpan))
+            {
+                return "";
             }
 
             var eventFieldMemberExpression = new EventFieldMemberExpression(memberExpression);
@@ -106,6 +119,8 @@ namespace Chronological
                     return d.ToString();
                 case string s:
                     return $"'{s}'";
+                case TimeSpan ts:
+                    return $"ts'P0Y0M{ts.Days}DT{ts.Hours}H{ts.Minutes}M{ts.Seconds}.{ts.Milliseconds}S'";
                 default:
                     throw new NotImplementedException();
             }
@@ -129,6 +144,10 @@ namespace Chronological
                     return "!=";
                 case (ExpressionType.AndAlso):
                     return "and";
+                case (ExpressionType.Subtract):
+                    return "-";
+                case (ExpressionType.Add):
+                    return "+";
                 default:
                     throw new NotImplementedException();
             }

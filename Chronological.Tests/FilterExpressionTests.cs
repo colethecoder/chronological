@@ -32,22 +32,22 @@ namespace Chronological.Tests
         {
             get
             {
-                yield return new object[] { (Expression<Func<TestType1, bool>>)(x => x.Value > 5), "[data.value] > 5" };
-                yield return new object[] { (Expression<Func<TestType1, bool>>)(x => x.Value < 5), "[data.value] < 5" };
-                yield return new object[] { (Expression<Func<TestType1, bool>>)(x => x.Value == 5), "[data.value] = 5" };
-                yield return new object[] { (Expression<Func<TestType1, bool>>)(x => x.Value != 5), "[data.value] != 5" };
-                yield return new object[] { (Expression<Func<TestType1, bool>>)(x => x.Value >= 5), "[data.value] >= 5" };
-                yield return new object[] { (Expression<Func<TestType1, bool>>)(x => x.Value <= 5), "[data.value] <= 5" };
-                yield return new object[] { (Expression<Func<TestType1, bool>>)(x => 4 > x.Value), "4 > [data.value]" };
-                yield return new object[] { (Expression<Func<TestType1, bool>>)(x => 4 < x.Value), "4 < [data.value]" };
-                yield return new object[] { (Expression<Func<TestType1, bool>>)(x => 4 == x.Value), "4 = [data.value]" };
-                yield return new object[] { (Expression<Func<TestType1, bool>>)(x => 4 != x.Value), "4 != [data.value]" };
-                yield return new object[] { (Expression<Func<TestType1, bool>>)(x => 4 >= x.Value), "4 >= [data.value]" };
-                yield return new object[] { (Expression<Func<TestType1, bool>>)(x => 4 <= x.Value), "4 <= [data.value]" };
-                yield return new object[] { (Expression<Func<TestType1, bool>>)(x => 4 > x.Value && x.DataType == "AString"), "4 > [data.value] and [data.type] = 'AString'" };
-                yield return new object[] { (Expression<Func<TestType1, bool>>)(x => x.DeviceDate > DateTime.UtcNow), "[data.devicedate] > utcNow()" };
-                yield return new object[] { (Expression<Func<TestType1, bool>>)(x => x.Date > DateTime.UtcNow), "$ts > utcNow()" };
-
+                yield return new object[] { (Expression<Func<TestType1, bool>>)(x => x.Value > 5), "([data.value] > 5)" };
+                yield return new object[] { (Expression<Func<TestType1, bool>>)(x => x.Value < 5), "([data.value] < 5)" };
+                yield return new object[] { (Expression<Func<TestType1, bool>>)(x => x.Value == 5), "([data.value] = 5)" };
+                yield return new object[] { (Expression<Func<TestType1, bool>>)(x => x.Value != 5), "([data.value] != 5)" };
+                yield return new object[] { (Expression<Func<TestType1, bool>>)(x => x.Value >= 5), "([data.value] >= 5)" };
+                yield return new object[] { (Expression<Func<TestType1, bool>>)(x => x.Value <= 5), "([data.value] <= 5)" };
+                yield return new object[] { (Expression<Func<TestType1, bool>>)(x => 4 > x.Value), "(4 > [data.value])" };
+                yield return new object[] { (Expression<Func<TestType1, bool>>)(x => 4 < x.Value), "(4 < [data.value])" };
+                yield return new object[] { (Expression<Func<TestType1, bool>>)(x => 4 == x.Value), "(4 = [data.value])" };
+                yield return new object[] { (Expression<Func<TestType1, bool>>)(x => 4 != x.Value), "(4 != [data.value])" };
+                yield return new object[] { (Expression<Func<TestType1, bool>>)(x => 4 >= x.Value), "(4 >= [data.value])" };
+                yield return new object[] { (Expression<Func<TestType1, bool>>)(x => 4 <= x.Value), "(4 <= [data.value])" };
+                yield return new object[] { (Expression<Func<TestType1, bool>>)(x => 4 > x.Value && x.DataType == "AString"), "((4 > [data.value]) and ([data.type] = 'AString'))" };
+                yield return new object[] { (Expression<Func<TestType1, bool>>)(x => x.DeviceDate > DateTime.UtcNow), "([data.devicedate] > utcNow())" };
+                yield return new object[] { (Expression<Func<TestType1, bool>>)(x => x.Date > DateTime.UtcNow), "($ts > utcNow())" };
+                yield return new object[] { (Expression<Func<TestType1, bool>>)(x => x.Date > (DateTime.UtcNow - TimeSpan.FromMinutes(55))), "($ts > (utcNow() - ts'P0Y0M0DT0H55M0.0S'))" };
             }
         }
     }
