@@ -6,7 +6,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Chronological
 {
-    public class Property<T> where T : new()
+    public class Property<T>
     {
         internal static Property Create<TY>(Expression<Func<TY, T>> property)
         {

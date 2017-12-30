@@ -113,14 +113,22 @@ namespace Chronological
             ));
         }
 
-        public async Task<TY> Execute()
+        public async Task<IEnumerable<TY>> Execute()
         {
             var query = ToJObject(_environment.AccessToken);
 
             var results = await _webSocketRepository.QueryWebSocket(query.ToString(), "aggregates");
 
+            var aggregates = _aggregates;
+
+            foreach (var aggregate in aggregates)
+            {
+                var test = "";
+            }
+
             await Task.FromResult(0); //Just to stop warnings for now
-            throw new NotImplementedException();
+
+            return aggregates;
         }
 
     }

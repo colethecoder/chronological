@@ -9,7 +9,7 @@ namespace Chronological
         JProperty ToJProperty();
     }
 
-    public class Measure<T> : IMeasure where T : new()
+    public class Measure<T> : IMeasure
     {
         internal readonly string MeasureType;
         internal readonly Property Property;
@@ -20,7 +20,7 @@ namespace Chronological
             Property = property;
         }
 
-        internal static Measure<T>Create<TY>(Expression<Func<TY, T>> propertyExpression, string measureType) where TY : new()
+        internal static Measure<T>Create<TY>(Expression<Func<TY, T>> propertyExpression, string measureType)
         {
             var property = Property<T>.Create(propertyExpression);
             return new Measure<T>(property, measureType);            
@@ -35,55 +35,8 @@ namespace Chronological
     public class Measure
     {
         internal const string MaximumMeasureExpression = "max";
-
-        internal readonly string _measureType;
-        internal readonly Property _property;
-
-        internal Measure(string measureType, Property property)
-        {
-            _measureType = measureType;
-            _property = property;
-        }
-
-        public static Measure Sum(Property property)
-        {
-            return new Measure("sum", property);
-        }
-
-        public static Measure Average(Property property)
-        {
-            return new Measure("avg", property);
-        }
-
-        public static Measure Minimum(Property property)
-        {
-            return new Measure("min", property);
-        }
-
-        public static Measure Maximum(Property property)
-        {
-            return new Measure("max", property);
-        }
-
-        public static Measure<DateTime> Maximum(DateTime property)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static Measure<double> Minimum(double property)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static Measure<DateTime> Minimum(DateTime property)
-        {
-            throw new NotImplementedException();
-        }
-
-        internal JProperty ToJProperty()
-        {
-            return new JProperty(_measureType, new JObject(_property.ToInputJProperty()));
-
-        }
+        internal const string MinimumMeasureExpression = "min";
+        internal const string AverageMeasureExpression = "avg";
+        internal const string SumMeasureExpression = "sum";
     }
 }

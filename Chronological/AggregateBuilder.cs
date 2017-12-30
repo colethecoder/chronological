@@ -9,7 +9,7 @@ namespace Chronological
         {
         }        
 
-        public Aggregate<T, TY, TZ> UniqueValues<TY, TZ>(Expression<Func<T, TY>> property, Limit limit, TZ child) where TY : new()
+        public Aggregate<T, TY, TZ> UniqueValues<TY, TZ>(Expression<Func<T, TY>> property, Limit limit, TZ child)
         {
             return new UniqueValuesAggregate<T, TY, TZ>(Property<TY>.Create<T>(property), limit, child);
         }
@@ -24,9 +24,24 @@ namespace Chronological
             return new NumericHistogramAggregate<T, TZ>(Property<double>.Create<T>(property), breaks, child);
         }
 
-        public Measure<TY> Maximum<TY>(Expression<Func<T, TY>> property) where TY : new()
+        public Measure<TY> Maximum<TY>(Expression<Func<T, TY>> property)
         {
             return Measure<TY>.Create(property, Measure.MaximumMeasureExpression);
+        }
+
+        public Measure<TY> Minimum<TY>(Expression<Func<T, TY>> property)
+        {
+            return Measure<TY>.Create(property, Measure.MinimumMeasureExpression);
+        }
+
+        public Measure<TY> Sum<TY>(Expression<Func<T, TY>> property)
+        {
+            return Measure<TY>.Create(property, Measure.SumMeasureExpression);
+        }
+
+        public Measure<TY> Average<TY>(Expression<Func<T, TY>> property)
+        {
+            return Measure<TY>.Create(property, Measure.AverageMeasureExpression);
         }
     }
 }
