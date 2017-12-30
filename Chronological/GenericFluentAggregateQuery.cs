@@ -11,18 +11,27 @@ namespace Chronological
     {
         private readonly string _queryName;
         private readonly Search _search;
+        private readonly Environment _environment;
+        private readonly IWebSocketRepository _webSocketRepository;
 
-        internal GenericFluentAggregateQuery(string queryName, Search search)
+        internal GenericFluentAggregateQuery(string queryName, Search search, Environment environment) : this(queryName,
+            search, environment, new WebSocketRepository(environment))
+        {
+        }
+
+        internal GenericFluentAggregateQuery(string queryName, Search search, Environment environment, IWebSocketRepository webSocketRepository)
         {
             _queryName = queryName;
             _search = search;
+            _environment = environment;
+            _webSocketRepository = webSocketRepository;
         }
 
         public GenericFluentAggregateQuery<T, Aggregate<T, TX, TY>> Select<TX, TY>(Func<AggregateBuilder<T>, Aggregate<T, TX, TY>> predicate) 
-            => new GenericFluentAggregateQuery<T, Aggregate<T, TX, TY>>(_queryName, _search, predicate(new AggregateBuilder<T>()));
+            => new GenericFluentAggregateQuery<T, Aggregate<T, TX, TY>>(_queryName, _search, predicate(new AggregateBuilder<T>()), _environment, _webSocketRepository);
 
         public GenericFluentAggregateQuery<T, Aggregate<T, TX, TY>> Select<TX, TY>(IEnumerable<Func<AggregateBuilder<T>, Aggregate<T, TX, TY>>> predicates)
-            => new GenericFluentAggregateQuery<T, Aggregate<T, TX, TY>>(_queryName, _search, from predicate in predicates select predicate(new AggregateBuilder<T>()));
+            => new GenericFluentAggregateQuery<T, Aggregate<T, TX, TY>>(_queryName, _search, from predicate in predicates select predicate(new AggregateBuilder<T>()), _environment, _webSocketRepository);
     }
 
     public class GenericFluentAggregateQuery<TX, TY> where TX : new() where TY : IAggregate
@@ -31,20 +40,24 @@ namespace Chronological
         private Filter _filter;
         private readonly string _queryName;
         private readonly Search _search;
+        private readonly Environment _environment;
+        private readonly IWebSocketRepository _webSocketRepository;
 
-        internal GenericFluentAggregateQuery(string queryName, Search search, TY aggregate) : this(queryName, search,
+        internal GenericFluentAggregateQuery(string queryName, Search search, TY aggregate, Environment environment, IWebSocketRepository webSocketRepository) : this(queryName, search,
             new List<TY>
             {
                 aggregate
-            })
+            }, environment, webSocketRepository)
         {
         }
 
-        internal GenericFluentAggregateQuery(string queryName, Search search, IEnumerable<TY> aggregates)
+        internal GenericFluentAggregateQuery(string queryName, Search search, IEnumerable<TY> aggregates, Environment environment, IWebSocketRepository webSocketRepository)
         {
             _queryName = queryName;
             _search = search;
             _aggregates = aggregates;
+            _environment = environment;
+            _webSocketRepository = webSocketRepository;
         }
 
 
@@ -82,6 +95,10 @@ namespace Chronological
 
         public async Task<TY> Execute()
         {
+            var query = GetContent();
+
+            var results = await _webSocketRepository.QueryWebSocket(query.ToString(), "aggregates");
+
             await Task.FromResult(0); //Just to stop warnings for now
             throw new NotImplementedException();
         }

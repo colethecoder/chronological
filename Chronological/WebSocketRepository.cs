@@ -12,7 +12,12 @@ using Newtonsoft.Json.Linq;
 
 namespace Chronological
 {
-    public class WebSocketRepository
+    public interface IWebSocketRepository
+    {
+        Task<List<string>> QueryWebSocket(string query, string resourcePath);
+    }
+
+    public class WebSocketRepository : IWebSocketRepository
     {
         private readonly Environment _environment;
 

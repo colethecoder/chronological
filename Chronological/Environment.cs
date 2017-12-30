@@ -78,7 +78,7 @@ namespace Chronological
 
         public GenericFluentAggregateQuery<T> AggregateQuery<T>(string queryName, Search search) where T: new()
         {
-            return new GenericFluentAggregateQuery<T>(queryName, search);
+            return new GenericFluentAggregateQuery<T>(queryName, search, this);
         }        
 
         public StringAggregateQuery AggregateQuery(string queryName, string query)
