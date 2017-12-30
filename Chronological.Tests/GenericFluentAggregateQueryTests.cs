@@ -16,7 +16,7 @@ namespace Chronological.Tests
     'to': '2017-12-28T00:00:00.0000000Z'
   },
   'predicate': {
-    'predicateString': '[data.value] > 5'
+    'predicateString': '([data.value] > 5)'
   },
   'aggregates': [
     {
