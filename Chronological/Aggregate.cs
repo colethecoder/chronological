@@ -13,7 +13,7 @@ namespace Chronological
 
     internal interface IInternalAggregate
     {
-        IAggregate GetPopulatedAggregate(JObject jObject);
+        IAggregate GetPopulatedAggregate(JObject jObject, Func<JArray,JArray> measureAccessFunc);
     }
 
     public abstract class Aggregate<TX, TY, TZ> : Dictionary<TY,TZ>, IAggregate, IInternalAggregate
@@ -23,7 +23,7 @@ namespace Chronological
 
         internal abstract Aggregate<TX, TY, TZ> Clone();
 
-        IAggregate IInternalAggregate.GetPopulatedAggregate(JObject jObject)
+        IAggregate IInternalAggregate.GetPopulatedAggregate(JObject jObject, Func<JArray, JArray> measureAccessFunc)
         {
             var aggregate = Clone();
 
@@ -31,7 +31,7 @@ namespace Chronological
             {
                 if (ChildIsAggregate())
                 {
-                    var child = ((IInternalAggregate)Child).GetPopulatedAggregate((JObject)jObject["aggregate"]);
+                    var child = ((IInternalAggregate)Child).GetPopulatedAggregate((JObject)jObject["aggregate"], x => measureAccessFunc(x));
                     aggregate.Add(dimension.x.ToObject<TY>(), (TZ)child);
                 }
                 else

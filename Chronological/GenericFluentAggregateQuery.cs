@@ -130,7 +130,7 @@ namespace Chronological
                 var typedAggregate = (IInternalAggregate)aggregate.x;
                 var aggregateJObject = (JObject)jObject["content"][aggregate.y];
 
-                var populatedAggregate = typedAggregate.GetPopulatedAggregate(aggregateJObject);
+                var populatedAggregate = typedAggregate.GetPopulatedAggregate(aggregateJObject, x => x);
                 executionResults.Add((TY)populatedAggregate);
             }
 
