@@ -9,15 +9,31 @@ namespace Chronological
         JProperty ToJProperty();
     }
 
-    public class Measure<T> : IMeasure
+    internal interface IInternalMeasure
+    {
+        IMeasure GetPopulatedMeasure(JValue value);
+    }
+
+    public class Measure<T> : IMeasure, IInternalMeasure
     {
         internal readonly string MeasureType;
         internal readonly Property Property;
+        public readonly T Value;
 
         internal Measure (Property property, string measureType)
         {
             MeasureType = measureType;
             Property = property;
+        }
+
+        private Measure(Property property, string measureType, T value) : this(property, measureType)
+        {
+            Value = value;
+        }
+
+        IMeasure IInternalMeasure.GetPopulatedMeasure(JValue value)
+        {
+            return new Measure<T>(Property, MeasureType, value.ToObject<T>());
         }
 
         internal static Measure<T>Create<TY>(Expression<Func<TY, T>> propertyExpression, string measureType)
