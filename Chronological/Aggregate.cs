@@ -37,7 +37,19 @@ namespace Chronological
                 }
                 else
                 {
-                    this.Add(dimension.ToObject<TY>(), default(TZ));
+                    var measures = new List<IMeasure>();
+                    foreach (var property in typeof(TZ).GetTypeInfo().DeclaredProperties)
+                    {
+                        if (typeof(IMeasure).GetTypeInfo().IsAssignableFrom(property.PropertyType.GetTypeInfo()))
+                        {
+                            measures.Add((IMeasure)property.GetValue(Child));
+                        }
+                    }
+
+                    object[] objects = (from measure in measures
+                        select measure).ToArray();
+                    TZ newAnon = (TZ)Activator.CreateInstance(typeof(TZ), objects);
+                    this.Add(dimension.ToObject<TY>(), newAnon);
                 }
             }
         }
