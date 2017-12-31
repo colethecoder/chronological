@@ -97,6 +97,7 @@ namespace Chronological.Tests
                 .Where(x => x.Value > 5)
                 .Execute();
 
+            Assert.True(true);
         }
 
         private string _webSocketResult = @"{

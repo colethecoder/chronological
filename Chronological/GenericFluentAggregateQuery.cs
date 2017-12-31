@@ -127,7 +127,7 @@ namespace Chronological
 
             foreach (var aggregate in aggregates.Select((x,y) => new {x,y}))
             {
-                var typedAggregate = (IAggregate)aggregate.x;
+                var typedAggregate = (IInternalAggregate)aggregate.x;
                 var aggregateJObject = (JObject)jObject["content"][aggregate.y];
 
                 typedAggregate.Populate(aggregateJObject);

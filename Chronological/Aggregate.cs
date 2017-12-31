@@ -8,16 +8,39 @@ namespace Chronological
 {
     public interface IAggregate
     {
-        JObject ToJObject();
+        JObject ToJObject();        
+    }
+
+    internal interface IInternalAggregate
+    {
         void Populate(JObject jObject);
     }
 
-    public abstract class Aggregate<TX, TY, TZ> : Dictionary<TY,TZ>, IAggregate
+    public abstract class Aggregate<TX, TY, TZ> : Dictionary<TY,TZ>, IAggregate, IInternalAggregate
     {
         internal abstract string AggregateType { get; }
-        public abstract TZ Child { get; }
+        internal abstract TZ Child { get; }
 
-        public abstract void Populate(JObject jObject);
+        void IInternalAggregate.Populate(JObject jObject)
+        {
+            var temp = false;
+            foreach (var dimension in jObject["dimension"])
+            {                
+                if (ChildIsAggregate())
+                {
+                    if (!temp)
+                    {
+                        ((IInternalAggregate)Child).Populate((JObject)jObject["aggregate"]);
+                        temp = true;
+                    }
+                    this.Add(dimension.ToObject<TY>(), Child);
+                }
+                else
+                {
+                    this.Add(dimension.ToObject<TY>(), default(TZ));
+                }
+            }
+        }
 
         internal abstract JProperty ToAggregateJProperty();
 

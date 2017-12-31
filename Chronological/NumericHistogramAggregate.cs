@@ -9,7 +9,7 @@ namespace Chronological
 
         public readonly Property Property;
         public readonly NumericBreaks NumericBreaks;
-        public override TZ Child { get; }
+        internal override TZ Child { get; }
 
         internal NumericHistogramAggregate(Property property, NumericBreaks numericBreaks, TZ child)
         {
@@ -17,24 +17,7 @@ namespace Chronological
             NumericBreaks = numericBreaks;
             Child = child;
         }
-
-        public override void Populate(JObject jObject)
-        {            
-            foreach (var dimension in jObject["dimension"])
-            {
-                var child = Child;
-                if (ChildIsAggregate())
-                {
-                    ((IAggregate)child).Populate((JObject)jObject["aggregate"]);
-                    this.Add(dimension.ToObject<NumericRange>(), child);
-                }
-                else
-                {
-                    this.Add(dimension.ToObject<NumericRange>(), default(TZ));
-                }
-            }
-        }
-
+       
         internal override JProperty ToAggregateJProperty()
         {
             return new JProperty(AggregateType, new JObject(Property.ToInputJProperty(), NumericBreaks.ToJProperty()));
