@@ -27,12 +27,12 @@ namespace Chronological
         {
             var aggregate = Clone();
 
-            foreach (var dimension in jObject["dimension"])
+            foreach (var dimension in jObject["dimension"].Select((x, y) => new { x, y }))
             {
                 if (ChildIsAggregate())
                 {
                     var child = ((IInternalAggregate)Child).GetPopulatedAggregate((JObject)jObject["aggregate"]);
-                    aggregate.Add(dimension.ToObject<TY>(), (TZ)child);
+                    aggregate.Add(dimension.x.ToObject<TY>(), (TZ)child);
                 }
                 else
                 {
@@ -48,7 +48,7 @@ namespace Chronological
                     object[] objects = (from measure in measures
                         select measure).ToArray();
                     TZ newAnon = (TZ)Activator.CreateInstance(typeof(TZ), objects);
-                    aggregate.Add(dimension.ToObject<TY>(), newAnon);
+                    aggregate.Add(dimension.x.ToObject<TY>(), newAnon);
                 }
             }
 
