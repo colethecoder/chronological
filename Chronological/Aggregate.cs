@@ -26,22 +26,26 @@ namespace Chronological
         IAggregate IInternalAggregate.GetPopulatedAggregate(JObject jObject, Func<JArray, JArray> measureAccessFunc)
         {
             var aggregate = Clone();
-
+            
             foreach (var dimension in jObject["dimension"].Select((x, y) => new { x, y }))
             {
+                Func<JArray, JArray> revisedMeasureAccessFunc = x => (JArray)measureAccessFunc(x)[dimension.y];
                 if (ChildIsAggregate())
                 {
-                    var child = ((IInternalAggregate)Child).GetPopulatedAggregate((JObject)jObject["aggregate"], x => measureAccessFunc(x));
+                    var child = ((IInternalAggregate)Child).GetPopulatedAggregate((JObject)jObject["aggregate"], revisedMeasureAccessFunc);
                     aggregate.Add(dimension.x.ToObject<TY>(), (TZ)child);
                 }
                 else
                 {
                     var measures = new List<IMeasure>();
-                    foreach (var property in typeof(TZ).GetTypeInfo().DeclaredProperties)
+                    foreach (var property in typeof(TZ).GetTypeInfo().DeclaredProperties.Select((x, y) => new { x, y }))
                     {
-                        if (typeof(IMeasure).GetTypeInfo().IsAssignableFrom(property.PropertyType.GetTypeInfo()))
+                        if (typeof(IMeasure).GetTypeInfo().IsAssignableFrom(property.x.PropertyType.GetTypeInfo()))
                         {
-                            measures.Add((IMeasure)property.GetValue(Child));
+                            var m = (IInternalMeasure)property.x.GetValue(Child);
+                            var value = revisedMeasureAccessFunc((JArray)jObject["measures"])[property.y];
+                            var m1 = m.GetPopulatedMeasure((JValue)value);
+                            measures.Add(m1);
                         }
                     }
 
