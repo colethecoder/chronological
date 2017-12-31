@@ -1,4 +1,8 @@
-﻿ using Newtonsoft.Json.Linq;
+﻿ using System;
+ using System.Collections.Generic;
+ using System.Linq;
+ using System.Reflection;
+ using Newtonsoft.Json.Linq;
 
 namespace Chronological
 {
@@ -15,6 +19,11 @@ namespace Chronological
             Property = property;
             Limit = limit;
             Child = child;
+        }
+
+        internal override Aggregate<TX, TY, TZ> Clone()
+        {
+            return new UniqueValuesAggregate<TX, TY, TZ>(Property, Limit, Child);
         }
 
         internal override JProperty ToAggregateJProperty()

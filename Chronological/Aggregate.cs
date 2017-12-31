@@ -13,7 +13,7 @@ namespace Chronological
 
     internal interface IInternalAggregate
     {
-        void Populate(JObject jObject);
+        IAggregate GetPopulatedAggregate(JObject jObject);
     }
 
     public abstract class Aggregate<TX, TY, TZ> : Dictionary<TY,TZ>, IAggregate, IInternalAggregate
@@ -21,19 +21,18 @@ namespace Chronological
         internal abstract string AggregateType { get; }
         internal abstract TZ Child { get; }
 
-        void IInternalAggregate.Populate(JObject jObject)
+        internal abstract Aggregate<TX, TY, TZ> Clone();
+
+        IAggregate IInternalAggregate.GetPopulatedAggregate(JObject jObject)
         {
-            var temp = false;
+            var aggregate = Clone();
+
             foreach (var dimension in jObject["dimension"])
-            {                
+            {
                 if (ChildIsAggregate())
                 {
-                    if (!temp)
-                    {
-                        ((IInternalAggregate)Child).Populate((JObject)jObject["aggregate"]);
-                        temp = true;
-                    }
-                    this.Add(dimension.ToObject<TY>(), Child);
+                    var child = ((IInternalAggregate)Child).GetPopulatedAggregate((JObject)jObject["aggregate"]);
+                    aggregate.Add(dimension.ToObject<TY>(), (TZ)child);
                 }
                 else
                 {
@@ -49,9 +48,11 @@ namespace Chronological
                     object[] objects = (from measure in measures
                         select measure).ToArray();
                     TZ newAnon = (TZ)Activator.CreateInstance(typeof(TZ), objects);
-                    this.Add(dimension.ToObject<TY>(), newAnon);
+                    aggregate.Add(dimension.ToObject<TY>(), newAnon);
                 }
             }
+
+            return aggregate;
         }
 
         internal abstract JProperty ToAggregateJProperty();

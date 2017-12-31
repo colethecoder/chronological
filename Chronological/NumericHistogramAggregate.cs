@@ -11,6 +11,11 @@ namespace Chronological
         public readonly NumericBreaks NumericBreaks;
         internal override TZ Child { get; }
 
+        internal override Aggregate<TX, NumericRange, TZ> Clone()
+        {
+            return new NumericHistogramAggregate<TX, TZ>(Property, NumericBreaks, Child);
+        }
+
         internal NumericHistogramAggregate(Property property, NumericBreaks numericBreaks, TZ child)
         {
             Property = property;

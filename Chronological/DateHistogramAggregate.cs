@@ -10,6 +10,10 @@ namespace Chronological
         public readonly Property Property;
         public readonly DateBreaks DateBreaks;
         internal override TZ Child { get; }
+        internal override Aggregate<TX, DateTime, TZ> Clone()
+        {
+            return new DateHistogramAggregate<TX, TZ>(Property, DateBreaks, Child);
+        }
 
         internal DateHistogramAggregate(Property property, DateBreaks dateBreaks, TZ child)
         {
