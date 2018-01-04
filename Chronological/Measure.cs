@@ -13,6 +13,11 @@ namespace Chronological
             _property = property;
         }
 
+        public static Measure Count()
+        {
+            return new Measure("count", null);
+        }
+
         public static Measure Sum(Property property)
         {
             return new Measure("sum", property);
@@ -35,7 +40,13 @@ namespace Chronological
 
         internal JProperty ToJProperty()
         {
-            return new JProperty(_measureType, new JObject(_property.ToInputJProperty()));
+            switch (_measureType)
+            {
+                case ("count"):
+                    return new JProperty(_measureType, new JObject());
+                default:
+                    return new JProperty(_measureType, new JObject(_property.ToInputJProperty()));
+            }
 
         }
     }
