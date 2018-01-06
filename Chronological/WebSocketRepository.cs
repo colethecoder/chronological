@@ -26,6 +26,11 @@ namespace Chronological
             _environment = environment;
         }
 
+
+        //TODO: need to separate into aggregate and event style queries,
+        // Events are cumulative messages (eg 10% + 20% + 30% ....)
+        // Average you only want the last one (ignore 50% just use 100%)
+        // Reference: https://github.com/Azure-Samples/Azure-Time-Series-Insights/blob/master/C-%20Hello%20World%20App%20Sample/Program.cs
         public async Task<List<string>> QueryWebSocket(string query, string resourcePath)
         {        
             var webSocket = new ClientWebSocket();
