@@ -44,7 +44,13 @@ namespace Chronological
 
         public JProperty ToJProperty()
         {
-            return new JProperty(MeasureType, new JObject(Property.ToInputJProperty()));
+            switch (MeasureType)
+            {
+                case (Measure.CountMeasureExpression):
+                    return new JProperty(MeasureType, new JObject());
+                default:
+                    return new JProperty(MeasureType, new JObject(Property.ToInputJProperty()));
+            }
         }
     }
 
@@ -54,5 +60,6 @@ namespace Chronological
         internal const string MinimumMeasureExpression = "min";
         internal const string AverageMeasureExpression = "avg";
         internal const string SumMeasureExpression = "sum";
+		internal const string CountMeasureExpression = "count";
     }
 }
