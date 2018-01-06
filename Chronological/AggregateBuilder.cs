@@ -43,5 +43,11 @@ namespace Chronological
         {
             return Measure<TY>.Create(property, Measure.AverageMeasureExpression);
         }
+
+        public Measure<int> Count()
+        {
+            return Measure<int>.Create(Measure.CountMeasureExpression);
+        }
+
     }
 }

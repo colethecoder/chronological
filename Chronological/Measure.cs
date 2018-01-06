@@ -42,6 +42,11 @@ namespace Chronological
             return new Measure<T>(property, measureType);            
         }
 
+        internal static Measure<T> Create(string measureType)
+        {
+            return new Measure<T>(null, measureType);
+        }
+
         public JProperty ToJProperty()
         {
             switch (MeasureType)

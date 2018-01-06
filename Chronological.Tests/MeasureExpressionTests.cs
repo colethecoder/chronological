@@ -6,7 +6,6 @@ namespace Chronological.Tests
 {
     public class MeasureExpressionTests
     {
-        // Broken test to fiddle with build
         [Fact]
         public void Test1()
         {                        
@@ -14,6 +13,16 @@ namespace Chronological.Tests
             
             Assert.Equal(measure.MeasureType, Measure.MaximumMeasureExpression);
             Assert.True(JToken.DeepEquals(measure.Property.ToInputJProperty(), TestType1JProperties.Value));                       
+        }
+
+        [Fact]
+        public void CountMeasureShouldHaveEmptyBody()
+        {
+            var measure = new Measure<int>(null, Measure.CountMeasureExpression);
+
+            var expected = new JProperty("count", new JObject());
+
+            Assert.True(JToken.DeepEquals(measure.ToJProperty(), expected));
         }
     }
 }
