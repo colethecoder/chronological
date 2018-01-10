@@ -37,37 +37,12 @@ namespace Chronological
                 new JProperty("Authorization", "Bearer " + accessToken)));
         }
 
-        protected abstract JProperty GetContent();
-
-        
+        protected abstract JProperty GetContent();        
 
         public new string ToString()
         {
             return ToJObject(_environment.AccessToken).ToString();
         }
-
-        public async Task<JObject> ResultsToJObjectAsync()
-        {
-            var results = await _webSocketRepository.QueryWebSocket(ToString(),"aggregates");
-
-            if (results != null && results.Any())
-            {
-                return JsonConvert.DeserializeObject<JObject>(results.First());
-            }
-
-            return null;
-        }
-
-        public async Task<AggregateQueryResult> ResultsToAggregateQueryResultAsync()
-        {
-            var results = await _webSocketRepository.QueryWebSocket(ToString(), "aggregates");
-
-            if (results != null && results.Any())
-            {
-                return JsonConvert.DeserializeObject<AggregateQueryResult>(results.First());
-            }
-
-            return null;           
-        }
+        
     }
 }

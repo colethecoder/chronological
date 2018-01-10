@@ -66,11 +66,11 @@ namespace Chronological.Tests
 
             var queryString = environment.AggregateQuery<TestType1>("Test", Search.Span(from, to))
                 .Select(builder => builder.UniqueValues(x => x.Value, Limit.Take(10),
-                    builder.UniqueValues(x => x.Value, Limit.Take(10),
-                        new
-                        {
-                            Maximum = builder.Maximum(x => x.Value)
-                        })))
+                                        builder.UniqueValues(x => x.Value, Limit.Take(10),
+                                            new
+                                            {
+                                                Maximum = builder.Maximum(x => x.Value)
+                                            })))
                 .Where(x => x.Value > 5)
                 .ToString();
 
@@ -87,7 +87,7 @@ namespace Chronological.Tests
             var from = new DateTime(2017, 12, 23, 12, 0, 0, DateTimeKind.Utc);
             var to = new DateTime(2017, 12, 30, 12, 0, 0, DateTimeKind.Utc);
 
-            var result = await new GenericFluentAggregateQuery<TestType1>("Test", Search.Span(from, to), environment, new TestWebSocketRepository(_webSocketResult))
+            var result = await new GenericFluentAggregateQuery<TestType1>("Test", Search.Span(from, to), environment, new AggregateWebSocketRepository(new MockWebSocketRepository(_webSocketResult)))
                 .Select(builder => builder.UniqueValues(x => x.DataType, Limit.Take(10),
                                     builder.DateHistogram(x => x.Date, Breaks.InDays(1),                                        
                                     new
@@ -111,6 +111,7 @@ namespace Chronological.Tests
         'content': [
     {
         'dimension': [
+        'Null Test',
         'Basket Motor Phase1',
         'Heater Phase1',
         'Machine DeviceInputVoltage',
@@ -132,6 +133,7 @@ namespace Chronological.Tests
             '2017-12-30T00:00:00Z'
                 ],
             'measures': [
+                null,
                 [
                 [
             0.002,
@@ -412,23 +414,6 @@ namespace Chronological.Tests
     'percentCompleted': 100.0
 }";
 
-        private class TestWebSocketRepository : IWebSocketRepository
-        {
-            private readonly List<string> _results;
-
-            public TestWebSocketRepository(string result) : this(new List<string> {result})
-            {
-            }
-
-            public TestWebSocketRepository(List<string> results)
-            {
-                _results = results;
-            }
-
-            public async Task<List<string>> QueryWebSocket(string query, string resourcePath)
-            {
-                return _results;
-            }
-        }
+        
     }
 }

@@ -11,7 +11,7 @@ namespace Chronological
     {
         private readonly string _queryName;
         private readonly Environment _environment;
-        private readonly WebSocketRepository _webSocketRepository;
+        private readonly IWebSocketRepository _webSocketRepository;
 
 
         internal EventQuery(string queryName, Environment environment)

@@ -12,14 +12,14 @@ namespace Chronological
         private readonly string _queryName;
         private readonly Search _search;
         private readonly Environment _environment;
-        private readonly IWebSocketRepository _webSocketRepository;
+        private readonly IAggregateWebSocketRepository _webSocketRepository;
 
         internal GenericFluentAggregateQuery(string queryName, Search search, Environment environment) : this(queryName,
-            search, environment, new WebSocketRepository(environment))
+            search, environment, new AggregateWebSocketRepository(new WebSocketRepository(environment)))
         {
         }
 
-        internal GenericFluentAggregateQuery(string queryName, Search search, Environment environment, IWebSocketRepository webSocketRepository)
+        internal GenericFluentAggregateQuery(string queryName, Search search, Environment environment, IAggregateWebSocketRepository webSocketRepository)
         {
             _queryName = queryName;
             _search = search;
@@ -41,9 +41,9 @@ namespace Chronological
         private readonly string _queryName;
         private readonly Search _search;
         private readonly Environment _environment;
-        private readonly IWebSocketRepository _webSocketRepository;
+        private readonly IAggregateWebSocketRepository _webSocketRepository;
 
-        internal GenericFluentAggregateQuery(string queryName, Search search, TY aggregate, Environment environment, IWebSocketRepository webSocketRepository) : this(queryName, search,
+        internal GenericFluentAggregateQuery(string queryName, Search search, TY aggregate, Environment environment, IAggregateWebSocketRepository webSocketRepository) : this(queryName, search,
             new List<TY>
             {
                 aggregate
@@ -51,7 +51,7 @@ namespace Chronological
         {
         }
 
-        internal GenericFluentAggregateQuery(string queryName, Search search, IEnumerable<TY> aggregates, Environment environment, IWebSocketRepository webSocketRepository)
+        internal GenericFluentAggregateQuery(string queryName, Search search, IEnumerable<TY> aggregates, Environment environment, IAggregateWebSocketRepository webSocketRepository)
         {
             _queryName = queryName;
             _search = search;
@@ -115,26 +115,10 @@ namespace Chronological
 
         public async Task<IEnumerable<TY>> Execute()
         {
-            var executionResults = new List<TY>();
             var query = ToJObject(_environment.AccessToken);
 
-            var results = await _webSocketRepository.QueryWebSocket(query.ToString(), "aggregates");
-
-            var aggregates = _aggregates;
-
-            //TODO: figure out what to do in situations were there is more than one result
-            var jObject = JObject.Parse(results.First());
-
-            foreach (var aggregate in aggregates.Select((x,y) => new {x,y}))
-            {
-                var typedAggregate = (IInternalAggregate)aggregate.x;
-                var aggregateJObject = (JObject)jObject["content"][aggregate.y];
-
-                var populatedAggregate = typedAggregate.GetPopulatedAggregate(aggregateJObject, x => x);
-                executionResults.Add((TY)populatedAggregate);
-            }
-
-            return executionResults;
+            return await _webSocketRepository.Execute(query.ToString(), _aggregates);
+            
         }
 
     }

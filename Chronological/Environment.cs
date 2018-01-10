@@ -35,45 +35,25 @@ namespace Chronological
 
         public async Task<Availability> GetAvailabilityAsync(string queryName = "TimeSeriesInsightsAvailabilityQuery")
         {
-            DateTime fromAvailabilityTimestamp;
-            DateTime toAvailabilityTimestamp;
+            Uri uri = new UriBuilder("https", EnvironmentFqdn)
             {
-                Uri uri = new UriBuilder("https", EnvironmentFqdn)
-                {
-                    Path = "availability",
-                    Query = "api-version=2016-12-12"
-                }.Uri;
-                HttpWebRequest request = WebRequest.CreateHttp(uri);
-                request.Method = "GET";
-                request.Headers["x-ms-client-application-name"] = queryName;
-                request.Headers["Authorization"] = "Bearer " + AccessToken;
+                Path = "availability",
+                Query = "api-version=2016-12-12"
+            }.Uri;
+            HttpWebRequest request = WebRequest.CreateHttp(uri);
+            request.Method = "GET";
+            request.Headers["x-ms-client-application-name"] = queryName;
+            request.Headers["Authorization"] = "Bearer " + AccessToken;
 
-                using (WebResponse webResponse = await request.GetResponseAsync())
-                using (var sr = new StreamReader(webResponse.GetResponseStream()))
-                {
-                    string responseJson = await sr.ReadToEndAsync();
+            using (WebResponse webResponse = await request.GetResponseAsync())
+            using (var sr = new StreamReader(webResponse.GetResponseStream()))
+            {
+                string responseJson = await sr.ReadToEndAsync();
 
-                    //TODO - response looks like below, should add other values in 
-                    //{
-                    //    "range": {
-                    //        "from": "2016-08-01T01:02:03Z",
-                    //        "to": "2016-08-31T03:04:05Z"
-                    //    },
-                    //    "intervalSize": "1h",
-                    //    "distribution": {
-                    //        "2016-08-01T00:00:00Z": 123,
-                    //        "2016-08-31T03:00:00Z": 345
-                    //    }
-                    //}
-
-                    JObject result = JsonConvert.DeserializeObject<JObject>(responseJson);
-                    JObject range = (JObject)result["range"];
-                    fromAvailabilityTimestamp = range["from"].Value<DateTime>();
-                    toAvailabilityTimestamp = range["to"].Value<DateTime>();
-                }
+                var result = JsonConvert.DeserializeObject<Availability>(responseJson);
+                return result;
             }
 
-            return new Availability(fromAvailabilityTimestamp, toAvailabilityTimestamp);
         }
 
         public GenericFluentAggregateQuery<T> AggregateQuery<T>(string queryName, Search search) where T: new()
