@@ -56,6 +56,40 @@ namespace Chronological
 
         }
 
+        public async Task<Availability> GetMetadataAsync(DateTime from, DateTime to, string queryName = "TimeSeriesInsightsMetadataQuery")
+        {
+            Uri uri = new UriBuilder("https", EnvironmentFqdn)
+            {
+                Path = "metadata",
+                Query = "api-version=2016-12-12"
+            }.Uri;
+
+            HttpWebRequest request = WebRequest.CreateHttp(uri);
+            request.Method = "POST";
+            request.Headers["x-ms-client-application-name"] = queryName;
+            request.Headers["Authorization"] = "Bearer " + AccessToken;
+
+            var requestStream = await request.GetRequestStreamAsync();
+
+            using (var streamWriter = new StreamWriter(requestStream))
+            {
+                string json = "{\"searchSpan\": { \"from\": { \"dateTime\":\"2017-08-01T00:00:00.000Z\"},  \"to\": { \"dateTime\":\"2018-08-31T00:00:00.000Z\"} } }";
+
+                streamWriter.Write(json);
+                streamWriter.Flush();
+            }
+
+            using (WebResponse webResponse = await request.GetResponseAsync())
+            using (var sr = new StreamReader(webResponse.GetResponseStream()))
+            {
+                string responseJson = await sr.ReadToEndAsync();
+
+                var result = JsonConvert.DeserializeObject<Availability>(responseJson);
+                return result;
+            }
+
+        }
+
         public GenericFluentAggregateQuery<T> AggregateQuery<T>(string queryName, Search search) where T: new()
         {
             return new GenericFluentAggregateQuery<T>(queryName, search, this);
