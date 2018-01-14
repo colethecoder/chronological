@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Chronological
+﻿namespace Chronological
 {
     public class EventWebSocketRepository
     {
-        
+        //TODO: all the necessary concat for event results
     }
 }

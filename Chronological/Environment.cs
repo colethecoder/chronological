@@ -84,7 +84,10 @@ namespace Chronological
             {
                 string responseJson = await sr.ReadToEndAsync();
 
-                var result = JsonConvert.DeserializeObject<EnvironmentMetadata>(responseJson);
+                var json = JsonConvert.DeserializeObject<JToken>(responseJson);
+
+                var result = new EnvironmentMetadata((JArray)json["properties"]);
+
                 return result;
             }
 

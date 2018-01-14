@@ -5,15 +5,16 @@ namespace Chronological
 {
     public class DataType
     {
-        internal readonly string _dataType;
+        public string TimeSeriesInsightsType { get; }
+
         internal DataType(string dataType)
         {
-            _dataType = dataType;
+            TimeSeriesInsightsType = dataType;
         }
 
         internal JProperty ToJProperty()
         {
-            return new JProperty("type", _dataType);
+            return new JProperty("type", TimeSeriesInsightsType);
         }
 
         internal static DataType FromType(Type type)
