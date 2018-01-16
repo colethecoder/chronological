@@ -7,11 +7,6 @@ using Newtonsoft.Json.Linq;
 
 namespace Chronological
 {
-    internal interface IAggregateWebSocketRepository
-    {
-        Task<IEnumerable<T>> Execute<T>(string query, IEnumerable<T> aggregates);
-    }
-
     internal class AggregateWebSocketRepository : IAggregateWebSocketRepository
     {
         private readonly IWebSocketRepository _webSocketRepository;

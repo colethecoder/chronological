@@ -100,9 +100,9 @@ namespace Chronological
             return new StringAggregateQuery(queryName, query, this);
         }
 
-        public FluentEventQuery EventQuery(string queryName)
+        public GenericFluentEventQuery<T> EventQuery<T>(string queryName, Search search, Limit limit) where T:new()
         {
-            return new FluentEventQuery(queryName, this);
+            return new GenericFluentEventQuery<T>(queryName, search, limit, this);
         }
 
         /// <summary>
