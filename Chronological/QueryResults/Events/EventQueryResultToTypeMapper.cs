@@ -11,14 +11,19 @@ namespace Chronological
     {
         internal IEnumerable<T> Map<T>(EventQueryResult eventQueryResult)
         {
-            var schemaDictionary = GetSchemaDictionary(eventQueryResult);
+            return Map<T>(eventQueryResult.Content.Events);
+        }
+
+        internal IEnumerable<T> Map<T>(IEnumerable<EventResult> eventResults)
+        {
+            var schemaDictionary = GetSchemaDictionary(eventResults);
 
             var results = new List<T>();
 
             var returnType = typeof(T);
             var typeProperties = returnType.GetRuntimeProperties();
 
-            foreach (var eventResult in eventQueryResult.Content.Events)
+            foreach (var eventResult in eventResults)
             {
                 var instance = (T) Activator.CreateInstance<T>();
 
@@ -67,11 +72,11 @@ namespace Chronological
             return results;
         }
 
-        internal Dictionary<int, Schema> GetSchemaDictionary(EventQueryResult eventQueryResult)
+        internal Dictionary<int, Schema> GetSchemaDictionary(IEnumerable<EventResult> eventQueryResults)
         {
             var result = new Dictionary<int, Schema>();
 
-            foreach (var eventResult in eventQueryResult.Content.Events)
+            foreach (var eventResult in eventQueryResults)
             {
                 if (eventResult.Schema != null)
                 {

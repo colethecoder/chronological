@@ -33,15 +33,10 @@ namespace Chronological
             // Events should combine all results recevied
             var jArray = new JArray(results.SelectMany(x => (JArray)x["events"]));
 
-            var result = results.Last();            
+            var eventResults = jArray.ToObject<List<EventResult>>();
 
-            //var eventQueryResult = 
-
-            //var eventQueryResult = JsonConvert.DeserializeObject<EventQueryResult>(results.First());
-            //    return new EventQueryResultToTypeMapper().Map<T>(eventQueryResult);
-            
-            //TODO: all the necessary concat for event results
-            return executionResults;
+            return new EventQueryResultToTypeMapper().Map<T>(eventResults);
+                        
         }
 
         
