@@ -56,7 +56,7 @@ namespace Chronological
 
         }
 
-        public async Task<Availability> GetMetadataAsync(DateTime from, DateTime to, string queryName = "TimeSeriesInsightsMetadataQuery")
+        public async Task<EnvironmentMetadata> GetMetadataAsync(DateTime from, DateTime to, string queryName = "TimeSeriesInsightsMetadataQuery")
         {
             Uri uri = new UriBuilder("https", EnvironmentFqdn)
             {
@@ -84,7 +84,10 @@ namespace Chronological
             {
                 string responseJson = await sr.ReadToEndAsync();
 
-                var result = JsonConvert.DeserializeObject<Availability>(responseJson);
+                var json = JsonConvert.DeserializeObject<JToken>(responseJson);
+
+                var result = new EnvironmentMetadata((JArray)json["properties"]);
+
                 return result;
             }
 

@@ -1,18 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
+using Newtonsoft.Json.Linq;
 
 namespace Chronological
 {
     public class EnvironmentMetadata
     {
-        public List<EnvironmentMetadataProperty> Properties { get; set; }
+        public IEnumerable<Property> Properties { get; }
+
+        internal EnvironmentMetadata(JArray properties)
+        {
+            Properties = from property in properties
+                         select new Property(false, property["name"].Value<string>(), new DataType(property["type"].Value<string>()));
+        }
     }
 
-    public class EnvironmentMetadataProperty
-    {
-        public string Name { get; set; }
-
-        public string Type { get; set; }
-    }
 }

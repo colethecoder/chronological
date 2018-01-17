@@ -6,15 +6,6 @@ using System.Reflection;
 
 namespace Chronological
 {
-    public interface IAggregate
-    {
-        JObject ToJObject();        
-    }
-
-    internal interface IInternalAggregate
-    {
-        IAggregate GetPopulatedAggregate(JObject jObject, Func<JArray,JArray> measureAccessFunc);
-    }
 
     public abstract class Aggregate<TX, TY, TZ> : Dictionary<TY,TZ>, IAggregate, IInternalAggregate
     {

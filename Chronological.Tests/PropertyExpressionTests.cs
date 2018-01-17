@@ -9,8 +9,8 @@ namespace Chronological.Tests
         {
             var property = Property<double>.Create<TestType1>(y => y.Value);
 
-            Assert.Equal(property._dataType._dataType, DataType.Double._dataType);
-            Assert.Equal(property._propertyName, "data.value");
+            Assert.Equal(property.DataType.TimeSeriesInsightsType, DataType.Double.TimeSeriesInsightsType);
+            Assert.Equal(property.Name, "data.value");
             Assert.Equal(property._isBuiltIn, false);
         }
     }

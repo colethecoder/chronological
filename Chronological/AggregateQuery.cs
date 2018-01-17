@@ -1,9 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Chronological.QueryResults.Aggregates;
+﻿using Newtonsoft.Json.Linq;
 
 namespace Chronological
 {

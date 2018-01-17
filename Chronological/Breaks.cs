@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
-
-namespace Chronological
+﻿namespace Chronological
 {
     public class Breaks
     {
@@ -40,42 +38,5 @@ namespace Chronological
         }
 
         
-    }
-
-    public interface IBreaks
-    {
-        JProperty ToJProperty();
-    }
-
-    public class DateBreaks : IBreaks
-    {
-        private readonly string _size;
-
-        internal DateBreaks(string size)
-        {
-            _size = size;
-        }
-
-        public JProperty ToJProperty()
-        {
-            return new JProperty("breaks", new JObject(
-                new JProperty("size", _size)));
-        }
-    }
-
-    public class NumericBreaks : IBreaks
-    {
-        private readonly int _count;
-
-        internal NumericBreaks(int count)
-        {
-            _count = count;
-        }
-
-        public JProperty ToJProperty()
-        {
-            return new JProperty("breaks", new JObject(
-                new JProperty("count", _count)));
-        }
     }
 }

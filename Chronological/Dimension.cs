@@ -2,11 +2,6 @@
 
 namespace Chronological
 {
-    public interface IDimension
-    {
-        JProperty ToJProperty();
-
-    }
 
     public class Dimension : IDimension
     {
