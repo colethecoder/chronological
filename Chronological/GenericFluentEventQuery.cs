@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
-using Chronological.QueryResults.Events;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Chronological
@@ -19,7 +15,8 @@ namespace Chronological
         private readonly Environment _environment;
         private readonly IEventWebSocketRepository _eventWebSocketRepository;
 
-        internal GenericFluentEventQuery(string queryName, Search search, Limit limit, Environment environment) : this(queryName,search,limit,environment,new EventWebSocketRepository(new WebSocketRepository(environment)))
+        internal GenericFluentEventQuery(string queryName, Search search, Limit limit, Environment environment) 
+            : this(queryName,search,limit,environment,new EventWebSocketRepository(new WebSocketRepository(environment)))
         {            
         }
 
@@ -58,6 +55,26 @@ namespace Chronological
                 _filter.ToPredicateJProperty(),
                 _limit.ToJProperty()
             ));
+        }
+
+        private JProperty GetHeaders(string accessToken)
+        {
+            return new JProperty("headers", new JObject(
+                new JProperty("x-ms-client-application-name", _queryName),
+                new JProperty("Authorization", "Bearer " + accessToken)));
+        }
+
+        private JObject ToJObject(string accessToken)
+        {
+            return new JObject(
+                GetHeaders(accessToken),
+                GetContent()
+            );
+        }
+
+        public new string ToString()
+        {
+            return ToJObject(_environment.AccessToken).ToString();
         }
 
         public async Task<IEnumerable<T>> ExecuteAsync()
