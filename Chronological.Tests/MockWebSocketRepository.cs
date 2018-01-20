@@ -19,11 +19,6 @@ namespace Chronological.Tests
             _results = results;
         }
 
-        async Task<List<string>> IWebSocketRepository.QueryWebSocket(string query, string resourcePath)
-        {
-            return _results;
-        }
-
         async Task<IReadOnlyList<JToken>> IWebSocketRepository.ReadWebSocketResponseAsync(string query, string resourcePath)
         {
             return new List<JToken> { JToken.Parse(_results.First())["content"] };

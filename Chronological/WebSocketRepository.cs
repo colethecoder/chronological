@@ -12,18 +12,19 @@ using Newtonsoft.Json.Linq;
 
 namespace Chronological
 {
-    internal interface IWebSocketRepository
-    {        
-        Task<IReadOnlyList<JToken>> ReadWebSocketResponseAsync(string query, string resourcePath);
-    }
-
     internal class WebSocketRepository : IWebSocketRepository
     {
         private readonly Environment _environment;
+        private readonly IErrorToExceptionConverter _errorToExceptionConverter;
 
-        internal WebSocketRepository(Environment environment)
+        internal WebSocketRepository(Environment environment) : this(environment, new ErrorToExceptionConverter())
+        {            
+        }
+
+        internal WebSocketRepository(Environment environment, IErrorToExceptionConverter errorToExceptionConverter)
         {
             _environment = environment;
+            _errorToExceptionConverter = errorToExceptionConverter;
         }
 
         async Task<IReadOnlyList<JToken>> IWebSocketRepository.ReadWebSocketResponseAsync(string query, string resourcePath)
@@ -80,22 +81,8 @@ namespace Chronological
 
                     if (messageObj["error"] != null)
                     {
-                        var errorObj = messageObj["error"].ToObject<ErrorResult>();
-
-                        if (errorObj.Code == "AuthenticationFailed")
-                        {
-                            if (errorObj.InnerError?.Code == "TokenExpired")
-                            {
-                                throw new ChronologicalExpiredAccessTokenException(errorObj.InnerError.Message);
-                            }
-                        }
-                        var errorMessage = $"Error Code: {errorObj.Code}, Error Message: {errorObj.Message}";
-                        if (errorObj.InnerError != null)
-                        {
-                            errorMessage +=
-                                $", Inner Error Code: {errorObj.InnerError.Code}, Inner Error Message: {errorObj.InnerError.Message}";
-                        }
-                        throw new ChronologicalUnexpectedException(errorMessage);                        
+                        var error = messageObj["error"].ToObject<ErrorResult>();
+                        throw _errorToExceptionConverter.ConvertTimeSeriesErrorToException(error);                                               
                     }
 
                     // Actual response contents is wrapped into "content" object.
