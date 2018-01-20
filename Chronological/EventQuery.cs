@@ -11,14 +11,18 @@ namespace Chronological
     {
         private readonly string _queryName;
         private readonly Environment _environment;
-        private readonly IWebSocketRepository _webSocketRepository;
+        private readonly IEventWebSocketRepository _eventWebSocketRepository;
 
-
-        internal EventQuery(string queryName, Environment environment)
+        internal EventQuery(string queryName, Environment environment,
+            IEventWebSocketRepository eventWebSocketRepository)
         {
             _queryName = queryName;
             _environment = environment;
-            _webSocketRepository = new WebSocketRepository(environment);
+            _eventWebSocketRepository = eventWebSocketRepository;
+        }
+
+        internal EventQuery(string queryName, Environment environment) : this(queryName, environment, new EventWebSocketRepository(new WebSocketRepository(environment)))
+        {            
         }
 
         protected abstract JProperty GetContent();
@@ -41,44 +45,7 @@ namespace Chronological
         public new string ToString()
         {
             return ToJObject(_environment.AccessToken).ToString();
-        }
-
-        public async Task<JObject> ResultsToJObjectAsync()
-        {
-            var results = await _webSocketRepository.QueryWebSocket(ToString(), "events");
-
-            if (results != null && results.Any())
-            {
-                return JsonConvert.DeserializeObject<JObject>(results.First());
-            }
-
-            return null;
-        }
-
-        public async Task<EventQueryResult> ResultsToEventQueryResultAsync()
-        {
-            var results = await _webSocketRepository.QueryWebSocket(ToString(), "events");
-
-            if (results != null && results.Any())
-            {
-                return JsonConvert.DeserializeObject<EventQueryResult>(results.First());
-            }
-
-            return null;
-        }
-
-        public async Task<IEnumerable<T>> ResultsToTypeAsync<T>()
-        {
-            var results = await _webSocketRepository.QueryWebSocket(ToString(), "events");
-
-            if (results != null && results.Any())
-            {
-                var eventQueryResult = JsonConvert.DeserializeObject<EventQueryResult>(results.First());
-                return new EventQueryResultToTypeMapper().Map<T>(eventQueryResult);
-            }
-
-            return null;
-        }
+        }        
 
     }
 }
