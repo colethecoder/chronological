@@ -3,22 +3,30 @@ using Chronological.QueryResults;
 
 namespace Chronological.Exceptions
 {
-    internal interface IErrorToExceptionConverter
-    {
-        Exception ConvertTimeSeriesErrorToException(ErrorResult error);
-    }
-
     internal class ErrorToExceptionConverter : IErrorToExceptionConverter
     {
-        public Exception ConvertTimeSeriesErrorToException(ErrorResult error)
+        Exception IErrorToExceptionConverter.ConvertTimeSeriesErrorToException(ErrorResult error)
         {
-            if (error.Code == "AuthenticationFailed")
+            switch (error.Code)
             {
-                if (error.InnerError?.Code == "TokenExpired")
-                {
-                    return new ChronologicalExpiredAccessTokenException(error.InnerError.Message);
-                }
-            }
+                case ("AuthenticationFailed"):
+                    if (error.InnerError?.Code == "TokenExpired")
+                    {
+                        return new ChronologicalExpiredAccessTokenException(error.InnerError.Message);
+                    }
+                    return GenerateUnexpectedException(error);
+                default:
+                    return GenerateUnexpectedException(error);
+            }                        
+        }
+
+        internal ChronologicalExpiredAccessTokenException GenerateExpiredAccessTokenException(ErrorResult error)
+        {
+            return new ChronologicalExpiredAccessTokenException(error.InnerError.Message);
+        }
+
+        internal ChronologicalUnexpectedException GenerateUnexpectedException(ErrorResult error)
+        {
             var errorMessage = $"Error Code: {error.Code}, Error Message: {error.Message}";
             if (error.InnerError != null)
             {
@@ -27,5 +35,7 @@ namespace Chronological.Exceptions
             }
             return new ChronologicalUnexpectedException(errorMessage);
         }
+
+
     }
 }
