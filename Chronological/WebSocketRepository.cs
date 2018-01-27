@@ -82,6 +82,16 @@ namespace Chronological
                     if (messageObj["error"] != null)
                     {
                         var error = messageObj["error"].ToObject<ErrorResult>();
+
+                        // Close web socket connection.
+                        if (webSocket.State == WebSocketState.Open)
+                        {
+                            await webSocket.CloseAsync(
+                                WebSocketCloseStatus.NormalClosure,
+                                "CompletedByClient",
+                                CancellationToken.None);
+                        }
+
                         throw _errorToExceptionConverter.ConvertTimeSeriesErrorToException(error);                                               
                     }
 

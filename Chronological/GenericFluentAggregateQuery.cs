@@ -113,7 +113,7 @@ namespace Chronological
             ));
         }
 
-        public async Task<IEnumerable<TY>> Execute()
+        public async Task<IEnumerable<TY>> ExecuteAsync()
         {
             var query = ToJObject(_environment.AccessToken);
 

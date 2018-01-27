@@ -96,7 +96,7 @@ namespace Chronological.Tests
                                         Minmum = builder.Minimum(x => x.Value)
                                     })))
                 .Where(x => x.Value > 5)
-                .Execute();
+                .ExecuteAsync();
 
             var uniqueValues = result.First();
 
