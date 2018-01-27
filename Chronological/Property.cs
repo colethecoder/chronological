@@ -4,7 +4,7 @@ namespace Chronological
 {
     public class Property
     {
-        internal readonly bool _isBuiltIn;
+        private readonly bool _isBuiltIn;
         public readonly string Name;
         public readonly DataType DataType;
 

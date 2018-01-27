@@ -25,8 +25,6 @@ namespace Chronological
 
         async Task<IEnumerable<T>> IEventWebSocketRepository.Execute<T>(string query)
         {
-            var executionResults = new List<T>();
-
             var results = await _webSocketRepository.ReadWebSocketResponseAsync(query, "events");
 
             // According to samples here: https://github.com/Azure-Samples/Azure-Time-Series-Insights/blob/master/C-%20Hello%20World%20App%20Sample/Program.cs

@@ -64,6 +64,8 @@ namespace Chronological
                     return MemberExpressionToString(memberExpression);
                 case BinaryExpression binaryExpression:
                     return BinaryExpressionToString(binaryExpression);
+                case NewExpression newExpression:
+                    return NewExpressionToString(newExpression);
                 case ConstantExpression constantExpression:
                     return ConstantExpressionToString(constantExpression);
                 case MethodCallExpression methodCallExpression:
@@ -105,22 +107,31 @@ namespace Chronological
             return eventFieldMemberExpression.EscapedEventFieldName;
         }
 
+        private static string NewExpressionToString(NewExpression newExpression)
+        {
+            object result = Expression.Lambda(newExpression).Compile().DynamicInvoke();
+            return ConvertObjectToString(result);
+        }
+
         private static string ConstantExpressionToString(ConstantExpression constantExpression)
         {
-            switch (constantExpression.Value)
+            return ConvertObjectToString(constantExpression.Value);
+        }
+
+        private static string ConvertObjectToString(object toConvert)
+        {
+            switch (toConvert)
             {
                 case double d:
                     return d.ToString();
                 case string s:
                     return $"'{s}'";
                 case bool b:
-                    //TODO to TRUE / FALSE style string
-                    throw new NotImplementedException();
+                    return b ? "TRUE" : "FALSE";
                 case TimeSpan ts:
                     return $"ts'P0Y0M{ts.Days}DT{ts.Hours}H{ts.Minutes}M{ts.Seconds}.{ts.Milliseconds}S'";
                 case DateTime dt:
-                    //TODO to dt'xxxx' style string
-                    throw new NotImplementedException();
+                    return $"dt'{dt:O}'";
                 default:
                     throw new NotImplementedException();
             }

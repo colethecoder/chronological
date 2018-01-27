@@ -20,22 +20,26 @@ namespace Chronological
             
             foreach (var dimension in jObject["dimension"].Select((x, y) => new { x, y }))
             {
-                Func<JArray, JArray> revisedMeasureAccessFunc = x => {
+                JArray MeasureAccessFunc(JArray x)
+                {
                     if (x == null)
                     {
                         return null;
                     }
+
                     var temp = measureAccessFunc(x);
                     if (temp == null)
                     {
                         return null;
                     }
+
                     JToken value = temp[dimension.y];
                     return value.Type == JTokenType.Null ? null : (JArray)value;
-                };
+                }
+
                 if (ChildIsAggregate())
                 {
-                    var child = ((IInternalAggregate)Child).GetPopulatedAggregate((JObject)jObject["aggregate"], revisedMeasureAccessFunc);
+                    var child = ((IInternalAggregate)Child).GetPopulatedAggregate((JObject)jObject["aggregate"], MeasureAccessFunc);
                     aggregate.Add(dimension.x.ToObject<TY>(), (TZ)child);
                 }
                 else
@@ -47,7 +51,7 @@ namespace Chronological
                         {
                             var m = (IInternalMeasure)property.x.GetValue(Child);
                             var measuresJArray = (JArray)jObject["measures"];
-                            var measureIndexJArray = revisedMeasureAccessFunc(measuresJArray);
+                            var measureIndexJArray = MeasureAccessFunc(measuresJArray);
                             JValue value;
                             if (measureIndexJArray != null && measureIndexJArray.Type == JTokenType.Array)
                             {
@@ -59,7 +63,7 @@ namespace Chronological
                             }
                             if (value != null)
                             {
-                                var m1 = m.GetPopulatedMeasure((JValue)value);
+                                var m1 = m.GetPopulatedMeasure(value);
                                 measures.Add(m1);
                             }
                             else

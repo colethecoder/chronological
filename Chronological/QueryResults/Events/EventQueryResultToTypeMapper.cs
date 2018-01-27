@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using Chronological.QueryResults.Events;
 
-namespace Chronological
+namespace Chronological.QueryResults.Events
 {
     internal class EventQueryResultToTypeMapper
     {

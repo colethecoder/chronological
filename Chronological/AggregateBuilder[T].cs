@@ -16,12 +16,12 @@ namespace Chronological
 
         public Aggregate<T, DateTime, TZ> DateHistogram<TZ>(Expression<Func<T, DateTime>> property, DateBreaks breaks, TZ child)
         {
-            return new DateHistogramAggregate<T, TZ>(Property<DateTime>.Create<T>(property), breaks, child);
+            return new DateHistogramAggregate<T, TZ>(Property<DateTime>.Create(property), breaks, child);
         }
 
         public Aggregate<T, NumericRange, TZ> NumericHistogram<TZ>(Expression<Func<T, double>> property, NumericBreaks breaks, TZ child)
         {
-            return new NumericHistogramAggregate<T, TZ>(Property<double>.Create<T>(property), breaks, child);
+            return new NumericHistogramAggregate<T, TZ>(Property<double>.Create(property), breaks, child);
         }
 
         public Measure<TY> Maximum<TY>(Expression<Func<T, TY>> property)
