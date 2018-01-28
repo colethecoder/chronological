@@ -70,6 +70,8 @@ namespace Chronological
                     return ConstantExpressionToString(constantExpression);
                 case MethodCallExpression methodCallExpression:
                     return MethodCallExpressionToString(methodCallExpression);
+                case UnaryExpression unaryExpression:
+                    return UnaryExpressionToString(unaryExpression);
                 default:
                     throw new NotImplementedException();
             }
@@ -110,6 +112,12 @@ namespace Chronological
         private static string NewExpressionToString(NewExpression newExpression)
         {
             object result = Expression.Lambda(newExpression).Compile().DynamicInvoke();
+            return ConvertObjectToString(result);
+        }
+
+        private static string UnaryExpressionToString(UnaryExpression unaryExpression)
+        {
+            object result = Expression.Lambda(unaryExpression).Compile().DynamicInvoke();
             return ConvertObjectToString(result);
         }
 

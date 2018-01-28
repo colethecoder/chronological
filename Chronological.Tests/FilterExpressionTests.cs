@@ -49,6 +49,7 @@ namespace Chronological.Tests
                 yield return new object[] { (Expression<Func<TestType1, bool>>)(x => x.Date > DateTime.UtcNow), "($ts > utcNow())" };
                 yield return new object[] { (Expression<Func<TestType1, bool>>)(x => x.Date > (DateTime.UtcNow - TimeSpan.FromMinutes(55))), "($ts > (utcNow() - ts'P0Y0M0DT0H55M0.0S'))" };
                 yield return new object[] { (Expression<Func<TestType1, bool>>)(x => x.Date > new DateTime(2018,01,27,0,0,0, DateTimeKind.Utc)), "($ts > dt'2018-01-27T00:00:00.0000000Z')" };
+                yield return new object[] { (Expression<Func<TestType1, bool>>)(x => x.IsSimulated == true), "([data.isSimulated] = TRUE)" };
             }
         }
     }

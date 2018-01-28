@@ -27,6 +27,8 @@ namespace Chronological
                     return String;
                 case Type dateTimeType when dateTimeType == typeof(DateTime):
                     return DateTime;
+                case Type boolType when boolType == typeof(bool) || boolType == typeof(System.Nullable<bool>):
+                    return Boolean;
                 default:
                     //Todo: Better exceptions
                     throw new Exception("Unexpected Type");
@@ -36,5 +38,6 @@ namespace Chronological
         public static DataType Double => new DataType("Double");
         public static DataType String => new DataType("String");
         public static DataType DateTime => new DataType("DateTime");
+        public static DataType Boolean => new DataType("Boolean");
     }
 }

@@ -18,6 +18,9 @@ namespace Chronological.Tests
         public string DataType { get; set; }
         [ChronologicalEventField("data.value")]
         public double Value { get; set; }
+        [ChronologicalEventField("data.isSimulated")]
+        public bool? IsSimulated { get; set; }
+
     }
 
     public class TestType1JProperties
