@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Chronological.QueryResults
+﻿namespace Chronological.QueryResults
 {
     public class QueryResult
     {

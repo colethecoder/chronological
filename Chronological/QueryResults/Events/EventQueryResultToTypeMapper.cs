@@ -23,7 +23,7 @@ namespace Chronological.QueryResults.Events
 
             foreach (var eventResult in eventResults)
             {
-                var instance = (T) Activator.CreateInstance<T>();
+                var instance = Activator.CreateInstance<T>();
 
                 var schema = eventResult.Schema ?? schemaDictionary[eventResult.SchemaRid.Value];
 

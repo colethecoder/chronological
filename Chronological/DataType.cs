@@ -27,7 +27,7 @@ namespace Chronological
                     return String;
                 case Type dateTimeType when dateTimeType == typeof(DateTime):
                     return DateTime;
-                case Type boolType when boolType == typeof(bool) || boolType == typeof(System.Nullable<bool>):
+                case Type boolType when boolType == typeof(bool) || boolType == typeof(bool?):
                     return Boolean;
                 default:
                     //Todo: Better exceptions

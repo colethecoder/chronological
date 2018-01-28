@@ -11,7 +11,7 @@ namespace Chronological
 
         public Aggregate<T, TY, TZ> UniqueValues<TY, TZ>(Expression<Func<T, TY>> property, Limit limit, TZ child)
         {
-            return new UniqueValuesAggregate<T, TY, TZ>(Property<TY>.Create<T>(property), limit, child);
+            return new UniqueValuesAggregate<T, TY, TZ>(Property<TY>.Create(property), limit, child);
         }
 
         public Aggregate<T, DateTime, TZ> DateHistogram<TZ>(Expression<Func<T, DateTime>> property, DateBreaks breaks, TZ child)

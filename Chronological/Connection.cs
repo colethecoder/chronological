@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Environment = Chronological.Environment;
 
 namespace Chronological
 {
