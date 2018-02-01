@@ -65,8 +65,8 @@ namespace Chronological.Tests
             var to = new DateTime(2017, 12, 28,0,0,0, DateTimeKind.Utc);
 
             var queryString = environment.AggregateQuery<TestType1>("Test", Search.Span(from, to))
-                .Select(builder => builder.UniqueValues(x => x.Value, Limit.Take(10),
-                                        builder.UniqueValues(x => x.Value, Limit.Take(10),
+                .Select(builder => builder.UniqueValues(x => x.Value, Limit.Take, 10,
+                                        builder.UniqueValues(x => x.Value, Limit.Take, 10,
                                             new
                                             {
                                                 Maximum = builder.Maximum(x => x.Value)
@@ -88,7 +88,7 @@ namespace Chronological.Tests
             var to = new DateTime(2017, 12, 30, 12, 0, 0, DateTimeKind.Utc);
 
             var result = await new GenericFluentAggregateQuery<TestType1>("Test", Search.Span(from, to), environment, new AggregateWebSocketRepository(new MockWebSocketRepository(_webSocketResult)))
-                .Select(builder => builder.UniqueValues(x => x.DataType, Limit.Take(10),
+                .Select(builder => builder.UniqueValues(x => x.DataType, Limit.Take, 10,
                                     builder.DateHistogram(x => x.Date, Breaks.InDays(1),                                        
                                     new
                                     {

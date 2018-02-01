@@ -3,34 +3,72 @@ using Newtonsoft.Json.Linq;
 
 namespace Chronological
 {
+    public interface ILimit
+    {
+
+    }
+
+    public interface ISortableLimit
+    {
+        string SortName { get; }
+    }
+
+    public interface INonSortableLimit
+    {
+        string SortName { get; }
+    }
+
+    public class Top : ISortableLimit
+    {
+        public string SortName { get; } = "top";        
+    }
+
+    public class Take : INonSortableLimit
+    {
+        public string SortName { get; } = "take";
+    }
+
+    public class Sample : INonSortableLimit
+    {
+        public string SortName { get; } = "sample";
+    }
+
     public class Limit
     {
         private readonly string _limitType;
         private readonly int _count;
         private readonly List<Sort> _sorts;
 
-        private Limit(string limitType, int count, List<Sort> sorts = null)
+        public static Top Top
+        {
+            get => new Top();
+        }
+
+        public static Take Take
+        {
+            get => new Take();
+        }
+
+        public static Sample Sample
+        {
+            get => new Sample();
+        }
+
+        internal Limit(string limitType, int count, List<Sort> sorts = null)
         {
             _limitType = limitType;
             _count = count;
             _sorts = sorts;
         }
 
-        public static Limit Top(int count, Sort sort, params Sort[] additionalSorts)
+        internal static Limit CreateLimit(INonSortableLimit limit, int count)
         {
-            var sorts = new List<Sort> {sort};
-            sorts.AddRange(additionalSorts);
-            return new Limit("top", count, sorts);
+            return new Limit(limit.SortName, count);
         }
 
-        public static Limit Take(int count)
+        internal static Limit CreateLimit(ISortableLimit limit, int count, Sort sort)
         {
-            return new Limit("take", count);
-        }
-
-        public static Limit Sample(int count)
-        {
-            return new Limit("sample", count);
+            return new Limit(limit.SortName, count, new List<Sort> { sort });
         }
 
         private JArray SortsToJArray()

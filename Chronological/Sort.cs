@@ -2,30 +2,50 @@
 
 namespace Chronological
 {
+    public interface ISortOrder
+    {
+        string OrderName { get; }
+    }
+
+    public class Ascending : ISortOrder
+    {
+        public string OrderName { get; } = "Asc";
+    }
+
+    public class Descending : ISortOrder
+    {
+        public string OrderName { get; } = "Desc";
+    }
+
     public class Sort
     {
         private readonly Property _property;
-        private readonly Order _order;
+        private readonly ISortOrder _sortOrder;
 
-        private Sort(Property property, Order order)
+        public static ISortOrder Ascending
+        {
+            get => new Ascending();
+        }
+
+        public static ISortOrder Descending
+        {
+            get => new Descending();
+        }
+
+        private Sort(ISortOrder sortOrder, Property property)
         {
             _property = property;
-            _order = order;
+            _sortOrder = sortOrder;
         }
 
-        public static Sort Ascending(Property property)
+        internal static Sort Create(ISortOrder sortOrder, Property property)
         {
-            return new Sort(property, Order.Ascending());
-        }
-
-        public static Sort Descending(Property property)
-        {
-            return new Sort(property, Order.Descending());
+            return new Sort(sortOrder, property);
         }
 
         internal JObject ToJObject()
         {
-            return new JObject(_property.ToInputJProperty(), _order.ToJProperty());
+            return new JObject(_property.ToInputJProperty(), new JProperty("order", _sortOrder.OrderName));
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq.Expressions;
 using System.Net;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -100,9 +101,18 @@ namespace Chronological
             return new StringAggregateQuery(queryName, query, this);
         }
 
-        public GenericFluentEventQuery<T> EventQuery<T>(string queryName, Search search, Limit limit) where T:new()
+        public GenericFluentEventQuery<T> EventQuery<T>(string queryName, Search search, INonSortableLimit limit, int limitCount) where T:new()
         {
-            return new GenericFluentEventQuery<T>(queryName, search, limit, this);
+            var populatedLimit = Limit.CreateLimit(limit, limitCount);
+            return new GenericFluentEventQuery<T>(queryName, search, populatedLimit, this);
+        }
+
+        public GenericFluentEventQuery<T> EventQuery<T, TSort>(string queryName, Search search, ISortableLimit limit, int limitCount, ISortOrder sortOrder, Expression<Func<T, TSort>> sortProperty) where T : new()
+        {
+            var populatedSortProperty = Property<TSort>.Create(sortProperty);
+            var populatedSort = Sort.Create(sortOrder, populatedSortProperty);
+            var populatedLimit = Limit.CreateLimit(limit, limitCount, populatedSort);
+            return new GenericFluentEventQuery<T>(queryName, search, populatedLimit, this);
         }
 
         /// <summary>
