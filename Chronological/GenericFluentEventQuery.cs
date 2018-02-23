@@ -50,9 +50,16 @@ namespace Chronological
 
         protected JProperty GetContent()
         {
+            if (_filter != null)
+            {
+                return new JProperty("content", new JObject(
+                    _search.ToJProperty(),
+                    _filter.ToPredicateJProperty(),
+                    _limit.ToJProperty()
+                ));
+            }
             return new JProperty("content", new JObject(
                 _search.ToJProperty(),
-                _filter.ToPredicateJProperty(),
                 _limit.ToJProperty()
             ));
         }
