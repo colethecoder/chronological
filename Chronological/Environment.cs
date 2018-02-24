@@ -31,6 +31,7 @@ namespace Chronological
             AccessToken = accessToken;
         }
 
+        //TODO: move to a repo
         public async Task<Availability> GetAvailabilityAsync(string queryName = "TimeSeriesInsightsAvailabilityQuery")
         {
             Uri uri = new UriBuilder("https", EnvironmentFqdn)
@@ -54,6 +55,7 @@ namespace Chronological
 
         }
 
+        //TODO: move to a repo
         public async Task<EnvironmentMetadata> GetMetadataAsync(DateTime from, DateTime to, string queryName = "TimeSeriesInsightsMetadataQuery")
         {
             Uri uri = new UriBuilder("https", EnvironmentFqdn)
@@ -91,28 +93,28 @@ namespace Chronological
 
         }
 
-        public GenericFluentAggregateQuery<T> AggregateQuery<T>(string queryName, Search search) where T: new()
+        public GenericFluentAggregateQuery<T> AggregateQuery<T>(DateTime fromDate, DateTime toDate, string queryName = "ChronologicalQuery") where T: new()
         {
-            return new GenericFluentAggregateQuery<T>(queryName, search, this);
+            return new GenericFluentAggregateQuery<T>(queryName, Search.Span(fromDate,toDate), this);
         }        
 
-        public StringAggregateQuery AggregateQuery(string queryName, string query)
+        public StringAggregateQuery AggregateQuery(string query, string queryName = "ChronologicalQuery")
         {
             return new StringAggregateQuery(queryName, query, this);
         }
 
-        public GenericFluentEventQuery<T> EventQuery<T>(string queryName, Search search, INonSortableLimit limit, int limitCount) where T:new()
+        public GenericFluentEventQuery<T> EventQuery<T>(DateTime fromDate, DateTime toDate, INonSortableLimit limit, int limitCount, string queryName = "ChronologicalQuery") where T:new()
         {
             var populatedLimit = Limit.CreateLimit(limit, limitCount);
-            return new GenericFluentEventQuery<T>(queryName, search, populatedLimit, this);
+            return new GenericFluentEventQuery<T>(queryName, Search.Span(fromDate, toDate), populatedLimit, this);
         }
 
-        public GenericFluentEventQuery<T> EventQuery<T, TSort>(string queryName, Search search, ISortableLimit limit, int limitCount, ISortOrder sortOrder, Expression<Func<T, TSort>> sortProperty) where T : new()
+        public GenericFluentEventQuery<T> EventQuery<T, TSort>(DateTime fromDate, DateTime toDate, ISortableLimit limit, int limitCount, ISortOrder sortOrder, Expression<Func<T, TSort>> sortProperty, string queryName = "ChronologicalQuery") where T : new()
         {
             var populatedSortProperty = Property<TSort>.Create(sortProperty);
             var populatedSort = Sort.Create(sortOrder, populatedSortProperty);
             var populatedLimit = Limit.CreateLimit(limit, limitCount, populatedSort);
-            return new GenericFluentEventQuery<T>(queryName, search, populatedLimit, this);
+            return new GenericFluentEventQuery<T>(queryName, Search.Span(fromDate, toDate), populatedLimit, this);
         }
 
         /// <summary>
@@ -121,7 +123,7 @@ namespace Chronological
         /// <param name="queryName">Name of the query</param>
         /// <param name="query">Json query string</param>
         /// <returns></returns>
-        public StringEventQuery EventQuery(string queryName, string query)
+        public StringEventQuery EventQuery(string query, string queryName = "ChronologicalQuery")
         {
             return new StringEventQuery(queryName, query, this);
         }

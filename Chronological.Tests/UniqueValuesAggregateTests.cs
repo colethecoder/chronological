@@ -16,7 +16,7 @@ namespace Chronological.Tests
         public void Test1()
         {
             var builder = new AggregateBuilder<TestType1>();
-            var aggregate = builder.UniqueValues(x => x.Value, Limit.Take, 10, new { Maximum = builder.Maximum(x => x.Value) });
+            var aggregate = builder.UniqueValues(x => x.Value, 10, new { Maximum = builder.Maximum(x => x.Value) });
 
             var test = aggregate.ToChildJProperty();
             var expected = ExpectedResult();
@@ -53,8 +53,8 @@ namespace Chronological.Tests
         public void NestedAggregate()
         {
             var builder = new AggregateBuilder<TestType1>();
-            var aggregate = builder.UniqueValues(x => x.Value, Limit.Take,10, 
-                                builder.UniqueValues(x => x.Value, Limit.Take, 10, 
+            var aggregate = builder.UniqueValues(x => x.Value, 10, 
+                                builder.UniqueValues(x => x.Value, 10, 
                                     new { Maximum = builder.Maximum(x => x.Value) }));
 
             var test = aggregate.ToChildJProperty();
