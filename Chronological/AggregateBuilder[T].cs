@@ -9,17 +9,9 @@ namespace Chronological
         {
         }
 
-        public Aggregate<T, TUniqueValue, TChild> UniqueValues<TUniqueValue, TChild, TSort>(Expression<Func<T, TUniqueValue>> property, ISortableLimit limit, int limitCount, ISortOrder sortOrder, Expression<Func<T, TSort>> sortProperty, TChild child)
+        public Aggregate<T, TY, TZ> UniqueValues<TY, TZ>(Expression<Func<T, TY>> property, int take, TZ child)
         {
-            var populatedSortProperty = Property<TSort>.Create(sortProperty);
-            var populatedSort = Sort.Create(sortOrder, populatedSortProperty);
-            var populatedLimit = Limit.CreateLimit(limit, limitCount, populatedSort);
-            return new UniqueValuesAggregate<T, TUniqueValue, TChild>(Property<TUniqueValue>.Create(property), populatedLimit, child);
-        }
-
-        public Aggregate<T, TY, TZ> UniqueValues<TY, TZ>(Expression<Func<T, TY>> property, INonSortableLimit limit, int limitCount, TZ child)
-        {
-            var populatedLimit = Limit.CreateLimit(limit, limitCount);
+            var populatedLimit = Limit.CreateLimit(Limit.Take, take);
             return new UniqueValuesAggregate<T, TY, TZ>(Property<TY>.Create(property), populatedLimit, child);
         }
 
