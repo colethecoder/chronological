@@ -21,7 +21,7 @@ namespace Chronological
         {
             switch (type)
             {
-                case Type doubleType when doubleType == typeof(double):
+                case Type doubleType when doubleType == typeof(double) || doubleType == typeof(double?):
                     return Double;
                 case Type stringType when stringType == typeof(string):
                     return String;
