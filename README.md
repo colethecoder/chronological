@@ -12,19 +12,19 @@ The latest release of the Chronological is [available on NuGet](https://www.nuge
 Entity:
 
 ```cs
-    public class TimeSeriesEntity
-    {
-        [ChronologicalEventField("DeviceId")]
-        public string Id { get; set; }
+public class TimeSeriesEntity
+{
+    [ChronologicalEventField("DeviceId")]
+    public string Id { get; set; }
 
-        [ChronologicalEventField(BuiltIn.EventTimeStamp)]
-        public DateTime Date { get; set; }
+    [ChronologicalEventField(BuiltIn.EventTimeStamp)]
+    public DateTime Date { get; set; }
 
-        [ChronologicalEventField("EventType")]
-        public string Type { get; set; }
-        [ChronologicalEventField("MeasurementValue")]
-        public double? Value { get; set; }
-    }
+    [ChronologicalEventField("EventType")]
+    public string Type { get; set; }
+    [ChronologicalEventField("MeasurementValue")]
+    public double? Value { get; set; }
+}
 ```
 
 Get an environment:
