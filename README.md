@@ -62,8 +62,34 @@ var aggregates = await environment.AggregateQuery<TestType1>(FromDate, ToDate)
                     .ExecuteAsync();
 ```
 
-## Documentation
+## Setting Up Time Series Insights ready for use with Chronological
 
-All documentation can now be found in the [wiki](https://github.com/colethecoder/chronological/wiki)
+To access the Time Series Insights API you first have to setup an environment in Azure, details here:
 
+[https://docs.microsoft.com/en-us/azure/time-series-insights/time-series-insights-get-started](https://docs.microsoft.com/en-us/azure/time-series-insights/time-series-insights-get-started)
 
+You then need to configure authentication, instructions here:
+
+[https://docs.microsoft.com/en-us/azure/time-series-insights/time-series-insights-authentication-and-authorization](https://docs.microsoft.com/en-us/azure/time-series-insights/time-series-insights-authentication-and-authorization)
+
+Once you have completed these steps and have your authentication details you can begin to use Chronological to access data.
+
+## Creating a Connection
+
+To use the API you first have to create a connection using the Active Directory details for your instance:
+
+```cs
+var connection = new Chronological.Connection(YourApplicationClientID,
+                YourApplicationClientSecret, YourTenant);
+```
+
+## Getting Environments 
+
+Once you have a Connection object you can then retrieve a list of available Environments (IEnumerable):
+
+var environments = await connection.GetEnvironmentsAsync();
+This is using the Get Environments API
+
+You can also create an Environment object directly if you have the FQDN for the environment and an access token from another source:
+
+var environment = new Environment(YourEnvironmentFqdn, YourAccessToken);

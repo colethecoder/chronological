@@ -24,6 +24,11 @@ namespace Chronological
             _tenant = tenant;
         }
 
+        public async Task<Environment> GetEnvironmentAsync(string environmentFqdn)
+        {
+            return new Environment(environmentFqdn, await GetAccessTokenAsync());
+        }
+
         public async Task<IEnumerable<Environment>> GetEnvironmentsAsync()
         {
             var environments = new List<Environment>();
