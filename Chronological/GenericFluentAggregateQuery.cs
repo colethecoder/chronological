@@ -30,11 +30,33 @@ namespace Chronological
         public GenericFluentAggregateQuery<T, Aggregate<T, TX, TY>> Select<TX, TY>(Func<AggregateBuilder<T>, Aggregate<T, TX, TY>> predicate) 
             => new GenericFluentAggregateQuery<T, Aggregate<T, TX, TY>>(_queryName, _search, predicate(new AggregateBuilder<T>()), _environment, _webSocketRepository);
 
-        public GenericFluentAggregateQuery<T, Aggregate<T, TX, TY>> Select<TX, TY>(IEnumerable<Func<AggregateBuilder<T>, Aggregate<T, TX, TY>>> predicates)
-            => new GenericFluentAggregateQuery<T, Aggregate<T, TX, TY>>(_queryName, _search, from predicate in predicates select predicate(new AggregateBuilder<T>()), _environment, _webSocketRepository);
+        public GenericFluentAggregatesQuery<T, Aggregate<T, TX, TY>> Select<TX, TY>(IEnumerable<Func<AggregateBuilder<T>, Aggregate<T, TX, TY>>> predicates)
+            => new GenericFluentAggregatesQuery<T, Aggregate<T, TX, TY>>(_queryName, _search, from predicate in predicates select predicate(new AggregateBuilder<T>()), _environment, _webSocketRepository);
     }
 
     public class GenericFluentAggregateQuery<TX, TY> where TX : new() where TY : IAggregate
+    {
+        private GenericFluentAggregatesQuery<TX, TY> _multiQuery;
+
+        internal GenericFluentAggregateQuery(string queryName, Search search, TY aggregate, Environment environment, IAggregateWebSocketRepository webSocketRepository)
+        {
+            _multiQuery = new GenericFluentAggregatesQuery<TX, TY>(queryName, search, new List<TY> {aggregate},
+                environment, webSocketRepository);
+        }
+
+        public GenericFluentAggregateQuery<TX, TY> Where(Expression<Func<TX, bool>> predicate)
+        {
+            _multiQuery = _multiQuery.Where(predicate);
+            return this;
+        }
+
+        public new string ToString() => _multiQuery.ToString();
+
+        public async Task<TY> ExecuteAsync() => (await _multiQuery.ExecuteAsync()).First();
+
+    }
+
+    public class GenericFluentAggregatesQuery<TX, TY> where TX : new() where TY : IAggregate
     {
         private readonly IEnumerable<TY> _aggregates;
         private Filter _filter;
@@ -43,15 +65,9 @@ namespace Chronological
         private readonly Environment _environment;
         private readonly IAggregateWebSocketRepository _webSocketRepository;
 
-        internal GenericFluentAggregateQuery(string queryName, Search search, TY aggregate, Environment environment, IAggregateWebSocketRepository webSocketRepository) : this(queryName, search,
-            new List<TY>
-            {
-                aggregate
-            }, environment, webSocketRepository)
-        {
-        }
+        
 
-        internal GenericFluentAggregateQuery(string queryName, Search search, IEnumerable<TY> aggregates, Environment environment, IAggregateWebSocketRepository webSocketRepository)
+        internal GenericFluentAggregatesQuery(string queryName, Search search, IEnumerable<TY> aggregates, Environment environment, IAggregateWebSocketRepository webSocketRepository)
         {
             _queryName = queryName;
             _search = search;
@@ -61,7 +77,7 @@ namespace Chronological
         }
 
 
-        public GenericFluentAggregateQuery<TX, TY> Where(Expression<Func<TX,bool>> predicate)
+        public GenericFluentAggregatesQuery<TX, TY> Where(Expression<Func<TX,bool>> predicate)
         {
             _filter = Filter.Create(predicate);
             return this;
@@ -77,7 +93,7 @@ namespace Chronological
             return array;
         }
 
-        public JObject ToJObject(string accessToken)
+        private JObject ToJObject(string accessToken)
         {
             return new JObject(
                 GetHeaders(accessToken),
