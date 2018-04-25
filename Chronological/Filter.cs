@@ -167,7 +167,9 @@ namespace Chronological
                     return "-";
                 case (ExpressionType.Add):
                     return "+";
-                //TODO: multiplication / division / or figure out IN / HAS
+                case (ExpressionType.OrElse):
+                    return "or";
+                //TODO: multiplication / division figure out IN / HAS
                 default:
                     throw new NotImplementedException();
             }
