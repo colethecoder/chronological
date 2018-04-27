@@ -102,11 +102,22 @@ namespace Chronological
                     return BuiltIn.Function.UtcNow;
                 }
                 // TODO: throw exception for any other DateTime type as not supported
-            }            
+            }
 
-            var eventFieldMemberExpression = new EventFieldMemberExpression(memberExpression);
+            if (memberExpression.Expression.NodeType == ExpressionType.Parameter)
+            {
+                var eventFieldMemberExpression = new EventFieldMemberExpression(memberExpression);
 
-            return eventFieldMemberExpression.EscapedEventFieldName;
+                return eventFieldMemberExpression.EscapedEventFieldName;
+            }
+
+            if (memberExpression.Expression.NodeType == ExpressionType.Constant)
+            {
+                object result = Expression.Lambda(memberExpression).Compile().DynamicInvoke();
+                return ConvertObjectToString(result);
+            }
+
+            throw new NotImplementedException();
         }
 
         private static string NewExpressionToString(NewExpression newExpression)
