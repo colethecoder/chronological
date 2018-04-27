@@ -77,7 +77,10 @@ namespace Chronological
                         }
                     }
 
-                    JObject messageObj = JsonConvert.DeserializeObject<JObject>(message);
+                    JObject messageObj = JsonConvert.DeserializeObject<JObject>(message, new JsonSerializerSettings
+                    {
+                        DateParseHandling = DateParseHandling.None
+                    });
 
                     if (messageObj["error"] != null)
                     {

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Chronological.QueryResults.Events;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Chronological
@@ -30,7 +31,10 @@ namespace Chronological
             // Events should combine all results recevied
             var jArray = new JArray(results.SelectMany(x => (JArray)x["events"]));
 
-            var eventResults = jArray.ToObject<List<EventResult>>();
+            var eventResults = jArray.ToObject<List<EventResult>>(new JsonSerializer
+            {
+                DateParseHandling = DateParseHandling.None
+            });
 
             return new EventQueryResultToTypeMapper().Map<T>(eventResults);
                         
