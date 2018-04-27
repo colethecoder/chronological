@@ -36,7 +36,7 @@ namespace Chronological
             return new Measure<T>(Property, MeasureType, value.ToObject<T>());
         }
 
-        internal static Measure<T>Create<TY>(Expression<Func<TY, T>> propertyExpression, string measureType)
+        internal static Measure<T> Create<TY>(Expression<Func<TY, T>> propertyExpression, string measureType)
         {
             var property = Property<T>.Create(propertyExpression);
             return new Measure<T>(property, measureType);            
