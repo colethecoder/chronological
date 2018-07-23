@@ -50,5 +50,14 @@ namespace Chronological
             return Measure<int>.Create(Measure.CountMeasureExpression);
         }
 
+        public Measure<TY> Last<TY>(Expression<Func<T, TY>> property)
+        {
+            return Measure<TY>.Create(property, Measure.LastMeasureExpression);
+        }
+
+        public Measure<TY> First<TY>(Expression<Func<T, TY>> property)
+        {
+            return Measure<TY>.Create(property, Measure.FirstMeasureExpression);
+        }
     }
 }

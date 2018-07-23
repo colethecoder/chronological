@@ -59,12 +59,14 @@ namespace Chronological
         }
     }
 
-    public class Measure
+    public static class Measure
     {
         internal const string MaximumMeasureExpression = "max";
         internal const string MinimumMeasureExpression = "min";
         internal const string AverageMeasureExpression = "avg";
         internal const string SumMeasureExpression = "sum";
 		internal const string CountMeasureExpression = "count";
+        internal const string LastMeasureExpression = "last";
+        internal const string FirstMeasureExpression = "first";
     }
 }
