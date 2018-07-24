@@ -12,6 +12,11 @@ namespace Chronological.Tests
             return new JProperty("measures", measureJArray);
         }
 
+        public static JProperty ExpectedLastResult()
+        {
+            return new JProperty("measures", new JArray(new JObject(TestType1JProperties.LastMeasureWithOrderBy)));
+        }
+
         [Fact]
         public void Test1()
         {
@@ -20,6 +25,17 @@ namespace Chronological.Tests
 
             var test = aggregate.ToChildJProperty();
             var expected = ExpectedResult();
+            Assert.True(JToken.DeepEquals(test, expected));
+        }
+
+        [Fact]
+        public void UsingLastInAggregateShouldGiveCorrectJson()
+        {
+            var builder = new AggregateBuilder<TestType1>();
+            var aggregate = builder.UniqueValues(x => x.DataType, 10, new { Last = builder.Last(x => x.Value, y => y.Date) });
+
+            var test = aggregate.ToChildJProperty();
+            var expected = ExpectedLastResult();
             Assert.True(JToken.DeepEquals(test, expected));
         }
 

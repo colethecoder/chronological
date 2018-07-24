@@ -42,18 +42,23 @@ namespace Chronological
             return new Measure<T>(Property, MeasureType, value.ToObject<T>());
         }
 
-        internal static Measure<T> Create<TY>(Expression<Func<TY, T>> propertyExpression, string measureType, Expression<Func<TY, T>> orderByExpression = null)
+        internal static Measure<T> Create<TY>(Expression<Func<TY, T>> propertyExpression, string measureType)
+        {
+            return Create<TY, object>(propertyExpression, measureType, null);
+        }
+
+        internal static Measure<T> Create<TY, TZ>(Expression<Func<TY, T>> propertyExpression, string measureType, Expression<Func<TY, TZ>> orderByExpression)
         {
             var property = Property<T>.Create(propertyExpression);
 
             if (orderByExpression == null)
                 return new Measure<T>(property, measureType);
 
-            if (measureType != Measure.LastMeasureExpression || measureType != Measure.FirstMeasureExpression)
+            if (measureType != Measure.LastMeasureExpression && measureType != Measure.FirstMeasureExpression)
             {
                 throw new NotSupportedException($"Cannot use OrderBy clause with the measure type {measureType}. Make sure to use first or last");
             }
-            var orderBy = Property<T>.Create(orderByExpression);
+            var orderBy = Property<TZ>.Create(orderByExpression);
             return new Measure<T>(property, measureType, orderBy);
         }
 
