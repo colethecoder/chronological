@@ -16,20 +16,32 @@ namespace Chronological.Tests
 
         [ChronologicalEventField("data.type")]
         public string DataType { get; set; }
+
         [ChronologicalEventField("data.value")]
         public double Value { get; set; }
+
         [ChronologicalEventField("data.isSimulated")]
         public bool? IsSimulated { get; set; }
-
     }
 
-    public class TestType1JProperties
+    public static class TestType1JProperties
     {
         public static JProperty Value => new JProperty("input",
             new JObject(new JProperty("property", "data.value"), new JProperty("type", "Double")));
 
         public static JProperty Date => new JProperty("input",
             new JObject(new JProperty("builtInProperty", "$ts")));
+
+        public static JProperty LastMeasureWithoutOrderBy => new JProperty("last",
+            new JObject(Value));
+
+        public static JProperty FirstMeasureWithoutOrderBy => new JProperty("first",
+            new JObject(Value));
+
+        public static JProperty LastMeasureWithOrderBy => new JProperty("last",
+            new JObject(Value, new JProperty("orderBy", new JObject(new JProperty("builtInProperty", "$ts")))));
+
+        public static JProperty FirstMeasureWithOrderBy => new JProperty("first",
+            new JObject(Value, new JProperty("orderBy", new JObject(new JProperty("builtInProperty", "$ts")))));
     }
-    
 }

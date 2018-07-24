@@ -32,7 +32,7 @@ namespace Chronological
             Value = value;
         }
 
-        private Measure(Property property, string measureType, Property orderBy) : this(property, measureType)
+        internal Measure(Property property, string measureType, Property orderBy) : this(property, measureType)
         {
             OrderBy = orderBy;
         }
@@ -66,13 +66,17 @@ namespace Chronological
         {
             switch (MeasureType)
             {
-                case (Measure.CountMeasureExpression):
+                case Measure.CountMeasureExpression:
                     return new JProperty(MeasureType, new JObject());
-                case (Measure.FirstMeasureExpression):
-                case (Measure.LastMeasureExpression):
+                case Measure.FirstMeasureExpression:
+                case Measure.LastMeasureExpression:
+                    if (OrderBy == null)
+                        return new JProperty(MeasureType,
+                            new JObject(Property.ToInputJProperty()));
+
                     return new JProperty(MeasureType,
-                        new JObject(Property.ToInputJProperty()),
-                        OrderBy == null ? null : new JObject(OrderBy.ToInputJProperty()));
+                        new JObject(Property.ToInputJProperty(),
+                                    OrderBy.ToOrderByJProperty()));
                 default:
                     return new JProperty(MeasureType, new JObject(Property.ToInputJProperty()));
             }
