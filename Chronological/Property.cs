@@ -41,6 +41,11 @@ namespace Chronological
             return new JProperty("right", Name);
         }
 
+        internal JProperty ToOrderByJProperty()
+        {
+            return _isBuiltIn ? ToBuiltInJProperty("orderBy") : ToCustomJProperty("orderBy");
+        }
+
         private JProperty ToBuiltInJProperty(string outerName)
         {
             return new JProperty(outerName, new JObject(
