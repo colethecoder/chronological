@@ -50,6 +50,18 @@ namespace Chronological
             return this;
         }
 
+        public GenericFluentAggregateQuery<TX, TY> Where(Filter filter)
+        {
+            _multiQuery = _multiQuery.Where(filter);
+            return this;
+        }
+
+        public GenericFluentAggregateQuery<TX, TY> Where(string predicateString)
+        {
+            _multiQuery = _multiQuery.Where(predicateString);
+            return this;
+        }
+
         public new string ToString() => _multiQuery.ToString();
 
         public async Task<TY> ExecuteAsync() => (await _multiQuery.ExecuteAsync()).First();
@@ -80,6 +92,18 @@ namespace Chronological
         public GenericFluentAggregatesQuery<TX, TY> Where(Expression<Func<TX,bool>> predicate)
         {
             _filter = Filter.Create(predicate);
+            return this;
+        }
+
+        public GenericFluentAggregatesQuery<TX, TY> Where(Filter filter)
+        {
+            _filter = filter;
+            return this;
+        }
+
+        public GenericFluentAggregatesQuery<TX, TY> Where(string predicateString)
+        {
+            _filter = Filter.FromString(predicateString);
             return this;
         }
 
