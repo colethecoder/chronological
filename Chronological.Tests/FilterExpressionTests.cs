@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using Newtonsoft.Json.Linq;
 using Xunit;
+using System.Linq;
 
 namespace Chronological.Tests
 {
@@ -53,7 +54,17 @@ namespace Chronological.Tests
                 yield return new object[] { (Expression<Func<TestType1, bool>>)(x => x.Date > new DateTime(2018, 01, 27, 0, 0, 0, DateTimeKind.Utc)), "($ts > dt'2018-01-27T00:00:00.0000000Z')" };
                 yield return new object[] { (Expression<Func<TestType1, bool>>)(x => x.IsSimulated == true), "([data.isSimulated] = TRUE)" };
                 yield return new object[] { (Expression<Func<TestType1, bool>>)(x => 4 > x.Value && (x.DataType == "AString" || x.DataType == "AnotherString")), "((4 > [data.value]) and (([data.type] = 'AString') or ([data.type] = 'AnotherString')))" };
-                yield return new object[] { (Expression<Func<TestType1, bool>>)(x => x.DataType == testComparison), "([data.type] = '12345')" };
+                yield return new object[] { (Expression<Func<TestType1, bool>>)(x => new[] { "Hello", "World"}.Contains(x.DataType)), "([data.type] IN ('Hello', 'World'))" };
+                yield return new object[] { (Expression<Func<TestType1, bool>>)(x => x.DataType.StartsWith("Hello")), "(startsWith_cs([data.type], 'Hello'))" };
+                yield return new object[] { (Expression<Func<TestType1, bool>>)(x => x.DataType.StartsWith("Hello", StringComparison.CurrentCulture)), "(startsWith_cs([data.type], 'Hello'))" };
+                yield return new object[] { (Expression<Func<TestType1, bool>>)(x => x.DataType.StartsWith("Hello", StringComparison.Ordinal)), "(startsWith_cs([data.type], 'Hello'))" };
+                yield return new object[] { (Expression<Func<TestType1, bool>>)(x => x.DataType.StartsWith("Hello", StringComparison.OrdinalIgnoreCase)), "(startsWith([data.type], 'Hello'))" };
+                yield return new object[] { (Expression<Func<TestType1, bool>>)(x => x.DataType.StartsWith("Hello", StringComparison.CurrentCultureIgnoreCase)), "(startsWith([data.type], 'Hello'))" };
+                yield return new object[] { (Expression<Func<TestType1, bool>>)(x => x.DataType.EndsWith("Hello")), "(endsWith_cs([data.type], 'Hello'))" };
+                yield return new object[] { (Expression<Func<TestType1, bool>>)(x => x.DataType.EndsWith("Hello", StringComparison.CurrentCulture)), "(endsWith_cs([data.type], 'Hello'))" };
+                yield return new object[] { (Expression<Func<TestType1, bool>>)(x => x.DataType.EndsWith("Hello", StringComparison.Ordinal)), "(endsWith_cs([data.type], 'Hello'))" };
+                yield return new object[] { (Expression<Func<TestType1, bool>>)(x => x.DataType.EndsWith("Hello", StringComparison.OrdinalIgnoreCase)), "(endsWith([data.type], 'Hello'))" };
+                yield return new object[] { (Expression<Func<TestType1, bool>>)(x => x.DataType.EndsWith("Hello", StringComparison.CurrentCultureIgnoreCase)), "(endsWith([data.type], 'Hello'))" };
             }
         }
     }
