@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using Newtonsoft.Json.Linq;
 
@@ -18,7 +19,7 @@ namespace Chronological
         private readonly string _rightAsString;
         private readonly double? _rightAsDouble;
         private readonly DateTime? _rightAsDateTime;
-        
+
         private readonly string _operator;
 
         private Filter(bool singular, List<Filter> filters, Property left, string right, string filterOperator)
@@ -52,8 +53,8 @@ namespace Chronological
         }
 
         internal static Filter Create<T>(Expression<Func<T, bool>> predicate) where T : new()
-        {            
-            return new Filter(ExpressionToString(predicate.Body));            
+        {
+            return new Filter(ExpressionToString(predicate.Body));
         }
 
         private static string ExpressionToString(Expression expression)
@@ -66,6 +67,8 @@ namespace Chronological
                     return BinaryExpressionToString(binaryExpression);
                 case NewExpression newExpression:
                     return NewExpressionToString(newExpression);
+                case NewArrayExpression newArrayExpression:
+                    return NewArrayExpressionToString(newArrayExpression);
                 case ConstantExpression constantExpression:
                     return ConstantExpressionToString(constantExpression);
                 case MethodCallExpression methodCallExpression:
@@ -77,11 +80,52 @@ namespace Chronological
             }
         }
 
+        private static string NewArrayExpressionToString(NewArrayExpression newArrayExpression)
+        {
+            var listItems = newArrayExpression.Expressions.Select(ExpressionToString);
+            return $"({string.Join(", ", listItems)})";
+        }
+
         private static string MethodCallExpressionToString(MethodCallExpression methodCallExpression)
         {
-            //TODO: more tests around inline methods
-            object result = Expression.Lambda(methodCallExpression).Compile().DynamicInvoke();
-            return ExpressionToString(Expression.Constant(result));
+            switch (methodCallExpression.Method.Name)
+            {
+                case "Contains":
+                    return ContainsExpressionToString(methodCallExpression);
+                case "EndsWith":
+                    return EndAndStartWithExpressionToString("endsWith", methodCallExpression);
+                case "StartsWith":
+                    return EndAndStartWithExpressionToString("startsWith", methodCallExpression);
+                default:
+                    //TODO: more tests around inline methods
+                    object result = Expression.Lambda(methodCallExpression).Compile().DynamicInvoke();
+                    return ExpressionToString(Expression.Constant(result));
+            }
+        }
+
+        private static string ContainsExpressionToString(MethodCallExpression methodCallExpression)
+        {
+            var values = methodCallExpression.Arguments[0];
+            var searchedValue = methodCallExpression.Arguments[1];
+            return $"({ExpressionToString(searchedValue)} IN {ExpressionToString(values)})";
+        }
+
+        private static string EndAndStartWithExpressionToString(string methodName, MethodCallExpression methodCallExpression)
+        {
+            var testObject = methodCallExpression.Object;
+            var arguments = methodCallExpression.Arguments;
+            var testValue = arguments[0];
+
+            bool isCaseSensitive;
+            if (arguments.Count < 2)
+                return $"({methodName}_cs({ExpressionToString(testObject)}, {ExpressionToString(testValue)}))";
+
+            var stringComparisonExpression = arguments[1];
+            var stringComparison = (StringComparison)Expression.Lambda(stringComparisonExpression).Compile().DynamicInvoke();
+            isCaseSensitive = stringComparison == StringComparison.CurrentCulture ||
+                              stringComparison == StringComparison.Ordinal;
+            return
+                $"({methodName}{(isCaseSensitive ? "_cs" : string.Empty)}({ExpressionToString(testObject)}, {ExpressionToString(testValue)}))";
         }
 
         private static string BinaryExpressionToString(BinaryExpression binaryExpression)
@@ -249,7 +293,7 @@ namespace Chronological
 
         public static Filter And(Filter filter1, Filter filter2, params Filter[] additionalFilters)
         {
-            var filters = new List<Filter>() {filter1, filter2};
+            var filters = new List<Filter>() { filter1, filter2 };
             filters.AddRange(additionalFilters);
             return new Filter(false, filters, null, null, "and");
         }
