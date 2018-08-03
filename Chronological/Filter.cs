@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using Newtonsoft.Json.Linq;
 
@@ -18,7 +19,7 @@ namespace Chronological
         private readonly string _rightAsString;
         private readonly double? _rightAsDouble;
         private readonly DateTime? _rightAsDateTime;
-        
+
         private readonly string _operator;
 
         private Filter(bool singular, List<Filter> filters, Property left, string right, string filterOperator)
@@ -52,8 +53,8 @@ namespace Chronological
         }
 
         internal static Filter Create<T>(Expression<Func<T, bool>> predicate) where T : new()
-        {            
-            return new Filter(ExpressionToString(predicate.Body));            
+        {
+            return new Filter(ExpressionToString(predicate.Body));
         }
 
         private static string ExpressionToString(Expression expression)
@@ -66,6 +67,8 @@ namespace Chronological
                     return BinaryExpressionToString(binaryExpression);
                 case NewExpression newExpression:
                     return NewExpressionToString(newExpression);
+                case NewArrayExpression newArrayExpression:
+                    return NewArrayExpressionToString(newArrayExpression);
                 case ConstantExpression constantExpression:
                     return ConstantExpressionToString(constantExpression);
                 case MethodCallExpression methodCallExpression:
@@ -77,8 +80,21 @@ namespace Chronological
             }
         }
 
+        private static string NewArrayExpressionToString(NewArrayExpression newArrayExpression)
+        {
+            var listItems = newArrayExpression.Expressions.Select(ExpressionToString);
+            return $"({string.Join(", ", listItems)})";
+        }
+
         private static string MethodCallExpressionToString(MethodCallExpression methodCallExpression)
         {
+            if (methodCallExpression.Method.Name == "Contains")
+            {
+                var values = methodCallExpression.Arguments[0];
+                var searchedValue = methodCallExpression.Arguments[1];
+                return $"({ExpressionToString(searchedValue)} IN {ExpressionToString(values)})";
+            }
+
             //TODO: more tests around inline methods
             object result = Expression.Lambda(methodCallExpression).Compile().DynamicInvoke();
             return ExpressionToString(Expression.Constant(result));
@@ -249,7 +265,7 @@ namespace Chronological
 
         public static Filter And(Filter filter1, Filter filter2, params Filter[] additionalFilters)
         {
-            var filters = new List<Filter>() {filter1, filter2};
+            var filters = new List<Filter>() { filter1, filter2 };
             filters.AddRange(additionalFilters);
             return new Filter(false, filters, null, null, "and");
         }
