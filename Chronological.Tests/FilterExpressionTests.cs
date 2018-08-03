@@ -33,8 +33,6 @@ namespace Chronological.Tests
         {
             get
             {
-                var testComparison = "12345";
-
                 yield return new object[] { (Expression<Func<TestType1, bool>>)(x => x.Value > 5), "([data.value] > 5)" };
                 yield return new object[] { (Expression<Func<TestType1, bool>>)(x => x.Value < 5), "([data.value] < 5)" };
                 yield return new object[] { (Expression<Func<TestType1, bool>>)(x => x.Value == 5), "([data.value] = 5)" };
