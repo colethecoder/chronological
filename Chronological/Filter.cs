@@ -88,16 +88,44 @@ namespace Chronological
 
         private static string MethodCallExpressionToString(MethodCallExpression methodCallExpression)
         {
-            if (methodCallExpression.Method.Name == "Contains")
+            switch (methodCallExpression.Method.Name)
             {
-                var values = methodCallExpression.Arguments[0];
-                var searchedValue = methodCallExpression.Arguments[1];
-                return $"({ExpressionToString(searchedValue)} IN {ExpressionToString(values)})";
+                case "Contains":
+                    return ContainsExpressionToString(methodCallExpression);
+                case "EndsWith":
+                    return EndAndStartWithExpressionToString("endsWith", methodCallExpression);
+                case "StartsWith":
+                    return EndAndStartWithExpressionToString("startsWith", methodCallExpression);
+                default:
+                    //TODO: more tests around inline methods
+                    object result = Expression.Lambda(methodCallExpression).Compile().DynamicInvoke();
+                    return ExpressionToString(Expression.Constant(result));
             }
+        }
 
-            //TODO: more tests around inline methods
-            object result = Expression.Lambda(methodCallExpression).Compile().DynamicInvoke();
-            return ExpressionToString(Expression.Constant(result));
+        private static string ContainsExpressionToString(MethodCallExpression methodCallExpression)
+        {
+            var values = methodCallExpression.Arguments[0];
+            var searchedValue = methodCallExpression.Arguments[1];
+            return $"({ExpressionToString(searchedValue)} IN {ExpressionToString(values)})";
+        }
+
+        private static string EndAndStartWithExpressionToString(string methodName, MethodCallExpression methodCallExpression)
+        {
+            var testObject = methodCallExpression.Object;
+            var arguments = methodCallExpression.Arguments;
+            var testValue = arguments[0];
+
+            bool isCaseSensitive;
+            if (arguments.Count < 2)
+                return $"({methodName}_cs({ExpressionToString(testObject)}, {ExpressionToString(testValue)}))";
+
+            var stringComparisonExpression = arguments[1];
+            var stringComparison = (StringComparison)Expression.Lambda(stringComparisonExpression).Compile().DynamicInvoke();
+            isCaseSensitive = stringComparison == StringComparison.CurrentCulture ||
+                              stringComparison == StringComparison.Ordinal;
+            return
+                $"({methodName}{(isCaseSensitive ? "_cs" : string.Empty)}({ExpressionToString(testObject)}, {ExpressionToString(testValue)}))";
         }
 
         private static string BinaryExpressionToString(BinaryExpression binaryExpression)
