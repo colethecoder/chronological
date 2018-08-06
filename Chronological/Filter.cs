@@ -108,10 +108,10 @@ namespace Chronological
             if (methodCallExpression.Arguments.Count == 1)
             {
                 var value = methodCallExpression.Arguments[0];
-                object result = Expression.Lambda(value).Compile().DynamicInvoke();
                 if (value.Type == typeof(string))
                 {
-                    return $"(matchesRegex({ExpressionToString(methodCallExpression.Object)}, '^*{ConvertObjectToString(result, false)}*'))";
+                    object result = Expression.Lambda(value).Compile().DynamicInvoke();
+                    return $"(matchesRegex({ExpressionToString(methodCallExpression.Object)}, '^.*{ConvertObjectToString(result, false)}.*'))";
                 }
                 throw new NotSupportedException();
             }
