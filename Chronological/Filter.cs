@@ -105,6 +105,17 @@ namespace Chronological
 
         private static string ContainsExpressionToString(MethodCallExpression methodCallExpression)
         {
+            if (methodCallExpression.Arguments.Count == 1)
+            {
+                var value = methodCallExpression.Arguments[0];
+                object result = Expression.Lambda(value).Compile().DynamicInvoke();
+                if (value.Type == typeof(string))
+                {
+                    return $"(matchesRegex({ExpressionToString(methodCallExpression.Object)}, '^*{ConvertObjectToString(result, false)}*'))";
+                }
+                throw new NotSupportedException();
+            }
+
             var values = methodCallExpression.Arguments[0];
             var searchedValue = methodCallExpression.Arguments[1];
             return $"({ExpressionToString(searchedValue)} IN {ExpressionToString(values)})";
@@ -181,14 +192,14 @@ namespace Chronological
             return ConvertObjectToString(constantExpression.Value);
         }
 
-        private static string ConvertObjectToString(object toConvert)
+        private static string ConvertObjectToString(object toConvert, bool addQuotes = true)
         {
             switch (toConvert)
             {
                 case double d:
                     return d.ToString();
                 case string s:
-                    return $"'{s}'";
+                    return addQuotes ? $"'{s}'" : s;
                 case bool b:
                     return b ? "TRUE" : "FALSE";
                 case TimeSpan ts:
