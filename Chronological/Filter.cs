@@ -105,15 +105,13 @@ namespace Chronological
 
         private static string ContainsExpressionToString(MethodCallExpression methodCallExpression)
         {
-            if (methodCallExpression.Arguments.Count == 1)
+            if (methodCallExpression.Method.DeclaringType == typeof(string))
             {
                 var value = methodCallExpression.Arguments[0];
-                if (value.Type == typeof(string))
-                {
-                    object result = Expression.Lambda(value).Compile().DynamicInvoke();
-                    return $"(matchesRegex({ExpressionToString(methodCallExpression.Object)}, '^.*{ConvertObjectToString(result, false)}.*'))";
-                }
-                throw new NotSupportedException();
+                if (value.Type != typeof(string)) throw new NotSupportedException();
+
+                var result = Expression.Lambda(value).Compile().DynamicInvoke();
+                return $"(matchesRegex({ExpressionToString(methodCallExpression.Object)}, '^.*{ConvertObjectToString(result, false)}.*'))";
             }
 
             var values = methodCallExpression.Arguments[0];
