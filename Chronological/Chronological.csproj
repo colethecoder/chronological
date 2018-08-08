@@ -14,7 +14,7 @@
     <PackageProjectUrl>https://github.com/colethecoder/chronological</PackageProjectUrl>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <FileVersion>1.0.0.0</FileVersion>
-    <PackageReleaseNotes>Updated Nuget dependencies, added First and Last aggregate measures</PackageReleaseNotes>
+    <PackageReleaseNotes>New string expressions, startsWith, endsWith and Contains</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup>
