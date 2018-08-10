@@ -3,9 +3,9 @@ using Chronological.QueryResults;
 
 namespace Chronological.Exceptions
 {
-    internal class ErrorToExceptionConverter : IErrorToExceptionConverter
+    internal class ErrorToExceptionConverter
     {
-        Exception IErrorToExceptionConverter.ConvertTimeSeriesErrorToException(ErrorResult error)
+        internal Exception ConvertTimeSeriesErrorToException(ErrorResult error)
         {
             switch (error.Code)
             {

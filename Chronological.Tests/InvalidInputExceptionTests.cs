@@ -12,7 +12,7 @@ namespace Chronological.Tests
         [Fact]
         public void PropertyNotFoundErrorShouldReturnException()
         {
-            IErrorToExceptionConverter errorToException = new ErrorToExceptionConverter();
+            var errorToException = new ErrorToExceptionConverter();
             var error = new ErrorResult { Code = "InvalidInput", Message = "Dimension property not found.", Target = "data.type", InnerError = new ErrorResult { Code = "PropertyNotFound", Message = "Dimension property 'data.type' of type 'String' is not found." } };
             var result = errorToException.ConvertTimeSeriesErrorToException(error);
 

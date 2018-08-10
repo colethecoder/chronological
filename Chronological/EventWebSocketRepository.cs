@@ -25,11 +25,14 @@ namespace Chronological
 
         async Task<IEnumerable<T>> IEventWebSocketRepository.Execute<T>(string query)
         {
-            var results = await _webSocketRepository.ReadWebSocketResponseAsync(query, "events");
+            return await _webSocketRepository.ReadWebSocketResponseAsync(query, "events", new WebSocketReader<T>(ParseEvents<T>).Read);      
+        }
 
+        private IEnumerable<T> ParseEvents<T>(JToken results)
+        {
             // According to samples here: https://github.com/Azure-Samples/Azure-Time-Series-Insights/blob/master/C-%20Hello%20World%20App%20Sample/Program.cs
             // Events should combine all results recevied
-            var jArray = new JArray(results.SelectMany(x => (JArray)x["events"]));
+            var jArray = (JArray)results["events"];
 
             var eventResults = jArray.ToObject<List<EventResult>>(new JsonSerializer
             {
@@ -37,7 +40,6 @@ namespace Chronological
             });
 
             return new EventQueryResultToTypeMapper().Map<T>(eventResults);
-                        
         }
 
         

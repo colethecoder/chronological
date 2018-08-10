@@ -15,19 +15,19 @@ namespace Chronological
     internal class WebSocketRepository : IWebSocketRepository
     {
         private readonly Environment _environment;
-        private readonly IErrorToExceptionConverter _errorToExceptionConverter;
+        private readonly ErrorToExceptionConverter _errorToExceptionConverter;
 
         internal WebSocketRepository(Environment environment) : this(environment, new ErrorToExceptionConverter())
         {            
         }
 
-        internal WebSocketRepository(Environment environment, IErrorToExceptionConverter errorToExceptionConverter)
+        internal WebSocketRepository(Environment environment, ErrorToExceptionConverter errorToExceptionConverter)
         {
             _environment = environment;
             _errorToExceptionConverter = errorToExceptionConverter;
         }
 
-        async Task<IReadOnlyList<JToken>> IWebSocketRepository.ReadWebSocketResponseAsync(string query, string resourcePath)
+        async Task<IEnumerable<T>> IWebSocketRepository.ReadWebSocketResponseAsync<T>(string query, string resourcePath, Func<StreamReader, WebSocketResult<T>> parseFunc)
         {
             var webSocket = new ClientWebSocket();
 
@@ -46,12 +46,14 @@ namespace Chronological
                 endOfMessage: true,
                 cancellationToken: CancellationToken.None);
 
-            List<JToken> responseMessagesContent = new List<JToken>();
+            List<T> responseMessagesContent = new List<T>();
             using (webSocket)
             {
-                while (true)
+
+                var complete = false;
+                while (!complete)
                 {
-                    string message;
+                    WebSocketResult<T> result;
                     using (var ms = new MemoryStream())
                     {
                         const int bufferSize = 16 * 1024;
@@ -73,40 +75,32 @@ namespace Chronological
 
                         using (var sr = new StreamReader(ms))
                         {
-                            message = sr.ReadToEnd();
+                            result = parseFunc(sr);
+                            //message = sr.ReadToEnd();
                         }
                     }
 
-                    JObject messageObj = JsonConvert.DeserializeObject<JObject>(message, new JsonSerializerSettings
+                    switch (result)
                     {
-                        DateParseHandling = DateParseHandling.None
-                    });
-
-                    if (messageObj["error"] != null)
-                    {
-                        var error = messageObj["error"].ToObject<ErrorResult>();
-
-                        // Close web socket connection.
-                        if (webSocket.State == WebSocketState.Open)
-                        {
-                            await webSocket.CloseAsync(
-                                WebSocketCloseStatus.NormalClosure,
-                                "CompletedByClient",
-                                CancellationToken.None);
-                        }
-
-                        throw _errorToExceptionConverter.ConvertTimeSeriesErrorToException(error);                                               
+                        case WebSocketResult<T>.WebSocketSuccess success:
+                            responseMessagesContent.AddRange(success.Results);
+                            complete = !success.Continue;
+                            break;
+                        case WebSocketResult<T>.WebSocketFailure failure:
+                            if (webSocket.State == WebSocketState.Open)
+                            {
+                                await webSocket.CloseAsync(
+                                    WebSocketCloseStatus.NormalClosure,
+                                    "CompletedByClient",
+                                    CancellationToken.None);
+                            }
+                            throw failure.Exception;
+                        default:
+                            // Should never get here
+                            throw new NotSupportedException("Chronological Web Socket Issue");
                     }
-
-                    // Actual response contents is wrapped into "content" object.
-                    responseMessagesContent.Add(messageObj["content"]);
-
-                    // Stop reading if 100% of completeness is reached.
-                    if (messageObj["percentCompleted"] != null &&
-                        Math.Abs((double)messageObj["percentCompleted"] - 100d) < 0.01)
-                    {
-                        break;
-                    }
+                    
+                    
                 }
 
                 // Close web socket connection.

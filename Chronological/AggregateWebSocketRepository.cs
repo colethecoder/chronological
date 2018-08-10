@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
@@ -16,13 +17,19 @@ namespace Chronological
 
         async Task<IEnumerable<T>> IAggregateWebSocketRepository.Execute<T>(string query, IEnumerable<T> aggregates)
         {
-            var executionResults = new List<T>();
             
-            var results = await _webSocketRepository.ReadWebSocketResponseAsync(query, "aggregates");
+            return await _webSocketRepository.ReadWebSocketResponseAsync(query, "aggregates", new WebSocketReader<T>(ParseAggregates<T>(aggregates)).Read);
+
+            
+        }
+
+        private Func<JToken, IEnumerable<T>> ParseAggregates<T>(IEnumerable<T> aggregates) => (JToken results) =>
+        {
+            var executionResults = new List<T>();
 
             // According to samples here: https://github.com/Azure-Samples/Azure-Time-Series-Insights/blob/master/C-%20Hello%20World%20App%20Sample/Program.cs
             // Aggregates should only use the final result set
-            var jArray = (JArray)results.First();
+            var jArray = (JArray)results;
 
             foreach (var aggregate in aggregates.Select((x, y) => new { x, y }))
             {
@@ -34,6 +41,6 @@ namespace Chronological
             }
 
             return executionResults;
-        }
+        };
     }
 }
