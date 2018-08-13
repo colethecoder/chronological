@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
+using FastMember;
 
 namespace Chronological
 {
@@ -97,6 +98,10 @@ namespace Chronological
         {
             var schemas = new Dictionary<int, TsiSchema>();
             var content = new List<T>();
+
+            var accessor = TypeAccessor.Create(typeof(T));
+
+
 
             while (jr.Read())
             {
