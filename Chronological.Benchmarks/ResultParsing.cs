@@ -10,6 +10,7 @@ using System.Reflection;
 
 namespace Chronological.Benchmarks
 {
+    [MemoryDiagnoser]
     public class ResultParsing
     {
         [Benchmark]
@@ -28,6 +29,20 @@ namespace Chronological.Benchmarks
                 return result;
             }
             
+        }
+
+        [Benchmark]
+        public WebSocketResult<TestType1> ParseJsonEvents_New()
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            var resourceName = "Chronological.Benchmarks.Data.events.json";
+
+            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+            using (StreamReader reader = new StreamReader(stream))
+            {
+                var result = FastEventParser.ParseEvents<TestType1>(reader);
+                return result;
+            }
         }
     }
 }
