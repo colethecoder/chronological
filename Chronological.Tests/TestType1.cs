@@ -17,7 +17,7 @@ namespace Chronological.Tests
         [ChronologicalEventField("data.type")]
         public string DataType { get; set; }
 
-        [ChronologicalEventField("data.value")]
+        [ChronologicalEventField("Value")]
         public double Value { get; set; }
 
         [ChronologicalEventField("data.isSimulated")]
