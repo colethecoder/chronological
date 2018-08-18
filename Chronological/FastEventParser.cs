@@ -174,45 +174,80 @@ namespace Chronological
         {
             //var ev = accessor.CreateNew();
             //accessor.GetMembers();
-            var i = 0;
-            while (jr.Read())
+            //var i = 0;
+            jr.Read(); // swallow array start
+
+            for(var i = 0; i < schema.Properties.Count; i++)
             {
-                switch (jr.TokenType)
+                var schemaItem = schema.Properties[i];
+                if (schemaItem.Ignore)
                 {
-                    case (JsonToken.StartArray):
-                        break;
-                    case (JsonToken.EndArray):
-                        return (T)ev;
-                    case (JsonToken.Date):
-                    case (JsonToken.Float):
-                    case (JsonToken.String):
-                        var schemaItem = schema.Properties[i];
-                        if (!schemaItem.Ignore)
-                        {
-                            switch (schemaItem.JsonDataType)
+                    jr.Read();
+                }
+                else
+                {
+                    switch (schemaItem.JsonDataType)
+                    {
+                        case ("DateTime"):
+                            accessor[ev, schemaItem.ChronologicalPropertyName] = jr.ReadAsDateTime();
+                            break;
+                        case ("Double"):
+                            accessor[ev, schemaItem.ChronologicalPropertyName] = jr.ReadAsDouble();
+                            break;
+                        case ("String"):
+                            if (schemaItem.ChronologicalType == typeof(double))
                             {
-                                case ("DateTime"):
-                                    accessor[ev, schemaItem.ChronologicalPropertyName] = jr.ReadAsDateTime();
-                                    break;
-                                case ("Double"):
-                                    accessor[ev, schemaItem.ChronologicalPropertyName] = jr.ReadAsDouble();
-                                    break;
-                                case ("String"):
-                                    if (schemaItem.ChronologicalType == typeof(double))
-                                    {
-                                        accessor[ev, schemaItem.ChronologicalPropertyName] = double.Parse(jr.ReadAsString());
-                                    }
-                                    else
-                                    {
-                                        accessor[ev, schemaItem.ChronologicalPropertyName] = jr.ReadAsString();
-                                    }
-                                    break;
+                                accessor[ev, schemaItem.ChronologicalPropertyName] = double.Parse(jr.ReadAsString());
                             }
-                        }
-                        i++;
-                        break;
+                            else
+                            {
+                                accessor[ev, schemaItem.ChronologicalPropertyName] = jr.ReadAsString();
+                            }
+                            break;
+                    }
                 }
             }
+
+            jr.Read(); // swallow array end
+
+            //while (jr.Read())
+            //{
+            //    switch (jr.TokenType)
+            //    {
+            //        case (JsonToken.StartArray):
+            //            break;
+            //        case (JsonToken.EndArray):
+            //            return (T)ev;
+            //        case (JsonToken.Date):
+            //        case (JsonToken.Float):
+            //        case (JsonToken.String):
+            //            var schemaItem = schema.Properties[i];
+            //            if (!schemaItem.Ignore)
+            //            {
+            //                switch (schemaItem.JsonDataType)
+            //                {
+            //                    case ("DateTime"):
+            //                        accessor[ev, schemaItem.ChronologicalPropertyName] = jr.ReadAsDateTime();
+            //                        break;
+            //                    case ("Double"):
+            //                        accessor[ev, schemaItem.ChronologicalPropertyName] = jr.ReadAsDouble();
+            //                        break;
+            //                    case ("String"):
+            //                        if (schemaItem.ChronologicalType == typeof(double))
+            //                        {
+            //                            accessor[ev, schemaItem.ChronologicalPropertyName] = double.Parse(jr.ReadAsString());
+            //                        }
+            //                        else
+            //                        {
+            //                            accessor[ev, schemaItem.ChronologicalPropertyName] = jr.ReadAsString();
+            //                        }
+            //                        break;
+            //                }
+            //            }
+            //            i++;
+            //            break;
+            //    }
+            //}
             return (T)ev;
         }
 
