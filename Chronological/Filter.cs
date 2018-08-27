@@ -225,6 +225,8 @@ namespace Chronological
                     return $"ts'P0Y0M{ts.Days}DT{ts.Hours}H{ts.Minutes}M{ts.Seconds}.{ts.Milliseconds}S'";
                 case DateTime dt:
                     return $"dt'{dt:O}'";
+                case null:
+                    return "NULL";
                 default:
                     throw new NotImplementedException();
             }

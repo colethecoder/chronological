@@ -61,7 +61,9 @@ namespace Chronological.Tests
             (x => x.DataType.EndsWith("Hello", StringComparison.Ordinal),                       "(endsWith_cs([data.type], 'Hello'))"),
             (x => x.DataType.EndsWith("Hello", StringComparison.OrdinalIgnoreCase),             "(endsWith([data.type], 'Hello'))"),
             (x => x.DataType.EndsWith("Hello", StringComparison.CurrentCultureIgnoreCase),      "(endsWith([data.type], 'Hello'))"),
-            (x => x.DataType.Contains("ello"),                                                  "(matchesRegex([data.type], '^.*ello.*'))")
+            (x => x.DataType.Contains("ello"),                                                  "(matchesRegex([data.type], '^.*ello.*'))"),
+            (x => x.DataType != null,                                                           "([data.type] != NULL)"),
+            (x => x.IsSimulated == null,                                                        "([data.isSimulated] = NULL)")
         };
 
         public static IEnumerable<object[]> TestCases
