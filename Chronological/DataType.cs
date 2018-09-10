@@ -25,7 +25,7 @@ namespace Chronological
                     return Double;
                 case Type stringType when stringType == typeof(string):
                     return String;
-                case Type dateTimeType when dateTimeType == typeof(DateTime):
+                case Type dateTimeType when dateTimeType == typeof(DateTime) || dateTimeType == typeof(DateTime?):
                     return DateTime;
                 case Type boolType when boolType == typeof(bool) || boolType == typeof(bool?):
                     return Boolean;
