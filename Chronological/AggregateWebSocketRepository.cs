@@ -23,7 +23,7 @@ namespace Chronological
             
         }
 
-        private Func<JToken, IEnumerable<T>> ParseAggregates<T>(IEnumerable<T> aggregates) => (JToken results) =>
+        internal Func<JToken, IEnumerable<T>> ParseAggregates<T>(IEnumerable<T> aggregates) => (JToken results) =>
         {
             var executionResults = new List<T>();
 

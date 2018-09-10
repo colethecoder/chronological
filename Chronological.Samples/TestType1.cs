@@ -17,9 +17,9 @@ namespace Chronological.Samples
         public string DataType { get; set; }
 
         [ChronologicalEventField("data.value")]
-        public double Value { get; set; }
+        public double? Value { get; set; }
 
         [ChronologicalEventField("data.isSimulated")]
         public bool? IsSimulated { get; set; }
-    }    
+    }
 }

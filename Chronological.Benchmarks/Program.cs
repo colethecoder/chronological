@@ -8,7 +8,8 @@ namespace Chronological.Benchmarks
         static void Main(string[] args)
         {
             //var summary = BenchmarkRunner.Run<QueryCreation>();
-            var summary = BenchmarkRunner.Run<ResultParsing>();
+            //var summary = BenchmarkRunner.Run<ResultParsing>();
+            var summary = BenchmarkRunner.Run<AggregateParsing>();
             Console.ReadKey();
         }
     }

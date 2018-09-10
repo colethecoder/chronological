@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using FastMember;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +18,9 @@ namespace Chronological
         IAggregate IInternalAggregate.GetPopulatedAggregate(JObject jObject, Func<JArray, JArray> measureAccessFunc)
         {
             var aggregate = Clone();
-            
+            var type = typeof(TZ);
+            var accessor = TypeAccessor.Create(type);
+            var props = type.GetTypeInfo().DeclaredProperties.Select((x, y) => new { x, y });
             foreach (var dimension in jObject["dimension"].Select((x, y) => new { x, y }))
             {
                 JArray MeasureAccessFunc(JArray x)
@@ -44,8 +47,9 @@ namespace Chronological
                 }
                 else
                 {
-                    var measures = new List<IMeasure>();
-                    foreach (var property in typeof(TZ).GetTypeInfo().DeclaredProperties.Select((x, y) => new { x, y }))
+                    //var measures = new List<IMeasure>();
+                    var zzz = accessor.CreateNew();
+                    foreach (var property in props)
                     {
                         if (typeof(IMeasure).GetTypeInfo().IsAssignableFrom(property.x.PropertyType.GetTypeInfo()))
                         {
@@ -64,19 +68,21 @@ namespace Chronological
                             if (value != null)
                             {
                                 var m1 = m.GetPopulatedMeasure(value);
-                                measures.Add(m1);
+                                accessor[zzz, property.x.Name] = m1;
+                                //measures.Add(m1);
                             }
                             else
                             {
-                                measures.Add(null);
+                                //measures.Add(null);
+                                accessor[zzz, property.x.Name] = null;
                             }
                         }
                     }
 
-                    object[] objects = (from measure in measures
-                        select measure).ToArray();
-                    TZ newAnon = (TZ)Activator.CreateInstance(typeof(TZ), objects);
-                    aggregate.Add(dimension.x.ToObject<TY>(), newAnon);
+                    //object[] objects = (from measure in measures
+                    //    select measure).ToArray();
+                    //TZ newAnon = (TZ)Activator.CreateInstance(typeof(TZ), objects);
+                    aggregate.Add(dimension.x.ToObject<TY>(), (TZ)zzz);
                 }
             }
 

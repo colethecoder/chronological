@@ -76,7 +76,8 @@ namespace Chronological
                         using (var sr = new StreamReader(ms))
                         {
                             result = parseFunc(sr);
-                            //message = sr.ReadToEnd();
+                            //ms.Position = 0;
+                            //var message = sr.ReadToEnd();
                         }
                     }
 

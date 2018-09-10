@@ -6,10 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Data\aggregates.json" />
     <None Remove="Data\events.json" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Data\aggregates.json" />
     <EmbeddedResource Include="Data\events.json" />
   </ItemGroup>
 
