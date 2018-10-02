@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
@@ -64,7 +65,8 @@ namespace Chronological
 
         public new string ToString() => _multiQuery.ToString();
 
-        public async Task<TY> ExecuteAsync() => (await _multiQuery.ExecuteAsync()).First();
+        public async Task<TY> ExecuteAsync(CancellationToken cancellationToken = default) => 
+            (await _multiQuery.ExecuteAsync(cancellationToken)).First();
 
     }
 
@@ -153,11 +155,11 @@ namespace Chronological
             ));
         }
 
-        public async Task<IEnumerable<TY>> ExecuteAsync()
+        public async Task<IEnumerable<TY>> ExecuteAsync(CancellationToken cancellationToken = default)
         {
             var query = ToJObject(_environment.AccessToken);
 
-            return await _webSocketRepository.Execute(query.ToString(), _aggregates);
+            return await _webSocketRepository.Execute(query.ToString(), _aggregates, cancellationToken);
             
         }
 
