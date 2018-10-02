@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
@@ -19,7 +20,7 @@ namespace Chronological.Tests
             _results = results;
         }
 
-        async Task<IReadOnlyList<JToken>> IWebSocketRepository.ReadWebSocketResponseAsync(string query, string resourcePath)
+        async Task<IReadOnlyList<JToken>> IWebSocketRepository.ReadWebSocketResponseAsync(string query, string resourcePath, CancellationToken cancellationToken)
         {
             return new List<JToken> { JToken.Parse(_results.First())["content"] };
         }
