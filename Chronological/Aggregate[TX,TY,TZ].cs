@@ -15,6 +15,23 @@ namespace Chronological
 
         internal abstract Aggregate<TX, TY, TZ> Clone();
 
+        Func<JArray, JArray> MeasureAccess(Func<JArray, JArray> accessFunc, int index) => x =>
+        {
+            if (x == null)
+            {
+                return null;
+            }
+
+            var temp = accessFunc(x);
+            if (temp == null)
+            {
+                return null;
+            }
+
+            JToken value = temp[index];
+            return value.Type == JTokenType.Null ? null : (JArray)value;
+        };
+
         IAggregate IInternalAggregate.GetPopulatedAggregate(JObject jObject, Func<JArray, JArray> measureAccessFunc)
         {
             var aggregate = Clone();
@@ -22,32 +39,14 @@ namespace Chronological
             var accessor = TypeAccessor.Create(type);
             var props = type.GetTypeInfo().DeclaredProperties.Select((x, y) => new { x, y });
             foreach (var dimension in jObject["dimension"].Select((x, y) => new { x, y }))
-            {
-                JArray MeasureAccessFunc(JArray x)
-                {
-                    if (x == null)
-                    {
-                        return null;
-                    }
-
-                    var temp = measureAccessFunc(x);
-                    if (temp == null)
-                    {
-                        return null;
-                    }
-
-                    JToken value = temp[dimension.y];
-                    return value.Type == JTokenType.Null ? null : (JArray)value;
-                }
-
+            {               
                 if (ChildIsAggregate())
                 {
-                    var child = ((IInternalAggregate)Child).GetPopulatedAggregate((JObject)jObject["aggregate"], MeasureAccessFunc);
+                    var child = ((IInternalAggregate)Child).GetPopulatedAggregate((JObject)jObject["aggregate"], MeasureAccess(measureAccessFunc, dimension.y));
                     aggregate.Add(dimension.x.ToObject<TY>(), (TZ)child);
                 }
                 else
                 {
-                    //var measures = new List<IMeasure>();
                     var zzz = accessor.CreateNew();
                     foreach (var property in props)
                     {
@@ -55,33 +54,20 @@ namespace Chronological
                         {
                             var m = (IInternalMeasure)property.x.GetValue(Child);
                             var measuresJArray = (JArray)jObject["measures"];
-                            var measureIndexJArray = MeasureAccessFunc(measuresJArray);
-                            JValue value;
+                            var measureIndexJArray = MeasureAccess(measureAccessFunc, dimension.y)(measuresJArray);
                             if (measureIndexJArray != null && measureIndexJArray.Type == JTokenType.Array)
                             {
-                                value = (JValue)(measureIndexJArray[property.y]);
+                                accessor[zzz, property.x.Name] = 
+                                    m.GetPopulatedMeasure(
+                                        (JValue)measureIndexJArray[property.y]);
                             }
                             else
                             {
-                                value = null;
-                            }
-                            if (value != null)
-                            {
-                                var m1 = m.GetPopulatedMeasure(value);
-                                accessor[zzz, property.x.Name] = m1;
-                                //measures.Add(m1);
-                            }
-                            else
-                            {
-                                //measures.Add(null);
                                 accessor[zzz, property.x.Name] = null;
-                            }
+                            }                            
                         }
                     }
 
-                    //object[] objects = (from measure in measures
-                    //    select measure).ToArray();
-                    //TZ newAnon = (TZ)Activator.CreateInstance(typeof(TZ), objects);
                     aggregate.Add(dimension.x.ToObject<TY>(), (TZ)zzz);
                 }
             }

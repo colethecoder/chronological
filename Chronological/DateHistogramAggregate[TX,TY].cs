@@ -10,10 +10,8 @@ namespace Chronological
         public readonly Property Property;
         public readonly DateBreaks DateBreaks;
         internal override TY Child { get; }
-        internal override Aggregate<TX, DateTime, TY> Clone()
-        {
-            return new DateHistogramAggregate<TX, TY>(Property, DateBreaks, Child);
-        }
+        internal override Aggregate<TX, DateTime, TY> Clone() =>
+            new DateHistogramAggregate<TX, TY>(Property, DateBreaks, Child);
 
         internal DateHistogramAggregate(Property property, DateBreaks dateBreaks, TY child)
         {
@@ -22,10 +20,10 @@ namespace Chronological
             Child = child;
         }        
 
-        internal override JProperty ToAggregateJProperty()
-        {
-            return new JProperty(AggregateType, new JObject(Property.ToInputJProperty(), DateBreaks.ToJProperty()));
-        }
+        internal override JProperty ToAggregateJProperty() =>
+            new JProperty(
+                    AggregateType, 
+                    new JObject(Property.ToInputJProperty(), DateBreaks.ToJProperty()));
  
     }
 
