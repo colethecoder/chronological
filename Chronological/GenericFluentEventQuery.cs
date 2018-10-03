@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
@@ -84,9 +85,9 @@ namespace Chronological
             return ToJObject(_environment.AccessToken).ToString();
         }
 
-        public async Task<IEnumerable<T>> ExecuteAsync()
+        public async Task<IEnumerable<T>> ExecuteAsync(CancellationToken cancellationToken = default)
         {
-            return await _eventWebSocketRepository.Execute<T>(ToString());
+            return await _eventWebSocketRepository.Execute<T>(ToString(), cancellationToken);
         }
     }
 }
