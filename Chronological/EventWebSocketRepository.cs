@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Chronological.QueryResults.Events;
 using Newtonsoft.Json;
@@ -11,7 +12,7 @@ namespace Chronological
     internal interface IEventWebSocketRepository
     {
 
-        Task<IEnumerable<T>> Execute<T>(string query);
+        Task<IEnumerable<T>> Execute<T>(string query, CancellationToken cancellationToken = default);
     }
 
 ;   internal class EventWebSocketRepository : IEventWebSocketRepository
@@ -23,9 +24,9 @@ namespace Chronological
             _webSocketRepository = webSocketRepository;
         }
 
-        async Task<IEnumerable<T>> IEventWebSocketRepository.Execute<T>(string query)
+        async Task<IEnumerable<T>> IEventWebSocketRepository.Execute<T>(string query, CancellationToken cancellationToken)
         {
-            var results = await _webSocketRepository.ReadWebSocketResponseAsync(query, "events");
+            var results = await _webSocketRepository.ReadWebSocketResponseAsync(query, "events", cancellationToken);
 
             // According to samples here: https://github.com/Azure-Samples/Azure-Time-Series-Insights/blob/master/C-%20Hello%20World%20App%20Sample/Program.cs
             // Events should combine all results recevied

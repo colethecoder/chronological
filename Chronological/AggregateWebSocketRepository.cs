@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
@@ -14,11 +15,11 @@ namespace Chronological
             _webSocketRepository = webSocketRepository;
         }
 
-        async Task<IEnumerable<T>> IAggregateWebSocketRepository.Execute<T>(string query, IEnumerable<T> aggregates)
+        async Task<IEnumerable<T>> IAggregateWebSocketRepository.Execute<T>(string query, IEnumerable<T> aggregates, CancellationToken cancellationToken)
         {
             var executionResults = new List<T>();
             
-            var results = await _webSocketRepository.ReadWebSocketResponseAsync(query, "aggregates");
+            var results = await _webSocketRepository.ReadWebSocketResponseAsync(query, "aggregates", cancellationToken);
 
             // According to samples here: https://github.com/Azure-Samples/Azure-Time-Series-Insights/blob/master/C-%20Hello%20World%20App%20Sample/Program.cs
             // Aggregates should only use the final result set

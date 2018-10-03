@@ -27,7 +27,7 @@ namespace Chronological
             _errorToExceptionConverter = errorToExceptionConverter;
         }
 
-        async Task<IReadOnlyList<JToken>> IWebSocketRepository.ReadWebSocketResponseAsync(string query, string resourcePath)
+        async Task<IReadOnlyList<JToken>> IWebSocketRepository.ReadWebSocketResponseAsync(string query, string resourcePath, CancellationToken cancellationToken)
         {
             var webSocket = new ClientWebSocket();
 
@@ -37,14 +37,14 @@ namespace Chronological
                 Query = "api-version=2016-12-12"
             }.Uri;
 
-            await webSocket.ConnectAsync(uri, CancellationToken.None);
+            await webSocket.ConnectAsync(uri, cancellationToken);
 
             byte[] inputPayloadBytes = Encoding.UTF8.GetBytes(query);
             await webSocket.SendAsync(
                 new ArraySegment<byte>(inputPayloadBytes),
                 WebSocketMessageType.Text,
                 endOfMessage: true,
-                cancellationToken: CancellationToken.None);
+                cancellationToken: cancellationToken);
 
             List<JToken> responseMessagesContent = new List<JToken>();
             using (webSocket)
@@ -60,7 +60,7 @@ namespace Chronological
                         {
                             WebSocketReceiveResult response = await webSocket.ReceiveAsync(
                                 new ArraySegment<byte>(temporaryBuffer),
-                                CancellationToken.None);
+                                cancellationToken);
 
                             ms.Write(temporaryBuffer, 0, response.Count);
                             if (response.EndOfMessage)
@@ -92,7 +92,7 @@ namespace Chronological
                             await webSocket.CloseAsync(
                                 WebSocketCloseStatus.NormalClosure,
                                 "CompletedByClient",
-                                CancellationToken.None);
+                                cancellationToken);
                         }
 
                         throw _errorToExceptionConverter.ConvertTimeSeriesErrorToException(error);                                               
@@ -115,7 +115,7 @@ namespace Chronological
                     await webSocket.CloseAsync(
                         WebSocketCloseStatus.NormalClosure,
                         "CompletedByClient",
-                        CancellationToken.None);
+                        cancellationToken);
                 }
             }
 
