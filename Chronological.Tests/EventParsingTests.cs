@@ -19,9 +19,9 @@ namespace Chronological.Tests
             using (Stream stream = assembly.GetManifestResourceStream(resourceName))
             using (StreamReader reader = new StreamReader(stream))
             {                
-                var result = FastEventParser.ParseEvents<TestType1>(reader);
+                var result = FastEventParser.ParseEvents<TestType2>(reader);
 
-                Assert.IsType<WebSocketResult<TestType1>.WebSocketSuccess>(result);
+                Assert.IsType<WebSocketResult<TestType2>.WebSocketSuccess>(result);
             }
         }
 
@@ -31,14 +31,14 @@ namespace Chronological.Tests
             var assembly = Assembly.GetExecutingAssembly();
             var resourceName = "Chronological.Tests.Data.events.json";
 
-            WebSocketResult<TestType1> result1, result2;
+            WebSocketResult<TestType2> result1, result2;
 
             using (Stream stream = assembly.GetManifestResourceStream(resourceName))
             using (StreamReader reader = new StreamReader(stream))
             {
-                result1 = new WebSocketReader<TestType1>(
+                result1 = new WebSocketReader<TestType2>(
                                 new EventWebSocketRepository(null)
-                                    .ParseEvents<TestType1>)
+                                    .ParseEvents<TestType2>)
                                         .Read(reader);
 
             }
@@ -46,13 +46,13 @@ namespace Chronological.Tests
             using (Stream stream = assembly.GetManifestResourceStream(resourceName))
             using (StreamReader reader = new StreamReader(stream))
             { 
-                result2 = FastEventParser.ParseEvents<TestType1>(reader);
+                result2 = FastEventParser.ParseEvents<TestType2>(reader);
             }
 
             AssertAreEqualByJson(result1, result2);
         }
 
-        public void AssertAreEqualByJson(object expected, object actual)
+        internal void AssertAreEqualByJson(object expected, object actual)
         {
             var expectedJson = JsonConvert.SerializeObject(expected);
             var actualJson = JsonConvert.SerializeObject(actual);

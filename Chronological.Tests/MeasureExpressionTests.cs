@@ -10,7 +10,7 @@ namespace Chronological.Tests
         [Fact]
         public void Test1()
         {
-            var measure = new Measure<TestType1>(Property<double>.Create<TestType1>(x => x.Value), Measure.MaximumMeasureExpression);
+            var measure = new Measure<TestType1>(Property<double?>.Create<TestType1>(x => x.Value), Measure.MaximumMeasureExpression);
 
             Assert.Equal(measure.MeasureType, Measure.MaximumMeasureExpression);
             Assert.True(JToken.DeepEquals(measure.Property.ToInputJProperty(), TestType1JProperties.Value));
@@ -19,7 +19,7 @@ namespace Chronological.Tests
         [Fact]
         public void WhenUsingFirstInMeasureWithoutOrderByShouldReturnCorrectJson()
         {
-            var measure = new Measure<TestType1>(Property<double>.Create<TestType1>(x => x.Value),
+            var measure = new Measure<TestType1>(Property<double?>.Create<TestType1>(x => x.Value),
                 Measure.FirstMeasureExpression);
 
             Assert.Equal(measure.MeasureType, Measure.FirstMeasureExpression);
@@ -29,7 +29,7 @@ namespace Chronological.Tests
         [Fact]
         public void WhenUsingLastInMeasureWithoutOrderByShouldReturnCorrectJson()
         {
-            var measure = new Measure<TestType1>(Property<double>.Create<TestType1>(x => x.Value),
+            var measure = new Measure<TestType1>(Property<double?>.Create<TestType1>(x => x.Value),
                 Measure.LastMeasureExpression);
 
             Assert.Equal(measure.MeasureType, Measure.LastMeasureExpression);
@@ -39,7 +39,7 @@ namespace Chronological.Tests
         [Fact]
         public void WhenUsingFirstInMeasureWithOrderByShouldReturnCorrectJson()
         {
-            var measure = new Measure<TestType1>(Property<double>.Create<TestType1>(x => x.Value),
+            var measure = new Measure<TestType1>(Property<double?>.Create<TestType1>(x => x.Value),
                 Measure.FirstMeasureExpression, Property<DateTime>.Create<TestType1>(x => x.Date));
 
             Assert.Equal(measure.MeasureType, Measure.FirstMeasureExpression);
@@ -49,7 +49,7 @@ namespace Chronological.Tests
         [Fact]
         public void WhenUsingLastInMeasureWithOrderByShouldReturnCorrectJson()
         {
-            var measure = new Measure<TestType1>(Property<double>.Create<TestType1>(x => x.Value),
+            var measure = new Measure<TestType1>(Property<double?>.Create<TestType1>(x => x.Value),
                 Measure.LastMeasureExpression, Property<DateTime>.Create<TestType1>(x => x.Date));
 
             Assert.Equal(measure.MeasureType, Measure.LastMeasureExpression);
