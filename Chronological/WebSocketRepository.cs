@@ -12,7 +12,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Chronological
 {
-    internal class WebSocketRepository : IWebSocketRepository
+    internal class WebSocketRepository : IWebRequestRepository
     {
         private readonly Environment _environment;
         private readonly IErrorToExceptionConverter _errorToExceptionConverter;
@@ -27,7 +27,7 @@ namespace Chronological
             _errorToExceptionConverter = errorToExceptionConverter;
         }
 
-        async Task<IReadOnlyList<JToken>> IWebSocketRepository.ReadWebSocketResponseAsync(string query, string resourcePath, CancellationToken cancellationToken)
+        async Task<IReadOnlyList<JToken>> IWebRequestRepository.ExecuteRequestAsync(string query, string resourcePath, CancellationToken cancellationToken)
         {
             var webSocket = new ClientWebSocket();
 

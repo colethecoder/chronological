@@ -15,11 +15,13 @@ namespace Chronological
         public string EnvironmentId { get; }
         public string ResourceId { get; }
         public string AccessToken { get; }
+        public WebRequestChannel WebRequestChannel { get; set; }
 
-        public Environment(string fqdn, string accessToken)
+        public Environment(string fqdn, string accessToken, WebRequestChannel webRequestChannel = WebRequestChannel.WebSocket)
         {
             EnvironmentFqdn = fqdn;
             AccessToken = accessToken;
+            WebRequestChannel = webRequestChannel;
         }
 
         internal Environment(string displayName, string environmentId, string resourceId, string environmentFqdn, string accessToken)
@@ -95,6 +97,9 @@ namespace Chronological
 
         public GenericFluentAggregateQuery<T> AggregateQuery<T>(DateTime fromDate, DateTime toDate, string queryName = "ChronologicalQuery") where T: new()
         {
+            if (WebRequestChannel == WebRequestChannel.Http)
+                return new GenericFluentAggregateQuery<T>(queryName, Search.Span(fromDate, toDate), this, new AggregateWebSocketRepository(new HttpRepository(this)));
+
             return new GenericFluentAggregateQuery<T>(queryName, Search.Span(fromDate,toDate), this);
         }        
 
@@ -106,6 +111,10 @@ namespace Chronological
         public GenericFluentEventQuery<T> EventQuery<T>(DateTime fromDate, DateTime toDate, INonSortableLimit limit, int limitCount, string queryName = "ChronologicalQuery") where T:new()
         {
             var populatedLimit = Limit.CreateLimit(limit, limitCount);
+
+            if(WebRequestChannel == WebRequestChannel.Http)
+                return new GenericFluentEventQuery<T>(queryName, Search.Span(fromDate, toDate), populatedLimit, this, new EventWebSocketRepository(new HttpRepository(this)));
+
             return new GenericFluentEventQuery<T>(queryName, Search.Span(fromDate, toDate), populatedLimit, this);
         }
 
@@ -128,5 +137,11 @@ namespace Chronological
             return new StringEventQuery(queryName, query, this);
         }
 
+    }
+
+    public enum WebRequestChannel
+    {
+        WebSocket = 1,
+        Http = 2
     }
 }

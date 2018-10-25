@@ -8,9 +8,9 @@ namespace Chronological
 {
     internal class AggregateWebSocketRepository : IAggregateWebSocketRepository
     {
-        private readonly IWebSocketRepository _webSocketRepository;
+        private readonly IWebRequestRepository _webSocketRepository;
 
-        internal AggregateWebSocketRepository(IWebSocketRepository webSocketRepository)
+        internal AggregateWebSocketRepository(IWebRequestRepository webSocketRepository)
         {
             _webSocketRepository = webSocketRepository;
         }
@@ -19,7 +19,7 @@ namespace Chronological
         {
             var executionResults = new List<T>();
             
-            var results = await _webSocketRepository.ReadWebSocketResponseAsync(query, "aggregates", cancellationToken);
+            var results = await _webSocketRepository.ExecuteRequestAsync(query, "aggregates", cancellationToken);
 
             // According to samples here: https://github.com/Azure-Samples/Azure-Time-Series-Insights/blob/master/C-%20Hello%20World%20App%20Sample/Program.cs
             // Aggregates should only use the final result set
