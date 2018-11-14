@@ -113,7 +113,7 @@ namespace Chronological
             var populatedLimit = Limit.CreateLimit(limit, limitCount);
 
             if(WebRequestChannel == WebRequestChannel.Http)
-                return new GenericFluentEventQuery<T>(queryName, Search.Span(fromDate, toDate), populatedLimit, this, new EventWebSocketRepository(new HttpRepository(this)));
+                return new GenericFluentEventQuery<T>(queryName, Search.Span(fromDate, toDate), populatedLimit, this, new EventApiRepository(new HttpRepository(this)));
 
             return new GenericFluentEventQuery<T>(queryName, Search.Span(fromDate, toDate), populatedLimit, this);
         }

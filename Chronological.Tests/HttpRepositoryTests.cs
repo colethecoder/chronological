@@ -22,7 +22,7 @@ namespace Chronological.Tests
             var from = new DateTime(2017, 12, 23, 12, 0, 0, DateTimeKind.Utc);
             var to = new DateTime(2018, 10, 23, 12, 0, 0, DateTimeKind.Utc);
 
-            var result = await new GenericFluentEventQuery<EmailTest>("Test", Search.Span(from, to), Limit.CreateLimit(Limit.Take, 10), environment, new EventWebSocketRepository(new MockHttpRepository(_eventsResult))) //new HttpRepository(environment)
+            var result = await new GenericFluentEventQuery<EmailTest>("Test", Search.Span(from, to), Limit.CreateLimit(Limit.Take, 10), environment, new EventApiRepository(new MockHttpRepository(_eventsResult))) //new HttpRepository(environment)
             .Where(x => x.ip == "127.0.0.1")
                 .ExecuteAsync();
 

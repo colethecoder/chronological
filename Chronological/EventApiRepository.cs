@@ -9,24 +9,24 @@ using Newtonsoft.Json.Linq;
 namespace Chronological
 {
 
-    internal interface IEventWebSocketRepository
+    internal interface IEventApiRepository
     {
 
         Task<IEnumerable<T>> Execute<T>(string query, CancellationToken cancellationToken = default);
     }
 
-;   internal class EventWebSocketRepository : IEventWebSocketRepository
+;   internal class EventApiRepository : IEventApiRepository
     {
-        private readonly IWebRequestRepository _webSocketRepository;
+        private readonly IWebRequestRepository _webRequestRepository;
 
-        internal EventWebSocketRepository(IWebRequestRepository webSocketRepository)
+        internal EventApiRepository(IWebRequestRepository webRequestRepository)
         {
-            _webSocketRepository = webSocketRepository;
+            _webRequestRepository = webRequestRepository;
         }
 
-        async Task<IEnumerable<T>> IEventWebSocketRepository.Execute<T>(string query, CancellationToken cancellationToken)
+        async Task<IEnumerable<T>> IEventApiRepository.Execute<T>(string query, CancellationToken cancellationToken)
         {
-            var results = await _webSocketRepository.ExecuteRequestAsync(query, "events", cancellationToken);
+            var results = await _webRequestRepository.ExecuteRequestAsync(query, "events", cancellationToken);
 
             // According to samples here: https://github.com/Azure-Samples/Azure-Time-Series-Insights/blob/master/C-%20Hello%20World%20App%20Sample/Program.cs
             // Events should combine all results recevied
