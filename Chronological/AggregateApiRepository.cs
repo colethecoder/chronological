@@ -6,16 +6,21 @@ using Newtonsoft.Json.Linq;
 
 namespace Chronological
 {
-    internal class AggregateWebSocketRepository : IAggregateWebSocketRepository
+    internal interface IAggregateApiRepository
+    {
+        Task<IEnumerable<T>> Execute<T>(string query, IEnumerable<T> aggregates, CancellationToken cancellationToken = default);
+    }
+
+    internal class AggregateApiRepository : IAggregateApiRepository
     {
         private readonly IWebRequestRepository _webSocketRepository;
 
-        internal AggregateWebSocketRepository(IWebRequestRepository webSocketRepository)
+        internal AggregateApiRepository(IWebRequestRepository webSocketRepository)
         {
             _webSocketRepository = webSocketRepository;
         }
 
-        async Task<IEnumerable<T>> IAggregateWebSocketRepository.Execute<T>(string query, IEnumerable<T> aggregates, CancellationToken cancellationToken)
+        async Task<IEnumerable<T>> IAggregateApiRepository.Execute<T>(string query, IEnumerable<T> aggregates, CancellationToken cancellationToken)
         {
             var executionResults = new List<T>();
             

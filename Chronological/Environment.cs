@@ -98,7 +98,7 @@ namespace Chronological
         public GenericFluentAggregateQuery<T> AggregateQuery<T>(DateTime fromDate, DateTime toDate, string queryName = "ChronologicalQuery") where T: new()
         {
             if (WebRequestChannel == WebRequestChannel.Http)
-                return new GenericFluentAggregateQuery<T>(queryName, Search.Span(fromDate, toDate), this, new AggregateWebSocketRepository(new HttpRepository(this)));
+                return new GenericFluentAggregateQuery<T>(queryName, Search.Span(fromDate, toDate), this, new AggregateApiRepository(new HttpRepository(this)));
 
             return new GenericFluentAggregateQuery<T>(queryName, Search.Span(fromDate,toDate), this);
         }        

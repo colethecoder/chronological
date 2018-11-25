@@ -13,16 +13,13 @@ namespace Chronological.Tests
 
         [Fact]
         public async void GenericFluentEventQueryTest()
-        {
-            //var connection = new Connection(applicationClientId, applicationClientSecret, tenant);
-            //var environment = connection.GetEnvironmentsAsync().Result.FirstOrDefault();
-
+        {            
             var environment = new Environment("TestFqdn", "TestAccessToken");
 
             var from = new DateTime(2017, 12, 23, 12, 0, 0, DateTimeKind.Utc);
             var to = new DateTime(2018, 10, 23, 12, 0, 0, DateTimeKind.Utc);
 
-            var result = await new GenericFluentEventQuery<EmailTest>("Test", Search.Span(from, to), Limit.CreateLimit(Limit.Take, 10), environment, new EventApiRepository(new MockHttpRepository(_eventsResult))) //new HttpRepository(environment)
+            var result = await new GenericFluentEventQuery<EmailTest>("Test", Search.Span(from, to), Limit.CreateLimit(Limit.Take, 10), environment, new EventApiRepository(new MockHttpRepository(_eventsResult)))
             .Where(x => x.ip == "127.0.0.1")
                 .ExecuteAsync();
 
@@ -32,15 +29,12 @@ namespace Chronological.Tests
         [Fact]
         public async void AggregateQueryTest()
         {
-            //var connection = new Connection(applicationClientId, applicationClientSecret, tenant);
-            //var environment = connection.GetEnvironmentsAsync().Result.FirstOrDefault();
-
             var environment = new Environment("TestFqdn", "TestAccessToken");
 
             var from = new DateTime(2017, 12, 23, 12, 0, 0, DateTimeKind.Utc);
             var to = new DateTime(2018, 10, 23, 12, 0, 0, DateTimeKind.Utc);
 
-            var result = await new GenericFluentAggregateQuery<EmailTest>("Test", Search.Span(from, to), environment, new AggregateWebSocketRepository(new MockHttpRepository(_aggregateResults))) //new HttpRepository(environment)
+            var result = await new GenericFluentAggregateQuery<EmailTest>("Test", Search.Span(from, to), environment, new AggregateApiRepository(new MockHttpRepository(_aggregateResults)))
             .Select(builder => builder.UniqueValues(x => x.ip, 10, new { Count = builder.Count() }))
             .Where(x => x.ip == "127.0.0.1")
             .ExecuteAsync();

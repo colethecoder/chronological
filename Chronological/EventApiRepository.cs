@@ -8,10 +8,8 @@ using Newtonsoft.Json.Linq;
 
 namespace Chronological
 {
-
     internal interface IEventApiRepository
     {
-
         Task<IEnumerable<T>> Execute<T>(string query, CancellationToken cancellationToken = default);
     }
 
