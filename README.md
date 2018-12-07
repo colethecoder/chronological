@@ -3,6 +3,8 @@
 # chronological
 Chronological is a library to simplify access to the Azure Time Series Insights API. This project is a work in progress, feedback and pull requests are welcomed.
 
+Note: this currently only supports the GA version not the new Preview version.
+
 ## Download
 
 The latest release of the Chronological is [available on NuGet](https://www.nuget.org/packages/Chronological/)
