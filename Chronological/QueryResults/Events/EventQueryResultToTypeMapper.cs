@@ -14,14 +14,15 @@ namespace Chronological.QueryResults.Events
 
         internal IEnumerable<T> Map<T>(IEnumerable<EventResult> eventResults)
         {
-            var schemaDictionary = GetSchemaDictionary(eventResults);
+            IEnumerable<EventResult> eventQueryResults = eventResults as EventResult[] ?? eventResults.ToArray();
+            var schemaDictionary = GetSchemaDictionary(eventQueryResults);
 
             var results = new List<T>();
 
             var returnType = typeof(T);
-            var typeProperties = returnType.GetRuntimeProperties();
+            var typeProperties = returnType.GetRuntimeProperties().ToArray();
 
-            foreach (var eventResult in eventResults)
+            foreach (var eventResult in eventQueryResults)
             {
                 var instance = Activator.CreateInstance<T>();
 
@@ -38,7 +39,8 @@ namespace Chronological.QueryResults.Events
                         var attributes = (ChronologicalEventFieldAttribute[])typeProperty.GetCustomAttributes(typeof(ChronologicalEventFieldAttribute), false);
                         if (typeProperty.CanWrite && (typeProperty.Name == name || attributes.Any(x => x.EventFieldName == name)))
                         {
-                            if (propertyType.ToLower() == "datetime" && typeProperty.PropertyType == typeof(DateTime))
+                            if (propertyType.ToLower() == "datetime" && 
+                                (typeProperty.PropertyType == typeof(DateTime) || typeProperty.PropertyType == typeof(DateTime?)))
                             {
                                 typeProperty.SetValue(instance, DateTime.Parse(value));
                             }
@@ -46,11 +48,13 @@ namespace Chronological.QueryResults.Events
                             {
                                 typeProperty.SetValue(instance, value);
                             }
-                            if (propertyType.ToLower() == "double" && typeProperty.PropertyType == typeof(double))
+                            if (propertyType.ToLower() == "double" && 
+                                (typeProperty.PropertyType == typeof(double) || typeProperty.PropertyType == typeof(double?)))
                             {
                                 typeProperty.SetValue(instance,double.Parse(value));
                             }
-                            if (propertyType.ToLower() == "string" && typeProperty.PropertyType == typeof(double))
+                            if (propertyType.ToLower() == "string" &&
+                                (typeProperty.PropertyType == typeof(double) || typeProperty.PropertyType == typeof(double?)))
                             {
                                 if (double.TryParse(value, out double x))
                                 {
@@ -63,8 +67,6 @@ namespace Chronological.QueryResults.Events
                 }
 
                 results.Add(instance);
-                
-
             }
 
             return results;
