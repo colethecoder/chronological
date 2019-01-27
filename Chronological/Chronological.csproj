@@ -14,7 +14,7 @@
     <PackageProjectUrl>https://github.com/colethecoder/chronological</PackageProjectUrl>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <FileVersion>1.0.0.0</FileVersion>
-    <PackageReleaseNotes>CancellationTokens now accepted when using ExecuteAsync</PackageReleaseNotes>
+    <PackageReleaseNotes>EventQueryResultToTypeMapper now correctly maps nullable types</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup>
