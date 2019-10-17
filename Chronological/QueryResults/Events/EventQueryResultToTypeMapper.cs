@@ -62,6 +62,13 @@ namespace Chronological.QueryResults.Events
                                 }
                             }
                         }
+                        else if (typeProperty.CanWrite && attributes.Any(x => x.EventFieldName == BuiltIn.EventTimeStamp))
+                        {
+                            if (propertyType.ToLower() == "datetime" && typeProperty.PropertyType == typeof(DateTime))
+                            {
+                                typeProperty.SetValue(instance, DateTime.Parse(value));
+                            }
+                        }
                     }
 
                 }
