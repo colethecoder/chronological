@@ -29,6 +29,8 @@ namespace Chronological.Tests
 
     public class FilterPredicateTestDataProvider
     {
+        private static string[] ContainsTest = new[] { "Hello", "World" };
+
         private static IEnumerable<(Expression<Func<TestType1, bool>>, string)> _testCases = new List<(Expression<Func<TestType1, bool>>, string)>
         {
             (x => x.Value > 5,                                                                  "([data.value] > 5)"),
@@ -51,6 +53,7 @@ namespace Chronological.Tests
             (x => x.IsSimulated == true,                                                        "([data.isSimulated] = TRUE)"),
             (x => 4 > x.Value && (x.DataType == "AStr" || x.DataType == "AStr1"),               "((4 > [data.value]) and (([data.type] = 'AStr') or ([data.type] = 'AStr1')))"),
             (x => new[] { "Hello", "World"}.Contains(x.DataType),                               "([data.type] IN ('Hello', 'World'))"),
+            (x => ContainsTest.Contains(x.DataType),                                            "([data.type] IN ('Hello', 'World'))"),
             (x => x.DataType.StartsWith("Hello"),                                               "(startsWith_cs([data.type], 'Hello'))"),
             (x => x.DataType.StartsWith("Hello", StringComparison.CurrentCulture),              "(startsWith_cs([data.type], 'Hello'))"),
             (x => x.DataType.StartsWith("Hello", StringComparison.Ordinal),                     "(startsWith_cs([data.type], 'Hello'))"),
