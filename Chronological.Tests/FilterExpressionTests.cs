@@ -52,7 +52,7 @@ namespace Chronological.Tests
             (x => x.Date > new DateTime(2018, 01, 27, 0, 0, 0, DateTimeKind.Utc),               "($ts > dt'2018-01-27T00:00:00.0000000Z')"),
             (x => x.IsSimulated == true,                                                        "([data.isSimulated] = TRUE)"),
             (x => 4 > x.Value && (x.DataType == "AStr" || x.DataType == "AStr1"),               "((4 > [data.value]) and (([data.type] = 'AStr') or ([data.type] = 'AStr1')))"),
-            (x => new[] { "Hello", "World"}.Contains(x.DataType),                               "([data.type] IN ('Hello', 'World'))"),
+            (x => new[] {"Hello", "World"}.Contains(x.DataType),                               "([data.type] IN ('Hello', 'World'))"),
             (x => ContainsTest.Contains(x.DataType),                                            "([data.type] IN ('Hello', 'World'))"),
             (x => x.DataType.StartsWith("Hello"),                                               "(startsWith_cs([data.type], 'Hello'))"),
             (x => x.DataType.StartsWith("Hello", StringComparison.CurrentCulture),              "(startsWith_cs([data.type], 'Hello'))"),

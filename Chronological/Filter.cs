@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using Newtonsoft.Json.Linq;
 
 namespace Chronological
@@ -178,6 +179,12 @@ namespace Chronological
                 // TODO: throw exception for any other DateTime type as not supported
             }
 
+            if (memberExpression.Type.GetInterfaces().Any(x => x == typeof(IEnumerable<string>)))
+            {
+                object result = Expression.Lambda(memberExpression).Compile().DynamicInvoke();
+                return ExpressionToString(Expression.Constant(result));
+            }
+
             if (memberExpression.Expression.NodeType == ExpressionType.Parameter)
             {
                 var eventFieldMemberExpression = new EventFieldMemberExpression(memberExpression);
@@ -225,6 +232,8 @@ namespace Chronological
                     return $"ts'P0Y0M{ts.Days}DT{ts.Hours}H{ts.Minutes}M{ts.Seconds}.{ts.Milliseconds}S'";
                 case DateTime dt:
                     return $"dt'{dt:O}'";
+                case IEnumerable<string> sa:
+                    return $"({string.Join(", ", sa.Select(x => $"'{x}'"))})";
                 case null:
                     return "NULL";
                 default:
