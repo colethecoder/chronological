@@ -61,6 +61,11 @@ namespace Chronological.QueryResults.Events
                                     typeProperty.SetValue(instance, x);
                                 }
                             }
+                            if (propertyType.ToLower() == "bool" &&
+                                (typeProperty.PropertyType == typeof(bool) || typeProperty.PropertyType == typeof(bool?)))
+                            {
+                                typeProperty.SetValue(instance, bool.Parse(value));
+                            }
                         }
                         else if (typeProperty.CanWrite && attributes.Any(x => x.EventFieldName == BuiltIn.EventTimeStamp))
                         {
