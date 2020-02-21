@@ -25,6 +25,18 @@ namespace Chronological.Tests
 
             Assert.Equal(expected, predicateString);
         }
+
+        [Theory]
+        [MemberData(nameof(FilterPredicateTestDataProvider.TestBreakingCase), MemberType = typeof(FilterPredicateTestDataProvider))]
+        public void FilterPredicateBreakingTests(Expression<Func<TestType1, bool>> predicate, string expected)
+        {
+            var filter = Filter.Create(predicate);
+            var result = filter.ToPredicateJProperty();
+
+            var predicateString = GetPredicateString(result);
+
+            Assert.Equal(expected, predicateString);
+        }
     }
 
     public class FilterPredicateTestDataProvider
@@ -77,6 +89,16 @@ namespace Chronological.Tests
                 {
                     yield return new object[] { expr, expect };
                 }
+            }
+        }
+
+        public static IEnumerable<object[]> TestBreakingCase
+        {
+            get
+            {
+                var obj = new { Prop1 = "Val1", Prop2 = "TestValue" };
+                (Expression<Func<TestType1, bool>> Expr, string Expect) testCase = (x => x.DataType == obj.Prop2, "([data.type] = 'TestValue')");
+                yield return new object[] { testCase.Expr, testCase.Expect };
             }
         }
     }
