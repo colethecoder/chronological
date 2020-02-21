@@ -192,7 +192,9 @@ namespace Chronological
                 return eventFieldMemberExpression.EscapedEventFieldName;
             }
 
-            if (memberExpression.Expression.NodeType == ExpressionType.Constant)
+            if (memberExpression.Expression.NodeType == ExpressionType.Constant
+                || (memberExpression.Expression.NodeType == ExpressionType.MemberAccess &&
+                (memberExpression.Expression as MemberExpression)?.Expression?.NodeType == ExpressionType.Constant))
             {
                 object result = Expression.Lambda(memberExpression).Compile().DynamicInvoke();
                 return ConvertObjectToString(result);
