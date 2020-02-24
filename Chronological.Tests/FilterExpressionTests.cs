@@ -97,7 +97,8 @@ namespace Chronological.Tests
             get
             {
                 var obj = new { Prop1 = "Val1", Prop2 = "TestValue" };
-                (Expression<Func<TestType1, bool>> Expr, string Expect) testCase = (x => x.DataType == obj.Prop2, "([data.type] = 'TestValue')");
+                var obj2 = new { PropA = obj, PropB = "Test" };
+                (Expression<Func<TestType1, bool>> Expr, string Expect) testCase = (x => x.DataType == obj2.PropA.Prop2, "([data.type] = 'TestValue')");
                 yield return new object[] { testCase.Expr, testCase.Expect };
             }
         }
