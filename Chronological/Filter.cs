@@ -186,15 +186,13 @@ namespace Chronological
                 return ExpressionToString(Expression.Constant(result));
             }
 
-            var expressionType = GetInnermostExpressionType(memberExpression);
-
-            if (expressionType == ExpressionType.Parameter)
+            if (GetInnermostExpressionType(memberExpression) == ExpressionType.Parameter)
             {
                 var eventFieldMemberExpression = new EventFieldMemberExpression(memberExpression);
                 return eventFieldMemberExpression.EscapedEventFieldName;
             }
 
-            if (expressionType == ExpressionType.Constant)
+            if (GetInnermostExpressionType(memberExpression) == ExpressionType.Constant)
             {
                 object result = Expression.Lambda(memberExpression).Compile().DynamicInvoke();
                 return ConvertObjectToString(result);
