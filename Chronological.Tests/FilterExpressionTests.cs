@@ -25,18 +25,6 @@ namespace Chronological.Tests
 
             Assert.Equal(expected, predicateString);
         }
-
-        [Theory]
-        [MemberData(nameof(FilterPredicateTestDataProvider.TestBreakingCase), MemberType = typeof(FilterPredicateTestDataProvider))]
-        public void FilterPredicateBreakingTests(Expression<Func<TestType1, bool>> predicate, string expected)
-        {
-            var filter = Filter.Create(predicate);
-            var result = filter.ToPredicateJProperty();
-
-            var predicateString = GetPredicateString(result);
-
-            Assert.Equal(expected, predicateString);
-        }
     }
 
     public class FilterPredicateTestDataProvider
@@ -85,6 +73,9 @@ namespace Chronological.Tests
         {
             get
             {
+                (var sc1Expr, var sc1Expect) = SpecialCase1();
+                yield return new object[] { sc1Expr, sc1Expect };
+
                 foreach (var (expr, expect) in _testCases)
                 {
                     yield return new object[] { expr, expect };
@@ -92,15 +83,12 @@ namespace Chronological.Tests
             }
         }
 
-        public static IEnumerable<object[]> TestBreakingCase
+        static (Expression<Func<TestType1, bool>> Expr, string Expect) SpecialCase1()
         {
-            get
-            {
-                var firstObj = new { Prop1 = "Val1", Prop2 = "TestValue" };
-                var secondObj = new { PropA = firstObj, PropB = "Test" };
-                (Expression<Func<TestType1, bool>> Expr, string Expect) testCase = (x => x.DataType == secondObj.PropA.Prop2, "([data.type] = 'TestValue')");
-                yield return new object[] { testCase.Expr, testCase.Expect };
-            }
+            var firstObj = new { Prop1 = "Val1", Prop2 = "TestValue" };
+            var secondObj = new { PropA = firstObj, PropB = "Test"};
+            return (x => x.DataType == secondObj.PropA.Prop2, "([data.type] = 'TestValue')");
         }
+
     }
 }
