@@ -30,6 +30,7 @@ namespace Chronological.Tests
     public class FilterPredicateTestDataProvider
     {
         private static string[] ContainsTest = new[] { "Hello", "World" };
+        private static PredicateSampleType1 NestedPropertyTest = new PredicateSampleType1(new PredicateSampleType2("Val1", "TestValue"), "Test");
 
         private static IEnumerable<(Expression<Func<TestType1, bool>>, string)> _testCases = new List<(Expression<Func<TestType1, bool>>, string)>
         {
@@ -66,7 +67,8 @@ namespace Chronological.Tests
             (x => x.DataType.EndsWith("Hello", StringComparison.CurrentCultureIgnoreCase),      "(endsWith([data.type], 'Hello'))"),
             (x => x.DataType.Contains("ello"),                                                  "(matchesRegex([data.type], '^.*ello.*'))"),
             (x => x.DataType != null,                                                           "([data.type] != NULL)"),
-            (x => x.IsSimulated == null,                                                        "([data.isSimulated] = NULL)")
+            (x => x.IsSimulated == null,                                                        "([data.isSimulated] = NULL)"),
+            (x => x.DataType == NestedPropertyTest.PropA.Prop2,                                 "([data.type] = 'TestValue')")
         };
 
         public static IEnumerable<object[]> TestCases
@@ -90,5 +92,28 @@ namespace Chronological.Tests
             return (x => x.DataType == secondObj.PropA.Prop2, "([data.type] = 'TestValue')");
         }
 
+        public class PredicateSampleType1
+        {
+            public readonly PredicateSampleType2 PropA;
+            public readonly string PropB;
+
+            public PredicateSampleType1(PredicateSampleType2 propA, string propB)
+            {
+                PropA = propA;
+                PropB = propB;
+            }
+        }
+
+        public class PredicateSampleType2
+        {
+            public readonly string Prop1;
+            public readonly string Prop2;
+
+            public PredicateSampleType2(string prop1, string prop2)
+            {
+                Prop1 = prop1;
+                Prop2 = prop2;
+            }
+        }
     }
 }

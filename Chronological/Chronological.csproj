@@ -14,7 +14,7 @@
     <PackageProjectUrl>https://github.com/colethecoder/chronological</PackageProjectUrl>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <FileVersion>1.0.0.0</FileVersion>
-    <PackageReleaseNotes>EventQueryResultToTypeMapper now correctly maps nullable types</PackageReleaseNotes>
+    <PackageReleaseNotes>Predicate types now support using properties of objects</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -34,7 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="5.2.5" />
+    <PackageReference Include="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="5.2.7" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="System.Net.Requests" Version="4.3.0" />
   </ItemGroup>
