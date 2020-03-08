@@ -118,7 +118,8 @@ namespace Chronological
         private static string StringContainsExpressionToString(MethodCallExpression methodCallExpression)
         {
             var value = methodCallExpression.Arguments[0];
-            if (value.Type != typeof(string)) throw new NotSupportedException();
+            if (value.Type != typeof(string))
+                throw new NotSupportedException();
 
             var result = Expression.Lambda(value).Compile().DynamicInvoke();
             return $"(matchesRegex({ExpressionToString(methodCallExpression.Object)}, '^.*{ConvertObjectToString(result, false)}.*'))";
@@ -136,7 +137,7 @@ namespace Chronological
         }
 
         private static string EnumerableContainsExpressionToString(MethodCallExpression methodCallExpression)
-        { 
+        {
             var values = methodCallExpression.Arguments[0];
             var searchedValue = methodCallExpression.Arguments[1];
             return $"({ExpressionToString(searchedValue)} IN {ExpressionToString(values)})";
@@ -185,20 +186,34 @@ namespace Chronological
                 return ExpressionToString(Expression.Constant(result));
             }
 
-            if (memberExpression.Expression.NodeType == ExpressionType.Parameter)
+            var innermost = GetInnermostExpressionType(memberExpression);
+
+            if (innermost == ExpressionType.Parameter)
             {
                 var eventFieldMemberExpression = new EventFieldMemberExpression(memberExpression);
-
                 return eventFieldMemberExpression.EscapedEventFieldName;
             }
 
-            if (memberExpression.Expression.NodeType == ExpressionType.Constant)
+            if (innermost == ExpressionType.Constant || innermost == ExpressionType.MemberAccess)
             {
                 object result = Expression.Lambda(memberExpression).Compile().DynamicInvoke();
                 return ConvertObjectToString(result);
             }
 
             throw new NotImplementedException();
+        }
+
+        private static ExpressionType GetInnermostExpressionType(MemberExpression memberExpression)
+        {
+            if (memberExpression.Expression == null)
+            {
+                return memberExpression.NodeType;
+            }
+            if (memberExpression.Expression.NodeType == ExpressionType.MemberAccess)
+            {
+                return GetInnermostExpressionType(memberExpression.Expression as MemberExpression);
+            }
+            return memberExpression.Expression.NodeType;
         }
 
         private static string NewExpressionToString(NewExpression newExpression)

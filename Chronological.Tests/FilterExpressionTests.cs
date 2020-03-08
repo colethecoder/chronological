@@ -73,11 +73,22 @@ namespace Chronological.Tests
         {
             get
             {
+                (var sc1Expr, var sc1Expect) = SpecialCase1();
+                yield return new object[] { sc1Expr, sc1Expect };
+
                 foreach (var (expr, expect) in _testCases)
                 {
                     yield return new object[] { expr, expect };
                 }
             }
         }
+
+        static (Expression<Func<TestType1, bool>> Expr, string Expect) SpecialCase1()
+        {
+            var firstObj = new { Prop1 = "Val1", Prop2 = "TestValue" };
+            var secondObj = new { PropA = firstObj, PropB = "Test"};
+            return (x => x.DataType == secondObj.PropA.Prop2, "([data.type] = 'TestValue')");
+        }
+
     }
 }
