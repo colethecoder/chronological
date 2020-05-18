@@ -6,17 +6,17 @@ namespace Chronological
     {
         private readonly string _queryName;
         private readonly Environment _environment;
-        private readonly IEventWebSocketRepository _eventWebSocketRepository;
+        private readonly IEventApiRepository _eventApiRepository;
 
         internal EventQuery(string queryName, Environment environment,
-            IEventWebSocketRepository eventWebSocketRepository)
+            IEventApiRepository eventApiRepository)
         {
             _queryName = queryName;
             _environment = environment;
-            _eventWebSocketRepository = eventWebSocketRepository;
+            _eventApiRepository = eventApiRepository;
         }
 
-        internal EventQuery(string queryName, Environment environment) : this(queryName, environment, new EventWebSocketRepository(new WebSocketRepository(environment)))
+        internal EventQuery(string queryName, Environment environment) : this(queryName, environment, new EventApiRepository(new WebSocketRepository(environment)))
         {            
         }
 

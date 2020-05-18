@@ -14,21 +14,21 @@ namespace Chronological
         private Filter _filter;
         private readonly Limit _limit;
         private readonly Environment _environment;
-        private readonly IEventWebSocketRepository _eventWebSocketRepository;
+        private readonly IEventApiRepository _eventApiRepository;
 
         internal GenericFluentEventQuery(string queryName, Search search, Limit limit, Environment environment) 
-            : this(queryName,search,limit,environment,new EventWebSocketRepository(new WebSocketRepository(environment)))
+            : this(queryName,search,limit,environment,new EventApiRepository(new WebSocketRepository(environment)))
         {            
         }
 
         internal GenericFluentEventQuery(string queryName, Search search, Limit limit, Environment environment,
-            IEventWebSocketRepository eventWebSocketRepository)
+            IEventApiRepository eventApiRepository)
         {
             _queryName = queryName;
             _search = search;
             _limit = limit;
             _environment = environment;
-            _eventWebSocketRepository = eventWebSocketRepository;
+            _eventApiRepository = eventApiRepository;
         }
 
         public GenericFluentEventQuery<T> Where(Expression<Func<T, bool>> predicate)
@@ -87,7 +87,7 @@ namespace Chronological
 
         public async Task<IEnumerable<T>> ExecuteAsync(CancellationToken cancellationToken = default)
         {
-            return await _eventWebSocketRepository.Execute<T>(ToString(), cancellationToken);
+            return await _eventApiRepository.Execute<T>(ToString(), cancellationToken);
         }
     }
 }

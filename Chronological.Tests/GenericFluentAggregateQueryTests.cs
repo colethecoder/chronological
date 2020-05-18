@@ -84,7 +84,7 @@ namespace Chronological.Tests
             var from = new DateTime(2017, 12, 23, 12, 0, 0, DateTimeKind.Utc);
             var to = new DateTime(2017, 12, 30, 12, 0, 0, DateTimeKind.Utc);
 
-            var result = await new GenericFluentAggregateQuery<TestType1>("Test", Search.Span(from, to), environment, new AggregateWebSocketRepository(new MockWebSocketRepository(_webSocketResult)))
+            var result = await new GenericFluentAggregateQuery<TestType1>("Test", Search.Span(from, to), environment, new AggregateApiRepository(new MockWebSocketRepository(_webSocketResult)))
                 .Select(builder => builder.UniqueValues(x => x.DataType, 10,
                                     builder.DateHistogram(x => x.Date, Breaks.InDays(1),                                        
                                     new

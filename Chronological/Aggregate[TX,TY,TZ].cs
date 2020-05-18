@@ -6,7 +6,6 @@ using System.Reflection;
 
 namespace Chronological
 {
-
     public abstract class Aggregate<TX, TY, TZ> : Dictionary<TY,TZ>, IAggregate, IInternalAggregate
     {
         internal abstract string AggregateType { get; }
@@ -17,8 +16,8 @@ namespace Chronological
         IAggregate IInternalAggregate.GetPopulatedAggregate(JObject jObject, Func<JArray, JArray> measureAccessFunc)
         {
             var aggregate = Clone();
-            
-            foreach (var dimension in jObject["dimension"].Select((x, y) => new { x, y }))
+
+            foreach (var dimension in jObject["dimension"].Select((x, y) => new { x = x.IsNullOrEmpty() ? "null" : x, y }))
             {
                 JArray MeasureAccessFunc(JArray x)
                 {

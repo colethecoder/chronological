@@ -7,22 +7,27 @@ using Newtonsoft.Json.Linq;
 
 namespace Chronological.Tests
 {
-    internal class MockWebSocketRepository : IWebRequestRepository
+    internal class MockHttpRepository : IWebRequestRepository
     {
         private readonly List<string> _results;
 
-        public MockWebSocketRepository(string result) : this(new List<string> { result })
+        public MockHttpRepository(string result) : this(new List<string> { result })
         {
         }
 
-        public MockWebSocketRepository(List<string> results)
+        public MockHttpRepository(List<string> results)
         {
             _results = results;
         }
 
         async Task<IReadOnlyList<JToken>> IWebRequestRepository.ExecuteRequestAsync(string query, string resourcePath, CancellationToken cancellationToken)
         {
-            return new List<JToken> { JToken.Parse(_results.First())["content"] };
+            if ("aggregates".Equals(resourcePath, StringComparison.OrdinalIgnoreCase))
+            {
+                return new List<JToken>() { JToken.Parse(_results.First())["aggregates"] };
+            }
+
+            return new List<JToken> { JToken.Parse(_results.First()) };
         }
     }
 }

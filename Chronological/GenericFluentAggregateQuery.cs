@@ -13,14 +13,14 @@ namespace Chronological
         private readonly string _queryName;
         private readonly Search _search;
         private readonly Environment _environment;
-        private readonly IAggregateWebSocketRepository _webSocketRepository;
+        private readonly IAggregateApiRepository _webSocketRepository;
 
         internal GenericFluentAggregateQuery(string queryName, Search search, Environment environment) : this(queryName,
-            search, environment, new AggregateWebSocketRepository(new WebSocketRepository(environment)))
+            search, environment, new AggregateApiRepository(new WebSocketRepository(environment)))
         {
         }
 
-        internal GenericFluentAggregateQuery(string queryName, Search search, Environment environment, IAggregateWebSocketRepository webSocketRepository)
+        internal GenericFluentAggregateQuery(string queryName, Search search, Environment environment, IAggregateApiRepository webSocketRepository)
         {
             _queryName = queryName;
             _search = search;
@@ -39,7 +39,7 @@ namespace Chronological
     {
         private GenericFluentAggregatesQuery<TX, TY> _multiQuery;
 
-        internal GenericFluentAggregateQuery(string queryName, Search search, TY aggregate, Environment environment, IAggregateWebSocketRepository webSocketRepository)
+        internal GenericFluentAggregateQuery(string queryName, Search search, TY aggregate, Environment environment, IAggregateApiRepository webSocketRepository)
         {
             _multiQuery = new GenericFluentAggregatesQuery<TX, TY>(queryName, search, new List<TY> {aggregate},
                 environment, webSocketRepository);
@@ -77,11 +77,11 @@ namespace Chronological
         private readonly string _queryName;
         private readonly Search _search;
         private readonly Environment _environment;
-        private readonly IAggregateWebSocketRepository _webSocketRepository;
+        private readonly IAggregateApiRepository _webSocketRepository;
 
         
 
-        internal GenericFluentAggregatesQuery(string queryName, Search search, IEnumerable<TY> aggregates, Environment environment, IAggregateWebSocketRepository webSocketRepository)
+        internal GenericFluentAggregatesQuery(string queryName, Search search, IEnumerable<TY> aggregates, Environment environment, IAggregateApiRepository webSocketRepository)
         {
             _queryName = queryName;
             _search = search;
